@@ -2,7 +2,6 @@
   <div class="weiyang_ml">
     <div id="header">
     <nav class="top_navbar">
-      
       <ul>
         <li id="msi">
           <a href="">
@@ -26,6 +25,20 @@
       </ul>
     </nav>
     </div>
+    <div id="left">
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span id="lefthead">MSI ML数据服务</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>数据集管理</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>数据源管理</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>标签组管理</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>在线标注</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>智能标注</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>多人标注</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>寻求标注支持</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>摄像头采集图片</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>云服务回流图片</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>清洗任务管理</span></a>
+      <a href="" class="box"><i class="left_label" aria-hidden="true"></i><span>增强任务管理</span></a>
+    </div>
   </div>
 </template>
 
@@ -40,6 +53,50 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  #left{
+    margin: 0;
+    padding: 0;
+    margin-left: -8px;
+    width: 10px;
+    height: 100vh;
+    display: flex;
+    justify-content: top;
+    align-items: center;
+    flex-direction: column;
+    background-color: rgb(235, 231, 231);
+    transition: .3s;
+  }
+  .box{
+    display: block;
+    height: 30px;
+    width: 85%;
+    margin: 9px;
+    border-radius: 5px;
+    position: relative;
+    color: black;
+    font-size: 0.9rem;
+  }
+  #left a i{
+    position: absolute;
+    margin: 14px 0 0 7px;
+  }
+  .box span{
+    position: relative;
+    top: 14px;
+    opacity: 0;
+    float: left;
+  }
+  #left:hover{
+    width:240px;
+  }
+  #left:hover span{
+    opacity: 1;
+  }
+  #lefthead{
+    font-size: 1.3rem;
+  }
+
+/* css style for head navigator */
   #header{
     position: fixed;
     top: 0;
@@ -95,7 +152,7 @@ export default {
   }
   #shequ{
     position: absolute;
-    right: 160px;
+    left: 1400px;
   }
   #msi{
     margin-top: -8px;
