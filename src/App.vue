@@ -1,5 +1,10 @@
 <template>
+  <el-container>
   <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <el-main>
+    <router-view />
+  </el-main>
+  </el-container>
 </template>
 
 <script>
