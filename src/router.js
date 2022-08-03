@@ -2,11 +2,28 @@ import {createRouter, createWebHashHistory} from "vue-router"
 const routes = [
     {
         path: '/',
-        redirect: '/index/menu1',
+        redirect: '/index/manage/dataset',
         children:[
-            {path: '/index/menu1',component: () => import('./components/pages/main1.vue')},
-            {path: '/index/menu2',component: () => import('./components/pages/main2.vue')},
-            {path: '/index/menu3',component: () => import('./components/pages/main3.vue')},
+            {
+                path: '/index/manage/dataset',
+                component: () => import('./components/pages/main1-1.vue'),
+                mata: {title: '我的数据总览'},
+                name: '我的数据总览',
+            },
+            {
+                path: '/index/menu2',
+                component: () => import('./components/pages/main2.vue')
+            },
+            {
+                path: '/index/menu3',
+                component: () => import('./components/pages/main3.vue')
+            },
+            {
+                path: '/index/manage/dataset/create',
+                component: () => import('./components/pages/CreateSet.vue'),
+                mata: {title: '创建数据集'},
+                name: '创建数据集',
+            }
         ]
     }
 ]

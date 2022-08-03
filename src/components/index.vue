@@ -26,12 +26,13 @@
     </nav>
     </div>
     <div id="leftnav">
-      <!-- <div class="mb-2" @click="toggleCollapse">
-          <el-icon color="gray"><DArrowRight /></el-icon>
-          <span id="navlogo">MSI ML</span>
-      </div>
-      <el-divider /> -->
+      
+      <!-- <el-divider /> -->
       <el-aside :width="isCollapse ? '64px' : '200px'">
+      <div id="navtop" @click="toggleCollapse">
+          <el-icon color="gray" ><DArrowRight /></el-icon>
+          <span id="navlogo"  class="mb-2">MSIML数据服务</span>
+      </div>
       <el-menu
         :default-active="$route.path"
         router 
@@ -42,10 +43,7 @@
         :collapse="isCollapse"
         :collapse-transition="false"
       >
-        <el-menu-item index="1">
-          <el-icon color="gray" @click="toggleCollapse"><DArrowRight /></el-icon>
-          <span class="mb-2">MSI ML</span>
-        </el-menu-item>
+
         <el-divider />
         <el-sub-menu index="1">
           <template #title>
@@ -53,7 +51,7 @@
             <span class="submenu">数据总览</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/index/menu1">数据集管理</el-menu-item>
+            <el-menu-item index="/index/manage/dataset">数据集管理</el-menu-item>
             <el-menu-item index="/index/menu2">数据源管理</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
@@ -111,7 +109,8 @@ export default {
   },
   methods: {
     toggleCollapse() {
-      this.isCollapse = !this.isCollapse
+      this.isCollapse = !this.isCollapse;
+      document.getElementById("navlogo").style.display= this.isCollapse? "none" : "inline";
     }
   }
 }
@@ -120,8 +119,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  #navtop{
+    height: 50px;
+  }
   .el-divider--horizontal{
-    margin: 8px 0;
+    margin: 0;
     background: 0 0;
     border-top: 1px solid rgb(222, 219, 219);
   }
@@ -135,14 +137,17 @@ export default {
     font-weight: bold;
     color: rgb(91, 92, 92);
   }
+  #navtop{
+    margin-top: 20px;
+    margin-bottom: -15px;
+  }
   .mb-2{
     text-align: left;
     margin-left: 10px;
-    height: 40px;
-    font-size: 2rem;
-    margin-top: -8px;
+    height: 20px;
+    font-size: 1.2rem;
     font-weight: bold;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: '华文行楷','Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
 /* css style for head navigator */
   #header{

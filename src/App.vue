@@ -1,9 +1,7 @@
 <template>
   <el-container>
   <HelloWorld msg="Welcome to Your Vue.js App"/>
-  <el-main>
     <router-view />
-  </el-main>
   </el-container>
 </template>
 
@@ -27,4 +25,10 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+.el-container{
+  margin-bottom: -10px;
+  margin-right: -10px;
+  height: 100vh;
+}
+
 </style>
