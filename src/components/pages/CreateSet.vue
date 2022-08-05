@@ -131,17 +131,120 @@
             <el-row class="mb-4">
                 <el-button type="primary" @click="createdata">创建并导入</el-button>
                 <el-button type="success">完成创建</el-button>
-                <el-button type="warning">取消</el-button>
+                <el-button type="warning" @click="cancel">取消</el-button>
             </el-row>
         </el-main>
     </el-container>
 </template>
 
+<script>
+import Breadcrumb from "../BreadCrumb.vue"
+import { reactive } from 'vue'
+import { ref } from 'vue'
 
-<script setup>
+export default{
+    components: {
+        Breadcrumb,
+    },
+    setup(){
+        let form = reactive({
+            name: '',
+            type: '',
+            model: '',
+            direction: '',
+        });
+        let qx = reactive({
+            quanxian : 0,
+        });
+        let txt = reactive({
+            quanxian : 0,
+        });
+        let pic = reactive({
+            quanxian: 0,
+        })
+        let bqw = 1;
+        let radio = ref('');
+        return{
+            form,
+            bqw,
+            radio,
+            qx,
+            txt,
+            pic,
+        }
+    },
+    methods: {
+        createdata() {
+            let name = this.form["name"];
+            let specy = this.radio;
+            const data = {
+                "data_id": name,
+                "group_id": name,
+                "name": name,
+                "version": "V1",
+                "num": 0,
+                "in_state": "finished",
+                "specy": specy,
+                "mark_state": 0,
+                "clear_state": "-",
+            }
+            return fetch("/api/adddata",{
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(()=>{
+                this.$router.push("/index/manage/dataset")
+            })
+        },
+        cancel(){
+            this.$router.push("/index/manage/dataset")
+        },
+        topic (){
+            this.qx.quanxian = 1;
+        },
+        totxt (){
+            this.qx.quanxian = 2;
+        },
+        totab (){
+            this.qx.quanxian = 3;
+        },
+        fenlei (){
+            this.pic.quanxian = 1;
+        },
+        jiance (){
+            this.pic.quanxian = 2;
+        },
+        fenge (){
+            this.pic.quanxian = 3;
+        },
+        biaozhu () {
+            this.pic.quanxian = 4;
+        },
+        leifen () {
+            this.txt.quanxian = 1;
+        },
+        xiangsi() {
+            this.txt.quanxian = 2;
+        },
+        xulie () {
+            this.txt.quanxian = 3;
+        },
+        chouqu () {
+            this.txt.quanxian = 4;
+        }
+    }
+}
+</script>
+
+<!-- <script setup>
 import Breadcrumb from "../BreadCrumb.vue"
 import { reactive } from 'vue'
 import {ref} from 'vue'
+import {useRouter} from 'vue-router'
 
 const form = reactive({
   name: '',
@@ -173,6 +276,12 @@ const createdata = () => {
         body: JSON.stringify(data)
     })
     .then(res => res.json())
+    .then(()=>{
+        const router = useRouter();
+        router.push({
+            path:"/index/manage/dataset",
+        })
+    })
 }
 
 const qx = reactive({
@@ -220,7 +329,7 @@ const chouqu = () => {
     txt.quanxian = 4;
 }
 
-</script>
+</script> -->
 
 
 <style scoped>
