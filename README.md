@@ -18,4 +18,4 @@
   * 在pull requests中提交PR
 
 # 问题
-联系bqw
+直接在微信群中联系交流
