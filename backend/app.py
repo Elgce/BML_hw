@@ -5,9 +5,9 @@ from zmq import Message
 
 app = Flask(__name__,static_folder="../dist/",static_url_path="/")
 
-MessageInfo = {
-    
-}
+MessageInfo = {}
+
+data_num = 0
 
 app.secret_key = "bighw"
 @app.route("/")
