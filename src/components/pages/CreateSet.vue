@@ -129,7 +129,7 @@
             </el-form>
             
             <el-row class="mb-4">
-                <el-button type="primary">创建并导入</el-button>
+                <el-button type="primary" @click="createdata">创建并导入</el-button>
                 <el-button type="success">完成创建</el-button>
                 <el-button type="warning">取消</el-button>
             </el-row>
@@ -142,6 +142,7 @@
 import Breadcrumb from "../BreadCrumb.vue"
 import { reactive } from 'vue'
 import {ref} from 'vue'
+
 const form = reactive({
   name: '',
   type: '',
@@ -150,7 +151,29 @@ const form = reactive({
 })
 
 const radio = ref('')
-
+let bqw = 0
+const createdata = () => {
+    bqw = bqw + 1
+    const data = {
+        "data_id": bqw.toString(),
+        "group_id": "group_id",
+        "name": "name",
+        "version": "version",
+        "num": "num",
+        "in_state": "in_state",
+        "specy": "specy",
+        "mark_state": "mark_state",
+        "clear_state": "clear_state",
+    }
+    return fetch("/api/adddata",{
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+}
 
 const qx = reactive({
     quanxian: 0,
