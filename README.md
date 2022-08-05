@@ -8,7 +8,7 @@
 
 # 关于开发
 * git clone git@github.com:Elgce/BML_hw  克隆本repo
-* 每次工作前git fetch获取库的最新情况
+* 每次工作前git fetch + git pull获取库的最新情况
 * git checkout -b + 分支的名字，最好直接是自己名字缩写，实际命令行不含"+"
 * 完成当次开发后
   * git add. 添加新写的内容
