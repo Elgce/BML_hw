@@ -31,14 +31,26 @@
                     />
                 </el-col>
             </el-row>
-            <el-empty :image-size="250" description="空空如也">
+            <el-empty :image-size="250" description="空空如也" v-if="value=='open' || data_num==0">
             </el-empty>
+            <el-pagination
+                v-model:currentPage="queryInfo.pagenum"
+                v-model:page-size="queryInfo.pagesize"
+                :page-sizes="[1, 5, 10, 15, 20]"
+                :background="background"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="data_num"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                v-if="value!='open' && data_num!=0"
+            />
+
         </el-main>
     </el-container>
 </template>
 
 <script>
-import { ref } from "vue"
+import { reactive, ref } from "vue"
 import Breadcrumb from "../BreadCrumb.vue"
     export default{
         name: "ManageDateSet",
@@ -47,7 +59,16 @@ import Breadcrumb from "../BreadCrumb.vue"
         },
         data(){
             return{
+                background :ref(true),
+                queryInfo: {
+                    query: '',
+                    pagenum: 1,
+                    pagesize: 2,
+                },
+                data_num:0,
                 value: ref(''),
+                input: ref(''),
+                MessageInfo: reactive({}),
                 options : [
                     {
                         value: 'my',
@@ -123,7 +144,29 @@ import Breadcrumb from "../BreadCrumb.vue"
         methods:{
             tocreate(){
                 this.$router.push("/index/manage/dataset/create")
-            }
+            },
+            get_datanum(){
+                let that = this;
+                fetch("/api/getnum").then((res) => res.json().then((j) => {
+                    that.data_num = j.data_num;
+                }))
+            },
+            get_data(){
+                let that = this;
+                fetch("/api/getdata").then((res) => res.json().then((j)=>{
+                    that.MessageInfo = JSON.stringify(j.MessageInfo)
+                }))
+            },
+            handleSizeChange(newSize){
+                this.queryInfo.pagesize = newSize
+            },
+            handleCurrentChange(newPage){
+                this.queryInfo.pagenum = newPage 
+            },
+        },
+        created() {
+            this.get_datanum();
+            this.get_data();
         }
 
     }

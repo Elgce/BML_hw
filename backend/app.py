@@ -72,15 +72,18 @@ def add_data():
 # 用于前端调用直接返回所有储存的信息
 @app.route("/api/getdata")
 def get_data():
-    return MessageInfo
+    return {"MessageInfo":MessageInfo}
     
 # 用于前端获取特定条目的信息
 @app.route("/api/getone")
 def get_one(name):
     return MessageInfo[name]
 
-
-
+@app.route("/api/getnum")
+def get_num():
+    print(data_num)
+    return {"data_num":data_num}
 
 if __name__=="__main__":
+    readcsv()
     app.run(debug=True, port=5000, host= "0.0.0.0")
