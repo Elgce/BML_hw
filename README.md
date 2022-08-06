@@ -7,7 +7,7 @@
 * 输入yarn run bulid、yarn run serve
 
 # 关于前后端调试模式
-* 首先由于跨域问题，需要下载nginx
+* 首先由于跨域问题，需要下载nginx（最新版应该是1.22.0）
 * 下载完成nginx后打开安装所在文件夹，在conf/nginx.conf文件中复制进本repo中backend/nginx.conf的内容
 * 回到nginx文件夹根目录，打开命令行并运行指令 ./nginx.exe并保持该终端不关闭
 * yarn run serve打开前端服务
