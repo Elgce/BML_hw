@@ -85,7 +85,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     pagenum: 1,
                     pagesize: 2,
                 },
-                data_num:0,
+                data_num: -1,
                 value: ref(''),
                 input: ref(''),
                 MessageInfo: reactive({}),
@@ -184,8 +184,13 @@ import Breadcrumb from "../BreadCrumb.vue"
             handleCurrentChange(newPage){
                 this.queryInfo.pagenum = newPage 
             },
+            // 用于设置页面表单的默认选项
+            setvalue(){
+                this.value = this.options[0].value;
+            }
         },
         created() {
+            this.setvalue();
             this.get_datanum();
             this.get_data();
         }
