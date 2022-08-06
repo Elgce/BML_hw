@@ -23,6 +23,8 @@ def writecsv(data):
         fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow(data)
+        global data_num
+        data_num = data_num + 1
             
 
 # 用于将表头重新写入用于保存数据的csv文件
