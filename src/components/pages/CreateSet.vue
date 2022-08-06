@@ -183,7 +183,7 @@ export default{
                 "name": name,
                 "version": "V1",
                 "num": 0,
-                "in_state": "finished",
+                "in_state": "已完成",
                 "specy": specy,
                 "mark_state": 0,
                 "clear_state": "-",

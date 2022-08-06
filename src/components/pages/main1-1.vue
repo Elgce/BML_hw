@@ -45,7 +45,11 @@
                     <el-descriptions-item label="版本">{{item["version"]}}</el-descriptions-item>
                     <el-descriptions-item label="数据集ID">{{item["data_id"]}}</el-descriptions-item>
                     <el-descriptions-item label="数据量">{{item["num"]}}</el-descriptions-item>
-                    <el-descriptions-item label="最近导入状态">{{item["in_state"]}}</el-descriptions-item>
+                    <el-descriptions-item label="最近导入状态">
+                        <span>{{item["in_state"]}}</span>
+                        <!-- <i v-if="{{item[in_state]}}=='finiesd'" class="greendot"></i> -->
+                        
+                    </el-descriptions-item>
                     <el-descriptions-item label="标注类型">{{item["specy"]}}</el-descriptions-item>
                     <el-descriptions-item label="标注状态">{{item["mark_state"]}}</el-descriptions-item>
                     <el-descriptions-item label="清洗状态">{{item["clear_state"]}}</el-descriptions-item>
@@ -169,13 +173,14 @@ import Breadcrumb from "../BreadCrumb.vue"
                 let that = this;
                 fetch("/api/getnum").then((res) => res.json().then((j) => {
                     that.data_num = j.data_num;
+                    console.log(that.data_num);
                 }))
             },
             get_data(){
+                this.get_datanum();
                 let that = this;
                 fetch("/api/getdata").then((res) => res.json().then((j)=>{
                     that.MessageInfo = j.MessageInfo
-                    console.log(that.MessageInfo)
                 }))
             },
             handleSizeChange(newSize){
@@ -191,7 +196,6 @@ import Breadcrumb from "../BreadCrumb.vue"
         },
         created() {
             this.setvalue();
-            this.get_datanum();
             this.get_data();
         }
 
