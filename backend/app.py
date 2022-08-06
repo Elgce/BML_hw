@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request, abort, send_file,g, session
 import os
-
-from zmq import Message
+import csv
 
 app = Flask(__name__,static_folder="../dist/",static_url_path="/")
 
@@ -10,10 +9,39 @@ MessageInfo = {}
 data_num = 0
 
 app.secret_key = "bighw"
+
+def readcsv():
+    with open('./backend/data.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            global data_num
+            data_num = data_num + 1
+        if data_num != 0:
+            MessageInfo.update({row["name"]:row})
+
+def writecsv(data):
+    with open('./backend/data.csv', 'a+', newline='') as csvfile:
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writerow(data)
+            
+
+# 用于将表头重新写入用于保存数据的csv文件
+def writecsvtitle():
+    with open('./backend/data.csv', 'w', newline='') as csvfile:
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+
+# 用于直接重置整个数据库，删除所有数据内容
+def renew():
+    writecsvtitle()
+
 @app.route("/")
 def index():
     return send_file("../dist/index.html")
 
+# 本接口用于前端调用，给数据库增加信息条目
 @app.route("/api/adddata",methods=['GET','POST'])
 def add_data():
     data = request.get_json()
@@ -38,13 +66,15 @@ def add_data():
         "clear_state": clear_state,
     }
     MessageInfo.update({data_id:sing_one})
-    print(MessageInfo)
+    writecsv(sing_one)
     return MessageInfo
     
+# 用于前端调用直接返回所有储存的信息
 @app.route("/api/getdata")
 def get_data():
     return MessageInfo
     
+# 用于前端获取特定条目的信息
 @app.route("/api/getone")
 def get_one(name):
     return MessageInfo[name]
