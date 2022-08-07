@@ -12,7 +12,9 @@ const routes = [
             },
             {
                 path: '/index/menu2',
-                component: () => import('./components/pages/main2.vue')
+                component: () => import('./components/pages/main2.vue'),
+                mata: {title: '导入'},
+                name: '导入',
             },
             {
                 path: '/index/menu3',
