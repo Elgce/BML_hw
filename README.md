@@ -4,7 +4,8 @@
 * 下载yarn
 * 将位置跳转至文件夹位置
 * 输入yarn install
-* 输入yarn run bulid、yarn run serve
+* 输入yarn run serve
+* 当前尚未进行封装，无需build
 
 # 关于前后端调试模式
 * 首先由于跨域问题，需要下载nginx（最新版应该是1.22.0）
