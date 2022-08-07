@@ -37,20 +37,27 @@
     <p class="item_heading" id="data_enhan">数据增强</p>
     <p class="text_left1" style="left:240px;top:640px">暂未做过数据增强任务</p>
     <p class="item_heading" id="data_intro">导入数据</p>
+    <p class="text_left1" style="left:240px;top:810px" id="upload_pic">上传图片</p>
     <p class="text_left1" style="left:240px;top:730px">数据标注状态</p>
     <form id="markingInfo_radio_group">
         <input type="radio" value="no_marking_info" name="marking_info">无标注信息&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="radio" value="_marking_info" name="marking_info">有标注信息
     </form>
     <p class="text_left1" style="left:240px;top:770px">导入方式</p>
-    <select id="fashion_choice">
+    <select id="fashion_choice" @change="select_change">
         <option value="" disabled selected hidden>请选择</option>
-        <option>本地导入</option>
+        <option value="local">本地导入</option>
         <option>BOS目录导入</option>
         <option>分享链接导入</option>
         <option>平台已有数据集</option>
         <option>摄像头采集数据</option>
         <option>云服务回流数据</option>
+    </select>
+    <select id="local_choice" @change="local_select_change">
+        <option value="" disabled selected hidden>请选择</option>
+        <option value="pic">上传图片</option>
+        <option>上传压缩包</option>
+        <option>API导入</option>
     </select>
     <el-button id="submit_button">确认并返回</el-button>
 </template>
@@ -91,6 +98,40 @@ import Breadcrumb from "../BreadCrumb.vue"
                 change_memo_input.style.visibility='hidden';
                 var two_btns=document.getElementById("two_btns");
                 two_btns.style.visibility='hidden';
+            },
+            select_change()
+            {
+                var select_fashion=document.getElementById("fashion_choice");
+                var select_local=document.getElementById("local_choice");
+                var upPic=document.getElementById("upload_pic");
+                var submit_btn=document.getElementById("submit_button");
+                if(select_fashion.value=="local")
+                {
+                    select_local.style.visibility='visible';
+                    this.local_select_change();
+                }
+                else
+                {
+                    select_local.style.visibility='hidden';
+                    upPic.style.visibility='hidden';
+                    submit_btn.style.top='830px';
+                }
+            },
+            local_select_change()
+            {
+                var upPic=document.getElementById("upload_pic");
+                var select_local=document.getElementById("local_choice");
+                var submit_btn=document.getElementById("submit_button");
+                if(select_local.value=="pic")
+                {
+                    upPic.style.visibility='visible';
+                    submit_btn.style.top='870px';
+                }
+                else
+                {
+                    upPic.style.visibility='hidden';
+                    submit_btn.style.top='830px';
+                }
             }
         }
     }
@@ -179,7 +220,16 @@ import Breadcrumb from "../BreadCrumb.vue"
         position:absolute;
         font-size:15px;
         left:420px;
+        width:200px;
         top:787px;
+    }
+    #local_choice
+    {
+        position:absolute;
+        font-size:15px;
+        left:620px;
+        top:787px;
+        visibility: hidden;
     }
     #submit_button
     {
@@ -234,5 +284,9 @@ import Breadcrumb from "../BreadCrumb.vue"
         border-style:solid;
         border-width:1px;
         visibility:hidden;
+    }
+    #upload_pic
+    {
+        visibility: hidden;
     }
 </style>
