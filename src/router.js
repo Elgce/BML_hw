@@ -23,6 +23,12 @@ const routes = [
                 component: () => import('./components/pages/CreateSet.vue'),
                 mata: {title: '创建数据集'},
                 name: '创建数据集',
+            },
+            {
+                path: '/index/manage/blank',
+                component: () => import('./components/pages/BlankPage.vue'),
+                name: '跳转空白页',
+                meta: {title:'跳转空白页'}
             }
         ]
     }
