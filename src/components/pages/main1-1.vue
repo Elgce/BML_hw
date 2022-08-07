@@ -33,6 +33,7 @@
             </el-row>
             <el-empty :image-size="250" description="空空如也" v-if="value=='open' || data_num==0">
             </el-empty>
+            <div v-if="value!='open'">
             <div v-for = "item in MessageInfo" :key="item.name">
             <el-divider class="between" border-style="none"></el-divider>
                 <el-descriptions
@@ -58,6 +59,7 @@
                     </el-descriptions-item>
                 </el-descriptions>
             <el-divider class="between" border-style="none"></el-divider>
+            </div>
             </div>
             <el-divider class="lower" border-style="none"></el-divider>
             <el-pagination
