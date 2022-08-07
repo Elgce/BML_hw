@@ -33,11 +33,11 @@
             </el-row>
             <el-empty :image-size="250" description="空空如也" v-if="value=='open' || data_num==0">
             </el-empty>
-            <div v-for = "item in MessageInfo" :key="item.id">
+            <div v-for = "item in MessageInfo" :key="item.name">
             <el-divider class="between" border-style="none"></el-divider>
                 <el-descriptions
                     direction="vertical"
-                    :column="8"
+                    :column="9"
                     size="large"
                     border
                 >
@@ -53,6 +53,9 @@
                     <el-descriptions-item label="标注类型">{{item["specy"]}}</el-descriptions-item>
                     <el-descriptions-item label="标注状态">{{item["mark_state"]}}</el-descriptions-item>
                     <el-descriptions-item label="清洗状态">{{item["clear_state"]}}</el-descriptions-item>
+                    <el-descriptions-item label="操作">
+                        <el-button type="primary" key="delete" @click="deletedata(item.name)">删除</el-button>
+                    </el-descriptions-item>
                 </el-descriptions>
             <el-divider class="between" border-style="none"></el-divider>
             </div>
@@ -192,6 +195,26 @@ import Breadcrumb from "../BreadCrumb.vue"
             // 用于设置页面表单的默认选项
             setvalue(){
                 this.value = this.options[0].value;
+            },
+            deletedata(name){
+                let that = this;
+                const d_name = {"name": name,}
+                console.log(d_name)
+                return fetch("/api/deletedata",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(d_name)
+                })
+                .then(res => res.json())
+                .then(() => {
+                    // this.$router.push("/index/manage/dataset")
+                    if(that.data_num>0){
+                        that.data_num = that.data_num - 1;
+                    }
+                    this.$router.push("/index/manage/blank")
+                })
             }
         },
         created() {

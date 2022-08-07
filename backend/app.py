@@ -1,3 +1,5 @@
+
+from urllib.robotparser import RequestRate
 from flask import Flask, jsonify, request, abort, send_file,g, session
 import os
 import csv
@@ -73,7 +75,6 @@ def add_data():
 # 用于前端调用直接返回所有储存的信息
 @app.route("/api/getdata")
 def get_data():
-    print(MessageInfo)
     return {"MessageInfo":MessageInfo}
     
 # 用于前端获取特定条目的信息
@@ -83,8 +84,29 @@ def get_one(name):
 
 @app.route("/api/getnum")
 def get_num():
-    print(data_num)
     return {"data_num":data_num}
+
+@app.route("/api/deletedata",methods=['GET','POST'])
+def delete_data():
+    data = request.get_json()
+    name = data.get("name")
+    global data_num
+    data_num = data_num - 1
+    print(MessageInfo)
+    MessageInfo.pop(name)
+    print("newone:\n")
+    print(MessageInfo)
+    reset_csv()
+    return {"name":name}
+
+def reset_csv():
+    writecsvtitle()
+    for item in MessageInfo.values():
+        print(item)
+        with open('./backend/data.csv', 'a+', newline='') as csvfile:
+            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writerow(item)
 
 if __name__=="__main__":
     readcsv()
