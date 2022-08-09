@@ -36,13 +36,36 @@
             <div v-if="value!='open'">
             <div v-for = "item in MessageInfo" :key="item.name">
             <el-divider class="between" border-style="none"></el-divider>
+                <div class="table-header">
+                    <div class="title">
+                        <span class="inline-editor">
+                            <span title="name" class="inline-editor-txt">{{item["name"]}}</span>
+                            <el-icon><Edit /></el-icon>
+                        </span>
+                        <span>数据集组ID:{{item["data_id"]}}</span>
+                    </div>
+                    <div class="op">
+                        <span class="op-item">
+                            <el-icon><DocumentAdd /></el-icon>
+                            <span>新增版本</span>
+                        </span>
+                        <span class="op-item">
+                            <el-icon><Menu /></el-icon>
+                            <span>全部版本</span>
+                        </span>
+                        <el-button class="op-item" link @click="deletedata(item.name)">
+                            <el-icon><Delete /></el-icon>
+                            <span>删除</span>
+                        </el-button>
+                    </div>
+                </div>
                 <el-descriptions
                     direction="vertical"
-                    :column="9"
+                    :column="8"
                     size="large"
                     border
                 >
-                    <el-descriptions-item label="name">{{item["name"]}}</el-descriptions-item>
+                    
                     <el-descriptions-item label="版本">{{item["version"]}}</el-descriptions-item>
                     <el-descriptions-item label="数据集ID">{{item["data_id"]}}</el-descriptions-item>
                     <el-descriptions-item label="数据量">{{item["num"]}}</el-descriptions-item>
@@ -55,7 +78,9 @@
                     <el-descriptions-item label="标注状态">{{item["mark_state"]}}</el-descriptions-item>
                     <el-descriptions-item label="清洗状态">{{item["clear_state"]}}</el-descriptions-item>
                     <el-descriptions-item label="操作">
-                        <el-button type="primary" key="delete" @click="deletedata(item.name)">删除</el-button>
+                        <el-button type="primary" link key="label" @click="multilabel">多人标注</el-button>
+                        <el-button type="primary" link key="label" @click="insert">导入</el-button>
+                        <el-button type="primary" link key="delete" @click="deletedata(item.name)">删除</el-button>
                     </el-descriptions-item>
                 </el-descriptions>
             <el-divider class="between" border-style="none"></el-divider>
@@ -171,6 +196,9 @@ import Breadcrumb from "../BreadCrumb.vue"
             }
         },
         methods:{
+            insert(){
+                this.$router.push("/index/manage/dataset/insert")
+            },
             tocreate(){
                 this.$router.push("/index/manage/dataset/create")
             },
@@ -239,5 +267,52 @@ import Breadcrumb from "../BreadCrumb.vue"
     }
     .lower{
         margin: 30px;
+    }
+    .table-header{
+        display: flex;
+        padding: 15px;
+        border: 1px solid #eee;
+        border-bottom: none;
+        background-color: #f7f7f7;
+        justify-content: space-between;
+    }
+    .table-header .title .inline-editor .el-icon{
+        margin-left:10px;
+        padding-bottom: -10px;
+    }
+    .table-header .title{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-bottom: -10px;
+        font-size: 14px;
+    }
+    .table-header .title .inline-editor{
+        margin-right: 20px;
+        cursor: pointer;
+        display: inline-block;
+        white-space: nowrap;
+    }
+    .table-header .title .inline-editor-initial-txt{
+        max-width: 360px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .table-header .op{
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+    }
+    .table-header .op .op-item{
+        font-size: 14px;
+        cursor: pointer;
+        margin-right: 22px;
+        color: #000;
+        text-decoration: none;
+    }
+    .table-header .op .op-item span{
+        font-size: 12px;
+        margin-left: 3px;
     }
 </style>

@@ -11,7 +11,7 @@ const routes = [
                 name: '我的数据总览',
             },
             {
-                path: '/index/menu2',
+                path: '/index/manage/dataset/insert',
                 component: () => import('./components/pages/main2.vue'),
                 mata: {title: '导入'},
                 name: '导入',
