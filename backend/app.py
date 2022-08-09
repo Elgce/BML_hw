@@ -1,4 +1,7 @@
 
+from asyncore import write
+from email.message import Message
+from unicodedata import name
 from urllib.robotparser import RequestRate
 from flask import Flask, jsonify, request, abort, send_file,g, session
 import os
@@ -99,10 +102,26 @@ def delete_data():
     reset_csv()
     return {"name":name}
 
+# 用于从前端获取数据条的数据信息
+@app.route("/api/addsource",methods=['GET','POST'])
+def add_source():
+    data = request.get_json()
+    source = data.get("source")
+    name = data.get("name")
+    MessageInfo[name]["source"] = source
+    reset_csv()
+    return {"name": name}
+    
+# 用于前端获取对应的数据文件信息
+@app.route("/api/get_source",methods=['GET','POST'])
+def get_source():
+    data = request.get_json()
+    name = data.get("name")
+    return {"source":MessageInfo[name]["source"]}
+
 def reset_csv():
     writecsvtitle()
     for item in MessageInfo.values():
-        print(item)
         with open('./backend/data.csv', 'a+', newline='') as csvfile:
             fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)

@@ -52,7 +52,7 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="/index/manage/dataset">数据集管理</el-menu-item>
-            <el-menu-item index="/index/menu2">数据源管理</el-menu-item>
+            <el-menu-item index="/index/manage/dataset/insert">数据源管理</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
         <el-divider />
