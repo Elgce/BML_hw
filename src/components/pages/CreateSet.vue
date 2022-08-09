@@ -20,13 +20,13 @@
                     <el-ratio-button disabled>V1</el-ratio-button>
                 </el-form-item>
             </el-form>
-            <el-form id="test" v-if="qx.quanxian===1" :model="form" label-width="120px" style="max-width: 650px" :key="1">
+            <el-form id="test" v-if="qx.quanxian===1" :model="form" label-width="120px" style="max-width: 1550px" :key="1">
                 <el-form-item label="标注类型">
                     <el-radio-group v-model="form.type">
-                    <el-radio label="图像分类" @click="fenlei"/>
-                    <el-radio label="物体检测" @click="jiance"/>
-                    <el-radio label="图像分割" @click="fenge"/>
-                    <el-radio label="OCR标注" @click="biaozhu"/>
+                    <el-radio id="pic_assortment" label="图像分类" border @click="fenlei"/>
+                    <el-radio id="object" label="物体检测" border @click="jiance"/>
+                    <el-radio id="split" label="图像分割" border @click="fenge"/>
+                    <el-radio id="marking" label="OCR标注" border @click="biaozhu"/>
                 </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -64,13 +64,13 @@
             </el-form-item>
             </el-form>
 
-            <el-form id="test" v-if="qx.quanxian===2" :model="form" label-width="120px" style="max-width: 650px" :key="1">
+            <el-form id="test" v-if="qx.quanxian===2" :model="form" label-width="120px" style="max-width: 1550px" :key="1">
                 <el-form-item label="标注类型">
                     <el-radio-group v-model="form.type">
-                    <el-radio label="文本分类" @click="leifen"/>
-                    <el-radio label="短文本相似度" @click="xiangsi"/>
-                    <el-radio label="序列标注" @click="xulie"/>
-                    <el-radio label="文本实体抽取" @click="chouqu"/>
+                    <el-radio id="text_assortment" label="文本分类" border @click="leifen"/>
+                    <el-radio id="similarity" label="文本相似度" border @click="xiangsi"/>
+                    <el-radio id="order_marking" label="序列标注" border @click="xulie"/>
+                    <el-radio id="extracting" label="实体抽取" border @click="chouqu"/>
                 </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -123,7 +123,7 @@
             <el-form id="test" v-if="qx.quanxian===3" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="技术方向">
                     <el-radio-group v-model="form.direction">
-                        <el-radio label="表格预测"/>
+                        <el-radio id="predicting" label="表格预测" border/>
                     </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -344,5 +344,68 @@ const chouqu = () => {
     }
     .mb-4 .el-button{
         width: 110px;
+    }
+    #pic_assortment
+    {
+        background: url("../../assets/pic_assortment.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #object
+    {
+        background: url("../../assets/object.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #marking
+    {
+        background: url("../../assets/marking.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #split
+    {
+        background: url("../../assets/split.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #text_assortment
+    {
+        background: url("../../assets/text_assortment.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #similarity
+    {
+        background: url("../../assets/similarity.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #order_marking
+    {
+        background: url("../../assets/order_marking.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #extracting
+    {
+        background: url("../../assets/extracting.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #predicting
+    {
+        background: url("../../assets/predicting.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
     }
 </style>
