@@ -59,19 +59,63 @@
         <option>上传压缩包</option>
         <option>API导入</option>
     </select>
-    <el-button id="submit_button">确认并返回</el-button>
+    <!-- written by bqw -->
+    <el-button id="uploader" type="primary" @click="call_diagram">上传图片</el-button>
+    <el-dialog
+        title="上传图片"
+        v-model="dialogVisible"
+    >
+        <el-upload
+            class="upload-demo"
+            drag
+            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+            multiple
+        >
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+            Drop file here or <em>click to upload</em>
+            </div>
+            <template #tip>
+            <div class="el-upload__tip">
+                jpg/png files with a size less than 500kb
+            </div>
+            </template>
+        </el-upload>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible=false">取消</el-button>
+                <el-button type="primary" @click="dialogVisible=false">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+    <!-- written over -->
+
+    <el-button id="submit_button" @click="back_index">确认并返回</el-button>
 </template>
 
 <script>
 import Breadcrumb from "../BreadCrumb.vue"
-// import { reactive } from 'vue'
-// import { ref } from 'vue'
     export default{
         name: "MainTwo",
         components: {
             Breadcrumb,
         },
+        data(){
+            return{
+                dialogVisible: false,
+            };
+        },
         methods:{
+            //written by bqw
+            back_index(){
+                this.$router.push("/index/manage/dataset")
+            },
+            call_diagram(){
+                this.dialogVisible = true;
+            },
+            //written over
+
+            //written by wjz
             changing_memo()
             {
                 var change_memo_btn=document.getElementById("change_memo");
@@ -105,6 +149,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var select_local=document.getElementById("local_choice");
                 var upPic=document.getElementById("upload_pic");
                 var submit_btn=document.getElementById("submit_button");
+
                 if(select_fashion.value=="local")
                 {
                     select_local.style.visibility='visible';
@@ -122,9 +167,11 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var upPic=document.getElementById("upload_pic");
                 var select_local=document.getElementById("local_choice");
                 var submit_btn=document.getElementById("submit_button");
+                var up_loader = document.getElementById("uploader");
                 if(select_local.value=="pic")
                 {
                     upPic.style.visibility='visible';
+                    up_loader.style.visibility='visible';
                     submit_btn.style.top='870px';
                 }
                 else
@@ -229,6 +276,13 @@ import Breadcrumb from "../BreadCrumb.vue"
         font-size:15px;
         left:620px;
         top:787px;
+        visibility: hidden;
+    }
+    #uploader{
+        position: absolute;
+        left: 420px;
+        font-size: 15px;
+        top:820px;
         visibility: hidden;
     }
     #submit_button
