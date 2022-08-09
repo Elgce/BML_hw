@@ -62,7 +62,7 @@
             <span class="submenu">数据标注</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="2-1">标签组管理</el-menu-item>
+            <el-menu-item index="/index/menu3">标签组管理</el-menu-item>
             <el-menu-item index="2-2">在线标注</el-menu-item>
             <el-menu-item index="2-3">智能标注</el-menu-item>
             <el-menu-item index="2-4">多人标注</el-menu-item>

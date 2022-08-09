@@ -240,96 +240,6 @@ export default{
 }
 </script>
 
-<!-- <script setup>
-import Breadcrumb from "../BreadCrumb.vue"
-import { reactive } from 'vue'
-import {ref} from 'vue'
-import {useRouter} from 'vue-router'
-
-const form = reactive({
-  name: '',
-  type: '',
-  model: '',
-  direction: '',
-})
-
-const radio = ref('')
-let bqw = 0
-const createdata = () => {
-    bqw = bqw + 1
-    const data = {
-        "data_id": bqw.toString(),
-        "group_id": "group_id",
-        "name": "name",
-        "version": "version",
-        "num": "num",
-        "in_state": "in_state",
-        "specy": "specy",
-        "mark_state": "mark_state",
-        "clear_state": "clear_state",
-    }
-    return fetch("/api/adddata",{
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(()=>{
-        const router = useRouter();
-        router.push({
-            path:"/index/manage/dataset",
-        })
-    })
-}
-
-const qx = reactive({
-    quanxian: 0,
-})
-const topic = ()=>{
-    qx.quanxian = 1;
-}
-const totxt = ()=>{
-    qx.quanxian = 2;
-}
-const totab = ()=>{
-    qx.quanxian = 3;
-}
-
-const pic = reactive({
-    quanxian: 0,
-})
-const fenlei = () =>{
-    pic.quanxian = 1;
-}
-const jiance = () =>{
-    pic.quanxian = 2;
-}
-const fenge = () =>{
-    pic.quanxian = 3;
-}
-const biaozhu = () =>{
-    pic.quanxian = 4;
-}
-
-const txt = reactive({
-    quanxian: 0,
-})
-const leifen = () => {
-    txt.quanxian = 1;
-}
-const xiangsi = () => {
-    txt.quanxian = 2;
-}
-const xulie = () => {
-    txt.quanxian = 3;
-}
-const chouqu = () => {
-    txt.quanxian = 4;
-}
-
-</script> -->
 
 
 <style scoped>
@@ -345,6 +255,7 @@ const chouqu = () => {
     .mb-4 .el-button{
         width: 110px;
     }
+    /* written by wjz */
     #pic_assortment
     {
         background: url("../../assets/pic_assortment.png") no-repeat;
@@ -408,4 +319,5 @@ const chouqu = () => {
         height:160px;
         background-position-x:100px;
     }
+    /* written over */
 </style>
