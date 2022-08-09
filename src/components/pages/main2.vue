@@ -65,6 +65,8 @@
         title="上传图片"
         v-model="dialogVisible"
     >
+        <el-divider id="divider_dialog"/>
+        <p id="explanation_p">对同一数据集存在多个内容完全一致的图片，将会做去重处理。<br>为保证模型训练效果，所上传的图片应与实际业务场景的图片（光线、角度、采集设备）尽可能一致。</p>
         <el-upload
             class="upload-demo"
             drag
@@ -149,7 +151,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var select_local=document.getElementById("local_choice");
                 var upPic=document.getElementById("upload_pic");
                 var submit_btn=document.getElementById("submit_button");
-
+                var up_loader = document.getElementById("uploader");
                 if(select_fashion.value=="local")
                 {
                     select_local.style.visibility='visible';
@@ -160,6 +162,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     select_local.style.visibility='hidden';
                     upPic.style.visibility='hidden';
                     submit_btn.style.top='830px';
+                    up_loader.style.visibility='hidden';
                 }
             },
             local_select_change()
@@ -177,6 +180,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 else
                 {
                     upPic.style.visibility='hidden';
+                    up_loader.style.visibility='hidden';
                     submit_btn.style.top='830px';
                 }
             }
@@ -342,5 +346,16 @@ import Breadcrumb from "../BreadCrumb.vue"
     #upload_pic
     {
         visibility: hidden;
+    }
+    #divider_dialog
+    {
+        position: absolute;
+        left:0px;
+        top:40px;
+    }
+    #explanation_p
+    {
+        background-color: bisque;
+        color: orange;
     }
 </style>
