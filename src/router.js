@@ -18,7 +18,9 @@ const routes = [
             },
             {
                 path: '/index/menu3',
-                component: () => import('./components/pages/main3.vue')
+                component: () => import('./components/pages/main3.vue'),
+                mata: {title: '查看与标注'},
+                name: '查看与标注',
             },
             {
                 path: '/index/manage/dataset/create',
