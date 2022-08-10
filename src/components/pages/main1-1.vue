@@ -38,10 +38,12 @@
             <el-divider class="between" border-style="none"></el-divider>
                 <div class="table-header">
                     <div class="title">
-                        <span class="inline-editor">
+                        <el-button class="inline-editor" link @click="show_nametxt" id="edit_name">
                             <span title="name" class="inline-editor-txt">{{item["name"]}}</span>
                             <el-icon><Edit /></el-icon>
-                        </span>
+                            <el-input class="inline-editor" placeholder="请输入新名称" id="name_input" type="text" style="width:140px;visibility: hidden" v-model="new_name" visible="false" @change="change_name(item.name)"/>
+                        </el-button>
+                    
                         <span>数据集组ID:{{item["data_id"]}}</span>
                     </div>
                     <div class="op">
@@ -122,6 +124,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 data_num: -1,
                 value: ref(''),
                 input: ref(''),
+                new_name: ref(''),
                 MessageInfo: reactive({}),
                 options : [
                     {
@@ -208,6 +211,29 @@ import Breadcrumb from "../BreadCrumb.vue"
                     that.data_num = j.data_num;
                     console.log(that.data_num);
                 }))
+            },
+            change_name(name){
+                // let that = this;
+                const data = {"new_name":this.new_name,"old_name":name}
+                return fetch("/api/changename",{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(()=>{
+                    this.$router.push("/index/manage/blank")
+                })
+
+            },
+            show_nametxt(){
+                let txt = document.getElementById("name_input");
+                txt.style.visibility='visible';
+                txt.style.backgroundColor="white";
+                // let edit = document.getElementById("edit_name");
+                // edit.style.visibility='hidden';
             },
             get_data(){
                 this.get_datanum();

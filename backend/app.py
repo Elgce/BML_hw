@@ -1,8 +1,4 @@
 
-from asyncore import write
-from email.message import Message
-from unicodedata import name
-from urllib.robotparser import RequestRate
 from flask import Flask, jsonify, request, abort, send_file,g, session
 import os
 import csv
@@ -118,6 +114,19 @@ def get_source():
     data = request.get_json()
     name = data.get("name")
     return {"source":MessageInfo[name]["source"]}
+
+# 用于前端更改数据集name
+@app.route("/api/changename",methods=['GET','POST'])
+def change_name():
+    data = request.get_json()
+    new_name = data.get("new_name")
+    old_name = data.get("old_name")
+    new_mes = MessageInfo[old_name]
+    new_mes["name"] = new_name
+    MessageInfo.pop(old_name)
+    MessageInfo.update({new_mes["name"]: new_mes})
+    reset_csv()
+    return {"name":new_name}
 
 def reset_csv():
     writecsvtitle()
