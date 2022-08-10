@@ -7,13 +7,13 @@
         <el-main>
             <el-form :model="form" label-width="120px" style="max-width: 650px">
                 <el-form-item label="数据集名称">
-                    <el-input v-model="form.name" placeholder="限制50个字符以内(支持汉字、英文大小写、数字及下划线，下划线不能作为开头)"/>
+                    <el-input id="input_name" v-model="form.name" placeholder="限制50个字符以内(支持汉字、英文大小写、数字及下划线，下划线不能作为开头)"/>
                 </el-form-item>
                 <el-form-item label="数据类型">
-                    <el-radio-group v-model="radio" color="blue">
-                        <el-radio-button label="pic" @click="topic">图片</el-radio-button>
-                        <el-radio-button label="txt" @click="totxt">文本</el-radio-button>
-                        <el-radio-button label="table" @click="totab">表格</el-radio-button>
+                    <el-radio-group id="data_type" v-model="radio" color="blue">
+                        <el-radio-button name="data_type" value="pic" label="pic" @click="topic">图片</el-radio-button>
+                        <el-radio-button name="data_type" value="txt" label="txt" @click="totxt">文本</el-radio-button>
+                        <el-radio-button name="data_type" value="table" label="table" @click="totab">表格</el-radio-button>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="数据集版本">
@@ -23,18 +23,18 @@
             <el-form id="test" v-if="qx.quanxian===1" :model="form" label-width="120px" style="max-width: 1550px" :key="1">
                 <el-form-item label="标注类型">
                     <el-radio-group v-model="form.type">
-                    <el-radio id="pic_assortment" label="图像分类" border @click="fenlei"/>
-                    <el-radio id="object" label="物体检测" border @click="jiance"/>
-                    <el-radio id="split" label="图像分割" border @click="fenge"/>
-                    <el-radio id="marking" label="OCR标注" border @click="biaozhu"/>
+                    <el-radio name="marking_type_pic" id="pic_assortment" label="图像分类" border @click="fenlei"/>
+                    <el-radio name="marking_type_pic" id="object" label="物体检测" border @click="jiance"/>
+                    <el-radio name="marking_type_pic" id="split" label="图像分割" border @click="fenge"/>
+                    <el-radio name="marking_type_pic" id="marking" label="OCR标注" border @click="biaozhu"/>
                 </el-radio-group>
                 </el-form-item>
             </el-form>
             <el-form id="test" v-if="pic.quanxian===1 && qx.quanxian===1" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio label="单图单标签"/>
-                    <el-radio label="单图多标签"/>
+                    <el-radio name="module" label="单图单标签"/>
+                    <el-radio name="module" label="单图多标签"/>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -42,7 +42,7 @@
             <el-form id="test" v-if="pic.quanxian===2 && qx.quanxian===1" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio label="矩形框标注"/>
+                    <el-radio name="module" label="矩形框标注"/>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -50,8 +50,8 @@
             <el-form id="test" v-if="pic.quanxian===3 && qx.quanxian===1" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio label="实例分割"/>
-                    <el-radio label="语义分割"/>
+                    <el-radio name="module" label="实例分割"/>
+                    <el-radio name="module" label="语义分割"/>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -59,7 +59,7 @@
             <el-form id="test" v-if="pic.quanxian===4 && qx.quanxian===1" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio label="非结构化文字识别"/>
+                    <el-radio name="module" label="非结构化文字识别"/>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -67,10 +67,10 @@
             <el-form id="test" v-if="qx.quanxian===2" :model="form" label-width="120px" style="max-width: 1550px" :key="1">
                 <el-form-item label="标注类型">
                     <el-radio-group v-model="form.type">
-                    <el-radio id="text_assortment" label="文本分类" border @click="leifen"/>
-                    <el-radio id="similarity" label="文本相似度" border @click="xiangsi"/>
-                    <el-radio id="order_marking" label="序列标注" border @click="xulie"/>
-                    <el-radio id="extracting" label="实体抽取" border @click="chouqu"/>
+                    <el-radio name="marking_type_text" id="text_assortment" label="文本分类" border @click="leifen"/>
+                    <el-radio name="marking_type_text" id="similarity" label="文本相似度" border @click="xiangsi"/>
+                    <el-radio name="marking_type_text" id="order_marking" label="序列标注" border @click="xulie"/>
+                    <el-radio name="marking_type_text" id="extracting" label="实体抽取" border @click="chouqu"/>
                 </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -78,8 +78,8 @@
             <el-form id="test" v-if="txt.quanxian===1 && qx.quanxian===2" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio label="短文本单标签"/>
-                    <el-radio label="短文本多标签"/>
+                    <el-radio name="module" label="短文本单标签"/>
+                    <el-radio name="module" label="短文本多标签"/>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -87,7 +87,7 @@
             <el-form id="test" v-if="txt.quanxian===2 && qx.quanxian===2" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio label="短文本相似度"/>
+                    <el-radio name="module" label="短文本相似度"/>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -95,10 +95,10 @@
             <el-form id="test" v-if="txt.quanxian===3 && qx.quanxian===2" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio label="IOB标注模式"/>
-                    <el-radio label="IO标注模式"/>
-                    <el-radio label="IOE标注模式"/>
-                    <el-radio label="IOBES标注模式"/>
+                    <el-radio name="module" label="IOB标注模式"/>
+                    <el-radio name="module" label="IO标注模式"/>
+                    <el-radio name="module" label="IOE标注模式"/>
+                    <el-radio name="module" label="IOBES标注模式"/>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -106,7 +106,7 @@
             <el-form id="test" v-if="txt.quanxian===4 && qx.quanxian===2" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio label="文本实体抽取"/>
+                    <el-radio name="module" label="文本实体抽取"/>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -114,8 +114,8 @@
             <el-form id="test" v-if="qx.quanxian===2 && txt.quanxian!=0" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="数据集属性">
                     <el-radio-group v-model="form.direction">
-                        <el-radio label="数据自动去重"/>
-                        <el-radio label="数据不去重"/>
+                        <el-radio name="dataPara" label="数据自动去重"/>
+                        <el-radio name="dataPara" label="数据不去重"/>
                     </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -123,7 +123,7 @@
             <el-form id="test" v-if="qx.quanxian===3" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="技术方向">
                     <el-radio-group v-model="form.direction">
-                        <el-radio id="predicting" label="表格预测" border/>
+                        <el-radio name="marking_type_table" id="predicting" label="表格预测" border/>
                     </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -175,30 +175,270 @@ export default{
     },
     methods: {
         createdata() {
-            let name = this.form["name"];
-            let specy = this.radio;
-            const data = {
-                "data_id": name,
-                "group_id": name,
-                "name": name,
-                "version": "V1",
-                "num": 0,
-                "in_state": "finished",
-                "specy": specy,
-                "mark_state": 0,
-                "clear_state": "-",
+            var inputName=document.getElementById("input_name");
+            var dataType=document.getElementsByName("data_type");
+            var markingTypePic=document.getElementsByName("marking_type_pic");
+            var markingTypeText=document.getElementsByName("marking_type_text");
+            var markingTypeTable=document.getElementsByName("marking_type_table");
+            var module=document.getElementsByName("module");
+            var dataPara=document.getElementsByName("dataPara");
+            if(dataType[0].checked)
+            {
+                if(inputName.value!=""&&markingTypePic[0]&&(module[0].checked||module[1].checked))
+                {
+                    let name = this.form["name"];
+                    let specy = this.radio;
+                    const data = {
+                        "data_id": name,
+                        "group_id": name,
+                        "name": name,
+                        "version": "V1",
+                        "num": 0,
+                        "in_state": "finished",
+                        "specy": specy,
+                        "mark_state": 0,
+                        "clear_state": "-",
+                    }
+                    return fetch("/api/adddata",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(()=>{
+                        this.$router.push("/index/manage/dataset")
+                    })
+                }
+                else if(inputName.value!=""&&markingTypePic[1].checked&&(module[0].checked))
+                {
+                    let name = this.form["name"];
+                    let specy = this.radio;
+                    const data = {
+                        "data_id": name,
+                        "group_id": name,
+                        "name": name,
+                        "version": "V1",
+                        "num": 0,
+                        "in_state": "finished",
+                        "specy": specy,
+                        "mark_state": 0,
+                        "clear_state": "-",
+                    }
+                    return fetch("/api/adddata",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(()=>{
+                        this.$router.push("/index/manage/dataset")
+                    })
+                }
+                else if(inputName.value!=""&&markingTypePic[2]&&(module[0].checked||module[1].checked))
+                {
+                    let name = this.form["name"];
+                    let specy = this.radio;
+                    const data = {
+                        "data_id": name,
+                        "group_id": name,
+                        "name": name,
+                        "version": "V1",
+                        "num": 0,
+                        "in_state": "finished",
+                        "specy": specy,
+                        "mark_state": 0,
+                        "clear_state": "-",
+                    }
+                    return fetch("/api/adddata",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(()=>{
+                        this.$router.push("/index/manage/dataset")
+                    })
+                }
+                else if(inputName.value!=""&&markingTypePic[3]&&(module[0].checked))
+                {
+                    let name = this.form["name"];
+                    let specy = this.radio;
+                    const data = {
+                        "data_id": name,
+                        "group_id": name,
+                        "name": name,
+                        "version": "V1",
+                        "num": 0,
+                        "in_state": "finished",
+                        "specy": specy,
+                        "mark_state": 0,
+                        "clear_state": "-",
+                    }
+                    return fetch("/api/adddata",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(()=>{
+                        this.$router.push("/index/manage/dataset")
+                    })
+                }
             }
-            return fetch("/api/adddata",{
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            })
-            .then(res => res.json())
-            .then(()=>{
-                this.$router.push("/index/manage/dataset")
-            })
+            else if(dataType[1].checked&&(dataPara[0].checked||dataPara[1].checked))
+            {
+                if(inputName.value!=""&&markingTypeText[0].checked&&(module[0].checked||module[1].checked))
+                {
+                    let name = this.form["name"];
+                    let specy = this.radio;
+                    const data = {
+                        "data_id": name,
+                        "group_id": name,
+                        "name": name,
+                        "version": "V1",
+                        "num": 0,
+                        "in_state": "finished",
+                        "specy": specy,
+                        "mark_state": 0,
+                        "clear_state": "-",
+                    }
+                    return fetch("/api/adddata",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(()=>{
+                        this.$router.push("/index/manage/dataset")
+                    })
+                }
+                else if(inputName.value!=""&&markingTypeText[1].checked&&(module[0].checked))
+                {
+                    let name = this.form["name"];
+                    let specy = this.radio;
+                    const data = {
+                        "data_id": name,
+                        "group_id": name,
+                        "name": name,
+                        "version": "V1",
+                        "num": 0,
+                        "in_state": "finished",
+                        "specy": specy,
+                        "mark_state": 0,
+                        "clear_state": "-",
+                    }
+                    return fetch("/api/adddata",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(()=>{
+                        this.$router.push("/index/manage/dataset")
+                    })
+                }
+                else if(inputName.value!=""&&markingTypeText[2].checked&&(module[0].checked||module[1].checked||module[2].checked||module[3].checked))
+                {
+                    let name = this.form["name"];
+                    let specy = this.radio;
+                    const data = {
+                        "data_id": name,
+                        "group_id": name,
+                        "name": name,
+                        "version": "V1",
+                        "num": 0,
+                        "in_state": "finished",
+                        "specy": specy,
+                        "mark_state": 0,
+                        "clear_state": "-",
+                    }
+                    return fetch("/api/adddata",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(()=>{
+                        this.$router.push("/index/manage/dataset")
+                    })
+                }
+                else if(inputName.value!=""&&markingTypeText[3].checked&&(module[0].checked))
+                {
+                    let name = this.form["name"];
+                    let specy = this.radio;
+                    const data = {
+                        "data_id": name,
+                        "group_id": name,
+                        "name": name,
+                        "version": "V1",
+                        "num": 0,
+                        "in_state": "finished",
+                        "specy": specy,
+                        "mark_state": 0,
+                        "clear_state": "-",
+                    }
+                    return fetch("/api/adddata",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(()=>{
+                        this.$router.push("/index/manage/dataset")
+                    })
+                }
+            }
+            else if(dataType[2].checked)
+            {
+                if(inputName.value!=""&&(markingTypeTable[0].checked))
+                {
+                    let name = this.form["name"];
+                    let specy = this.radio;
+                    const data = {
+                        "data_id": name,
+                        "group_id": name,
+                        "name": name,
+                        "version": "V1",
+                        "num": 0,
+                        "in_state": "finished",
+                        "specy": specy,
+                        "mark_state": 0,
+                        "clear_state": "-",
+                    }
+                    return fetch("/api/adddata",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(()=>{
+                        this.$router.push("/index/manage/dataset")
+                    })
+                }
+            }
+            else if(inputName.value=="")
+            {
+                inputName.setAttribute("placeholder", "请输入数据集名称！");
+                // inputName.setAttribute("class", "placeholderChange");
+            }
         },
         cancel(){
             this.$router.push("/index/manage/dataset")
@@ -256,6 +496,22 @@ export default{
         width: 110px;
     }
     /* written by wjz */
+    #placeholderChange::-webkit-input-placeholder
+    {
+        color: red;
+    }
+    #placeholderChange::-moz-placeholder
+    {
+        color: red;
+    }
+    #placeholderChange::-ms-input-placeholder
+    {
+        color: red;
+    }
+    #placeholderChange::-ms-input-placeholder
+    {
+        color: red;
+    }
     #pic_assortment
     {
         background: url("../../assets/pic_assortment.png") no-repeat;
