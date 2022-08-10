@@ -21,8 +21,63 @@
             </el-row>
             <el-divider/>
             <el-row>
-                
+                <el-popover
+                    :visible="visible"
+                    placement="bottom-start"
+                    :width="750"
+                >
+                <div>
+                    <b>数据来源&nbsp;&nbsp;&nbsp;</b>
+                    <el-checkbox v-model="unlimited1" label="不限" size="large" @change="checkSource"/>
+                    <el-checkbox name="source" label="本地上传" size="large" @change="checkSource"/>
+                    <el-checkbox name="source" label="摄像头采集" size="large" @change="checkSource"/>
+                    <el-checkbox name="source" label="云服务调用数据采集" size="large" @change="checkSource"/>
+                    <el-checkbox name="source" label="数据清洗" size="large" @change="checkSource"/>
+                    <el-checkbox name="source" label="数据增强" size="large" @change="checkSource"/>
+                </div>
+                <div>
+                    <b>导入日期&nbsp;&nbsp;&nbsp;</b>
+                    <el-checkbox v-model="unlimited2" label="不限" size="large" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <el-date-picker
+                        type="daterange"
+                        range-separator="To"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                    />
+                </div>
+                <div>
+                    <b>标注日期&nbsp;&nbsp;&nbsp;</b>
+                    <el-checkbox v-model="unlimited3" label="不限" size="large" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <el-date-picker
+                        type="daterange"
+                        range-separator="To"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                    />
+                </div>
+                <div>
+                    <b>标签&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                    <el-checkbox v-model="unlimited4" label="不限" size="large" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <el-select placeholder="请选择" size="large"></el-select>
+                </div>
+                    <template #reference>
+                        <el-button @click="visible = !visible">筛选</el-button>
+                    </template>
+                </el-popover>
             </el-row>
+            <el-container id="middle_data">
+                <el-container>
+                    <el-header id="middle_header">
+                        <b>标签栏</b>
+                    </el-header>
+                    <el-main>Main</el-main>
+                    <el-footer>Footer</el-footer>
+                </el-container>
+                <el-aside width="1000px">Aside</el-aside>
+            </el-container>
         </el-main>
     </el-contanier>
     <el-dialog
@@ -50,7 +105,20 @@ import Breadcrumb from "../BreadCrumb.vue"
             return{
                 dialogVisible: true,
                 radio1:'全部',
+                visible:false,
+                unlimited1:true,
+                unlimited2:true,
+                unlimited3:true,
+                unlimited4:true,
             };
+        },
+        methodes:{
+            // checkSource()
+            // {
+            //     var source=document.getElementsByName("source");
+                
+
+            // }
         }
     }
 
@@ -93,5 +161,16 @@ import Breadcrumb from "../BreadCrumb.vue"
     #middle_btns
     {
         width:1300px;
+    }
+    #middle_data
+    {
+        margin-top:20px;
+        width:1300px;
+        height:390px;
+        border:thin solid rgb(234, 229, 229);
+    }
+    #middle_header
+    {
+        border:thin solid rgb(234, 229, 229);
     }
 </style>
