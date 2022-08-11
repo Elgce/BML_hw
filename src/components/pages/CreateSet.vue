@@ -11,9 +11,9 @@
                 </el-form-item>
                 <el-form-item label="数据类型">
                     <el-radio-group id="data_type" v-model="radio" color="blue">
-                        <el-radio-button name="data_type" value="pic" label="pic" @click="topic">图片</el-radio-button>
-                        <el-radio-button name="data_type" value="txt" label="txt" @click="totxt">文本</el-radio-button>
-                        <el-radio-button name="data_type" value="table" label="table" @click="totab">表格</el-radio-button>
+                        <el-radio-button name="data_type" value="pic" label="pic" @click="set_qx_value(1)">图片</el-radio-button>
+                        <el-radio-button name="data_type" value="txt" label="txt" @click="set_qx_value(2)">文本</el-radio-button>
+                        <el-radio-button name="data_type" value="table" label="table" @click="set_qx_value(3)">表格</el-radio-button>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="数据集版本">
@@ -23,10 +23,10 @@
             <el-form id="test" v-if="qx.quanxian===1" :model="form" label-width="120px" style="max-width: 1550px" :key="1">
                 <el-form-item label="标注类型">
                     <el-radio-group v-model="form.type">
-                    <el-radio name="marking_type_pic" id="pic_assortment" label="图像分类" border @click="fenlei"/>
-                    <el-radio name="marking_type_pic" id="object" label="物体检测" border @click="jiance"/>
-                    <el-radio name="marking_type_pic" id="split" label="图像分割" border @click="fenge"/>
-                    <el-radio name="marking_type_pic" id="marking" label="OCR标注" border @click="biaozhu"/>
+                    <el-radio name="marking_type_pic" id="pic_assortment" label="图像分类" border @click="set_pic_value(1)"/>
+                    <el-radio name="marking_type_pic" id="object" label="物体检测" border @click="set_pic_value(2)"/>
+                    <el-radio name="marking_type_pic" id="split" label="图像分割" border @click="set_pic_value(3)"/>
+                    <el-radio name="marking_type_pic" id="marking" label="OCR标注" border @click="set_pic_value(4)"/>
                 </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -67,10 +67,10 @@
             <el-form id="test" v-if="qx.quanxian===2" :model="form" label-width="120px" style="max-width: 1550px" :key="1">
                 <el-form-item label="标注类型">
                     <el-radio-group v-model="form.type">
-                    <el-radio name="marking_type_text" id="text_assortment" label="文本分类" border @click="leifen"/>
-                    <el-radio name="marking_type_text" id="similarity" label="文本相似度" border @click="xiangsi"/>
-                    <el-radio name="marking_type_text" id="order_marking" label="序列标注" border @click="xulie"/>
-                    <el-radio name="marking_type_text" id="extracting" label="实体抽取" border @click="chouqu"/>
+                    <el-radio name="marking_type_text" id="text_assortment" label="文本分类" border @click="set_txt_value(1)"/>
+                    <el-radio name="marking_type_text" id="similarity" label="文本相似度" border @click="set_txt_value(2)"/>
+                    <el-radio name="marking_type_text" id="order_marking" label="序列标注" border @click="set_txt_value(3)"/>
+                    <el-radio name="marking_type_text" id="extracting" label="实体抽取" border @click="set_txt_value(4)"/>
                 </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -174,19 +174,29 @@ export default{
         }
     },
     methods: {
+        isfull(){
+            let inputName=document.getElementById("input_name");
+            let dataType=document.getElementsByName("data_type");
+            let markingTypePic=document.getElementsByName("marking_type_pic");
+            let markingTypeText=document.getElementsByName("marking_type_text");
+            let markingTypeTable=document.getElementsByName("marking_type_table");
+            let module=document.getElementsByName("module");
+            let dataPara=document.getElementsByName("dataPara");
+            return (
+                (dataType[0].checked) && ((inputName.value!=""&&markingTypePic[0]&&(module[0].checked||module[1].checked)) ||
+                (inputName.value!=""&&markingTypePic[1].checked&&(module[0].checked)) || (inputName.value!=""&&markingTypePic[2]&&(module[0].checked||module[1].checked))||
+                (inputName.value!=""&&markingTypePic[3]&&(module[0].checked)))
+                ||
+                ((dataType[1].checked&&(dataPara[0].checked||dataPara[1].checked)) && ((inputName.value!=""&&markingTypeText[0].checked&&(module[0].checked||module[1].checked))||
+                (inputName.value!=""&&markingTypeText[1].checked&&(module[0].checked))||(inputName.value!=""&&markingTypeText[2].checked&&(module[0].checked||module[1].checked||module[2].checked||module[3].checked))||
+                (inputName.value!=""&&markingTypeText[3].checked&&(module[0].checked))))
+                || (dataType[2].checked && inputName.value!=""&&(markingTypeTable[0].checked))
+                )
+        },
         createdata() {
-            var inputName=document.getElementById("input_name");
-            var dataType=document.getElementsByName("data_type");
-            var markingTypePic=document.getElementsByName("marking_type_pic");
-            var markingTypeText=document.getElementsByName("marking_type_text");
-            var markingTypeTable=document.getElementsByName("marking_type_table");
-            var module=document.getElementsByName("module");
-            var dataPara=document.getElementsByName("dataPara");
-            if(dataType[0].checked)
-            {
-                if(inputName.value!=""&&markingTypePic[0]&&(module[0].checked||module[1].checked))
-                {
-                    let name = this.form["name"];
+            let inputName=document.getElementById("input_name");
+            if (this.isfull()){
+                let name = this.form["name"];
                     let specy = this.radio;
                     const data = {
                         "data_id": name,
@@ -210,272 +220,24 @@ export default{
                     .then(()=>{
                         this.$router.push("/index/manage/dataset")
                     })
-                }
-                else if(inputName.value!=""&&markingTypePic[1].checked&&(module[0].checked))
-                {
-                    let name = this.form["name"];
-                    let specy = this.radio;
-                    const data = {
-                        "data_id": name,
-                        "group_id": name,
-                        "name": name,
-                        "version": "V1",
-                        "num": 0,
-                        "in_state": "finished",
-                        "specy": specy,
-                        "mark_state": 0,
-                        "clear_state": "-",
-                    }
-                    return fetch("/api/adddata",{
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(res => res.json())
-                    .then(()=>{
-                        this.$router.push("/index/manage/dataset")
-                    })
-                }
-                else if(inputName.value!=""&&markingTypePic[2]&&(module[0].checked||module[1].checked))
-                {
-                    let name = this.form["name"];
-                    let specy = this.radio;
-                    const data = {
-                        "data_id": name,
-                        "group_id": name,
-                        "name": name,
-                        "version": "V1",
-                        "num": 0,
-                        "in_state": "finished",
-                        "specy": specy,
-                        "mark_state": 0,
-                        "clear_state": "-",
-                    }
-                    return fetch("/api/adddata",{
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(res => res.json())
-                    .then(()=>{
-                        this.$router.push("/index/manage/dataset")
-                    })
-                }
-                else if(inputName.value!=""&&markingTypePic[3]&&(module[0].checked))
-                {
-                    let name = this.form["name"];
-                    let specy = this.radio;
-                    const data = {
-                        "data_id": name,
-                        "group_id": name,
-                        "name": name,
-                        "version": "V1",
-                        "num": 0,
-                        "in_state": "finished",
-                        "specy": specy,
-                        "mark_state": 0,
-                        "clear_state": "-",
-                    }
-                    return fetch("/api/adddata",{
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(res => res.json())
-                    .then(()=>{
-                        this.$router.push("/index/manage/dataset")
-                    })
-                }
             }
-            else if(dataType[1].checked&&(dataPara[0].checked||dataPara[1].checked))
-            {
-                if(inputName.value!=""&&markingTypeText[0].checked&&(module[0].checked||module[1].checked))
-                {
-                    let name = this.form["name"];
-                    let specy = this.radio;
-                    const data = {
-                        "data_id": name,
-                        "group_id": name,
-                        "name": name,
-                        "version": "V1",
-                        "num": 0,
-                        "in_state": "finished",
-                        "specy": specy,
-                        "mark_state": 0,
-                        "clear_state": "-",
-                    }
-                    return fetch("/api/adddata",{
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(res => res.json())
-                    .then(()=>{
-                        this.$router.push("/index/manage/dataset")
-                    })
-                }
-                else if(inputName.value!=""&&markingTypeText[1].checked&&(module[0].checked))
-                {
-                    let name = this.form["name"];
-                    let specy = this.radio;
-                    const data = {
-                        "data_id": name,
-                        "group_id": name,
-                        "name": name,
-                        "version": "V1",
-                        "num": 0,
-                        "in_state": "finished",
-                        "specy": specy,
-                        "mark_state": 0,
-                        "clear_state": "-",
-                    }
-                    return fetch("/api/adddata",{
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(res => res.json())
-                    .then(()=>{
-                        this.$router.push("/index/manage/dataset")
-                    })
-                }
-                else if(inputName.value!=""&&markingTypeText[2].checked&&(module[0].checked||module[1].checked||module[2].checked||module[3].checked))
-                {
-                    let name = this.form["name"];
-                    let specy = this.radio;
-                    const data = {
-                        "data_id": name,
-                        "group_id": name,
-                        "name": name,
-                        "version": "V1",
-                        "num": 0,
-                        "in_state": "finished",
-                        "specy": specy,
-                        "mark_state": 0,
-                        "clear_state": "-",
-                    }
-                    return fetch("/api/adddata",{
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(res => res.json())
-                    .then(()=>{
-                        this.$router.push("/index/manage/dataset")
-                    })
-                }
-                else if(inputName.value!=""&&markingTypeText[3].checked&&(module[0].checked))
-                {
-                    let name = this.form["name"];
-                    let specy = this.radio;
-                    const data = {
-                        "data_id": name,
-                        "group_id": name,
-                        "name": name,
-                        "version": "V1",
-                        "num": 0,
-                        "in_state": "finished",
-                        "specy": specy,
-                        "mark_state": 0,
-                        "clear_state": "-",
-                    }
-                    return fetch("/api/adddata",{
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(res => res.json())
-                    .then(()=>{
-                        this.$router.push("/index/manage/dataset")
-                    })
-                }
-            }
-            else if(dataType[2].checked)
-            {
-                if(inputName.value!=""&&(markingTypeTable[0].checked))
-                {
-                    let name = this.form["name"];
-                    let specy = this.radio;
-                    const data = {
-                        "data_id": name,
-                        "group_id": name,
-                        "name": name,
-                        "version": "V1",
-                        "num": 0,
-                        "in_state": "finished",
-                        "specy": specy,
-                        "mark_state": 0,
-                        "clear_state": "-",
-                    }
-                    return fetch("/api/adddata",{
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(res => res.json())
-                    .then(()=>{
-                        this.$router.push("/index/manage/dataset")
-                    })
-                }
-            }
-            else if(inputName.value=="")
-            {
+            else if(inputName.value==""){
                 inputName.setAttribute("placeholder", "请输入数据集名称！");
-                // inputName.setAttribute("class", "placeholderChange");
             }
         },
         cancel(){
             this.$router.push("/index/manage/dataset")
         },
-        topic (){
-            this.qx.quanxian = 1;
+        set_qx_value(num){
+            this.qx.quanxian = num;
         },
-        totxt (){
-            this.qx.quanxian = 2;
+        set_pic_value(num){
+            this.pic.quanxian = num;
         },
-        totab (){
-            this.qx.quanxian = 3;
+
+        set_txt_value(num){
+            this.txt.quanxian = num;
         },
-        fenlei (){
-            this.pic.quanxian = 1;
-        },
-        jiance (){
-            this.pic.quanxian = 2;
-        },
-        fenge (){
-            this.pic.quanxian = 3;
-        },
-        biaozhu () {
-            this.pic.quanxian = 4;
-        },
-        leifen () {
-            this.txt.quanxian = 1;
-        },
-        xiangsi() {
-            this.txt.quanxian = 2;
-        },
-        xulie () {
-            this.txt.quanxian = 3;
-        },
-        chouqu () {
-            this.txt.quanxian = 4;
-        }
     }
 }
 </script>
