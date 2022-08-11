@@ -81,7 +81,7 @@
                     <el-descriptions-item label="清洗状态">{{item["clear_state"]}}</el-descriptions-item>
                     <el-descriptions-item label="操作">
                         <el-button type="primary" link key="label" @click="multilabel(item.name)">多人标注</el-button>
-                        <el-button type="primary" link key="label" @click="insert">导入</el-button>
+                        <el-button type="primary" link key="label" @click="insert(item.name)">导入</el-button>
                         <el-button type="primary" link key="delete" @click="deletedata(item.name)">删除</el-button>
                     </el-descriptions-item>
                 </el-descriptions>
@@ -199,8 +199,20 @@ import Breadcrumb from "../BreadCrumb.vue"
             }
         },
         methods:{
-            insert(){
-                this.$router.push("/index/manage/dataset/insert")
+            insert(name){
+                const data = {"name": name}
+                return fetch("/api/setsession",{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(()=>{
+                    this.$router.push("/index/manage/dataset/insert");
+                })
+                
             },
             tocreate(){
                 this.$router.push("/index/manage/dataset/create")

@@ -1,4 +1,5 @@
 
+import base64
 import shutil
 from flask import Flask, jsonify, request, abort, send_file,g, session
 import os
@@ -22,7 +23,7 @@ def readcsv():
 
 def writecsv(data):
     with open('./backend/data.csv', 'a+', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow(data)
         global data_num
@@ -32,13 +33,19 @@ def writecsv(data):
 # 用于将表头重新写入用于保存数据的csv文件
 def writecsvtitle():
     with open('./backend/data.csv', 'w', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
 # 用于直接重置整个数据库，删除所有数据内容
 def renew():
     writecsvtitle()
+
+# 用于up-load的action
+@app.route("/api/call",methods=['GET','POST'])
+def test():
+    print(session)
+    return ""
 
 @app.route("/")
 def index():
@@ -67,6 +74,7 @@ def add_data():
         "specy": specy,
         "mark_state": mark_state,
         "clear_state": clear_state,
+        "source": [],
     }
     MessageInfo.update({data_id:sing_one})
     writecsv(sing_one)
@@ -104,8 +112,19 @@ def delete_data():
 def add_source():
     data = request.get_json()
     source = data.get("source")
-    name = data.get("name")
-    MessageInfo[name]["source"] = source
+    file = data.get("file")
+    print(file)
+    print("!")
+    print(source)
+    print("!")
+    file = base64.b64decode(file)
+    print(file)
+    # print(request.form)
+    # file = request.form.get("file")
+    # source = request.form.get("name")
+    # print(file)
+    name = session["name"]
+    MessageInfo[name]["source"].append(source)
     reset_csv()
     return {"name": name}
     
@@ -133,7 +152,7 @@ def reset_csv():
     writecsvtitle()
     for item in MessageInfo.values():
         with open('./backend/data.csv', 'a+', newline='') as csvfile:
-            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state']
+            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(item)
 

@@ -66,13 +66,18 @@
         v-model="dialogVisible"
     >
         <el-divider id="divider_dialog"/>
-        <p id="explanation_p">对同一数据集存在多个内容完全一致的图片，将会做去重处理。<br>为保证模型训练效果，所上传的图片应与实际业务场景的图片（光线、角度、采集设备）尽可能一致。</p>
+        <el-alert id="explanation_p" title="对同一数据集存在多个内容完全一致的图片，将会做去重处
+        理。<br>为保证模型训练效果，所上传的图片应与实际业务场景的图片（光线、角度、采集设备）尽可能
+        一致。" type="warning" :closable="false"></el-alert>
         <el-upload
             class="upload-demo"
             drag
-            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+            action="/api/call"
             multiple
+            :on-success="fileList_change"
+           :http-request="upload_file"
         >
+         
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
             <div class="el-upload__text">
             Drop file here or <em>click to upload</em>
@@ -105,16 +110,70 @@ import Breadcrumb from "../BreadCrumb.vue"
         data(){
             return{
                 dialogVisible: false,
+                fileList: [],
             };
         },
         methods:{
             //written by bqw
             back_index(){
-                this.$router.push("/index/manage/dataset")
+                return fetch("/api/clearsession").then((res) => res.json().then(()=>{
+                    this.$router.push("/index/manage/dataset");
+                }))
             },
             call_diagram(){
                 this.dialogVisible = true;
             },
+
+            upload_file(param){
+                const file = param.file;
+                console.log(file);
+                let fileObj = window.btoa(file);
+                console.log(fileObj);
+                // let data = new FormData();
+                // data.append("file",file);
+                const data = {"file":fileObj,"source":file["name"]};
+                return fetch("/api/addsource",{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json",
+                        
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(res => res.json())
+                .then(()=>{
+
+                })
+            },
+
+            // fileList_change(response,file,fileList){
+            //     console.log("res:");
+            //     console.log(response);
+            //     console.log("ab");
+            //     console.log(file["raw"]);
+            //     console.log("fl");
+            //     console.log(fileList);
+
+            //     // const data = {"source":file["name"],"file":file["raw"]};
+            //     let data = new FormData();
+            //     data.append("file",file["raw"]);
+            //     data.append("name",file["name"]);
+            //     console.log("!!!");
+            //     console.log(data);
+            //     return fetch("/api/addsource",{
+            //         method: 'POST',
+            //         // headers:{
+            //         //     // "Content-Type": "application/json",
+                        
+            //         // },
+            //         body: data
+            //     })
+            //     .then(res => res.json())
+            //     .then(()=>{
+
+            //     })
+            // },
+            
             //written over
 
             //written by wjz
@@ -186,10 +245,7 @@ import Breadcrumb from "../BreadCrumb.vue"
             }
         }
     }
-    // var change_memo_btn=document.getElementById("change_memo");
-    // change_memo_btn.onclick=function(){
-    //     this.style.visibility='hidden';
-    // }
+
 </script>
 
 <style scoped>

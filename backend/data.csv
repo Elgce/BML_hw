@@ -1,7 +1,2 @@
-group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state
-12312,what if,V1,0,12312,finished,pic,0,-
-46,46,V1,0,46,finished,pic,0,-
-132,132,V1,0,132,finished,pic,0,-
-123,123,V1,0,123,finished,pic,0,-
-123,123,V1,0,123,finished,pic,0,-
-132,132,V1,0,132,finished,txt,0,-
+group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source
+54,54,V1,0,54,finished,pic,0,-,['msi.jpg']
