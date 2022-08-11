@@ -4,3 +4,4 @@ group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state
 132,132,V1,0,132,finished,pic,0,-
 123,123,V1,0,123,finished,pic,0,-
 123,123,V1,0,123,finished,pic,0,-
+132,132,V1,0,132,finished,txt,0,-

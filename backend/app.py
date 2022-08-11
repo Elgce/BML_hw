@@ -1,4 +1,5 @@
 
+import shutil
 from flask import Flask, jsonify, request, abort, send_file,g, session
 import os
 import csv
@@ -135,6 +136,35 @@ def reset_csv():
             fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(item)
+
+# 通过session储存需要导入信息的内容
+@app.route("/api/setsession",methods=['GET','POST'])
+def set_session():
+    data = request.get_json()
+    name = data.get("name")
+    session["name"] = name
+    return {"name":name}
+    
+@app.route("/api/sessionname")
+def get_session_name():
+    return {"name":session["name"]}
+    
+@app.route("/api/clearsession")
+def clear_session():
+    session.clear()
+    return ""
+
+# 用于复制文件夹
+def copyfile(srcfile,name):
+    if not os.path.isfile(srcfile):
+        print("%s not exist!"%(srcfile))
+    else:
+        dstpath = "./backend/src/" + name + "/"
+        print(dstpath)
+        if not os.path.exists(dstpath):
+            os.makedirs(dstpath)
+        fpath,fname = os.path.split(srcfile)
+        shutil.copy(srcfile, dstpath + fname)
 
 if __name__=="__main__":
     readcsv()
