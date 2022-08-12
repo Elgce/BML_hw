@@ -46,7 +46,12 @@ const routes = [
                 name: '添加图片标签',
                 meta: {title:'添加图片标签'}
             },
-            
+            {
+                path: '/index/manage/dataset/video/addtag',
+                component: () => import('./components/pages/VideoTag.vue'),
+                name: '添加视频标签',
+                meta: {title:'添加视频标签'}
+            }
         ]
     }
 ]
