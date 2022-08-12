@@ -74,8 +74,6 @@
             drag
             action="/api/call"
             multiple
-            :on-success="fileList_change"
-           :http-request="upload_file"
         >
          
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
@@ -91,7 +89,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogVisible=false">取消</el-button>
-                <el-button type="primary" @click="dialogVisible=false">确定</el-button>
+                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -111,68 +109,22 @@ import Breadcrumb from "../BreadCrumb.vue"
             return{
                 dialogVisible: false,
                 fileList: [],
+                file: {},
             };
         },
         methods:{
             //written by bqw
+            
             back_index(){
-                return fetch("/api/clearsession").then((res) => res.json().then(()=>{
+                return fetch("/api/clearsession").then((res) => res.json()).then(()=>{
                     this.$router.push("/index/manage/dataset");
-                }))
+                })
             },
             call_diagram(){
                 this.dialogVisible = true;
             },
 
-            upload_file(param){
-                const file = param.file;
-                console.log(file);
-                let fileObj = window.btoa(file);
-                console.log(fileObj);
-                // let data = new FormData();
-                // data.append("file",file);
-                const data = {"file":fileObj,"source":file["name"]};
-                return fetch("/api/addsource",{
-                    method: 'POST',
-                    headers:{
-                        "Content-Type": "application/json",
-                        
-                    },
-                    body: JSON.stringify(data),
-                })
-                .then(res => res.json())
-                .then(()=>{
 
-                })
-            },
-
-            // fileList_change(response,file,fileList){
-            //     console.log("res:");
-            //     console.log(response);
-            //     console.log("ab");
-            //     console.log(file["raw"]);
-            //     console.log("fl");
-            //     console.log(fileList);
-
-            //     // const data = {"source":file["name"],"file":file["raw"]};
-            //     let data = new FormData();
-            //     data.append("file",file["raw"]);
-            //     data.append("name",file["name"]);
-            //     console.log("!!!");
-            //     console.log(data);
-            //     return fetch("/api/addsource",{
-            //         method: 'POST',
-            //         // headers:{
-            //         //     // "Content-Type": "application/json",
-                        
-            //         // },
-            //         body: data
-            //     })
-            //     .then(res => res.json())
-            //     .then(()=>{
-
-            //     })
-            // },
             
             //written over
 

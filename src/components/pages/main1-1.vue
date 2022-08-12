@@ -41,8 +41,9 @@
                         <el-button class="inline-editor" link @click="show_nametxt" id="edit_name">
                             <span title="name" class="inline-editor-txt">{{item["name"]}}</span>
                             <el-icon><Edit /></el-icon>
-                            <el-input class="inline-editor" placeholder="请输入新名称" id="name_input" type="text" style="width:140px;visibility: hidden" v-model="new_name" visible="false" @change="change_name(item.name)"/>
+                            
                         </el-button>
+                        <el-input class="inline-editor" placeholder="请输入新名称" id="name_input" type="text" style="width:140px;visibility: hidden" v-model="new_name" visible="false" @change="change_name(item.name)"/>
                     
                         <span>数据集组ID:{{item["data_id"]}}</span>
                     </div>
@@ -256,10 +257,13 @@ import Breadcrumb from "../BreadCrumb.vue"
             },
             show_nametxt(){
                 let txt = document.getElementById("name_input");
-                txt.style.visibility='visible';
-                txt.style.backgroundColor="white";
-                // let edit = document.getElementById("edit_name");
-                // edit.style.visibility='hidden';
+                if(txt.style.visibility==='visible'){
+                    txt.style.visibility='hidden';
+                }
+                else{
+                    txt.style.visibility='visible';
+                    txt.style.backgroundColor="white";
+                }
             },
             get_data(){
                 this.get_datanum();
