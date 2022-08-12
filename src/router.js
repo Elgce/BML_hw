@@ -39,7 +39,14 @@ const routes = [
                 component: () => import('./components/pages/main4.vue'),
                 name: '测试页面',
                 meta: {title:'测试页面'}
-            }
+            },
+            {
+                path: '/index/manage/dataset/pic/addtag',
+                component: () => import('./components/pages/AddTag.vue'),
+                name: '添加图片标签',
+                meta: {title:'添加图片标签'}
+            },
+            
         ]
     }
 ]
