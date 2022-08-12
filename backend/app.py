@@ -1,9 +1,11 @@
 
 import base64
+from hashlib import new
 import shutil
 from flask import Flask, jsonify, request, abort, send_file,g, session
 import os
 import csv
+import shutil
 
 app = Flask(__name__,static_folder="../dist/",static_url_path="/")
 
@@ -44,7 +46,19 @@ def renew():
 # 用于up-load的action
 @app.route("/api/call",methods=['GET','POST'])
 def test():
-    print(session)
+    print(request.files.to_dict())
+    file = request.files.to_dict()
+    f = file["file"]
+    basepath = os.path.dirname(__file__)
+    name = session["name"]
+    topath = "\src" + "\\" + name
+    if not os.path.exists(basepath + topath):
+        os.makedirs(basepath+topath)
+    upload_path = basepath + topath + "\\" +f.filename
+    print(upload_path)
+    f.save(upload_path)
+    MessageInfo[name]["source"].append(topath+"\\"+f.filename)
+    print(MessageInfo[name]["source"])
     return ""
 
 @app.route("/")
@@ -94,39 +108,20 @@ def get_one(name):
 def get_num():
     return {"data_num":data_num}
 
+# 用于删除数据
 @app.route("/api/deletedata",methods=['GET','POST'])
 def delete_data():
     data = request.get_json()
     name = data.get("name")
     global data_num
     data_num = data_num - 1
-    print(MessageInfo)
     MessageInfo.pop(name)
-    print("newone:\n")
-    print(MessageInfo)
+    basepath = os.path.dirname(__file__)
+    topath = basepath+"\src"+"\\"+name
+    shutil.rmtree(topath, ignore_errors=True)
     reset_csv()
     return {"name":name}
 
-# 用于从前端获取数据条的数据信息
-@app.route("/api/addsource",methods=['GET','POST'])
-def add_source():
-    data = request.get_json()
-    source = data.get("source")
-    file = data.get("file")
-    print(file)
-    print("!")
-    print(source)
-    print("!")
-    file = base64.b64decode(file)
-    print(file)
-    # print(request.form)
-    # file = request.form.get("file")
-    # source = request.form.get("name")
-    # print(file)
-    name = session["name"]
-    MessageInfo[name]["source"].append(source)
-    reset_csv()
-    return {"name": name}
     
 # 用于前端获取对应的数据文件信息
 @app.route("/api/get_source",methods=['GET','POST'])
@@ -141,6 +136,10 @@ def change_name():
     data = request.get_json()
     new_name = data.get("new_name")
     old_name = data.get("old_name")
+    basepath = os.path.dirname(__file__)
+    origin_path = basepath + "\src" + "\\" + old_name
+    new_path = basepath + "\src" + "\\" + new_name
+    os.rename(origin_path,new_path)
     new_mes = MessageInfo[old_name]
     new_mes["name"] = new_name
     MessageInfo.pop(old_name)
@@ -171,7 +170,7 @@ def get_session_name():
 @app.route("/api/clearsession")
 def clear_session():
     session.clear()
-    return ""
+    return {"baby":""}
 
 # 用于复制文件夹
 def copyfile(srcfile,name):
