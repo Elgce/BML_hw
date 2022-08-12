@@ -1,6 +1,5 @@
 <template>
     <el-button @click="act"></el-button>
-    <img src="..\\..\\..\\backend\\src\\213\\msi.jpg"/>
 </template>
 
 
@@ -22,8 +21,10 @@
                 let that = this;
                 return fetch("/api/sessionname").then((res) => res.json().then((j)=>{
                     that.name = j.name;
+                    that.root_dir = "../../../backend/src/"+that.name;
                     for (let item in j.src_list){
                         let path = "..\\..\\..\\backend" + j.src_list[item];
+                        path = path.replace(/\\/g,"/");
                         that.src_list.push(path);
                     }
                 }))
