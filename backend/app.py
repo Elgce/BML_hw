@@ -2,6 +2,7 @@
 import base64
 from hashlib import new
 import shutil
+from urllib.robotparser import RequestRate
 from flask import Flask, jsonify, request, abort, send_file,g, session
 import os
 import csv
@@ -59,6 +60,7 @@ def test():
     f.save(upload_path)
     MessageInfo[name]["source"].append(topath+"\\"+f.filename)
     print(MessageInfo[name]["source"])
+    reset_csv()
     return ""
 
 @app.route("/")
@@ -122,13 +124,6 @@ def delete_data():
     reset_csv()
     return {"name":name}
 
-    
-# 用于前端获取对应的数据文件信息
-@app.route("/api/get_source",methods=['GET','POST'])
-def get_source():
-    data = request.get_json()
-    name = data.get("name")
-    return {"source":MessageInfo[name]["source"]}
 
 # 用于前端更改数据集name
 @app.route("/api/changename",methods=['GET','POST'])
@@ -165,7 +160,11 @@ def set_session():
     
 @app.route("/api/sessionname")
 def get_session_name():
-    return {"name":session["name"]}
+    name = session["name"]
+    print(name)
+    print(MessageInfo)
+    print(MessageInfo[name]["source"])
+    return {"name":name,"src_list":MessageInfo[name]["source"]}
     
 @app.route("/api/clearsession")
 def clear_session():
@@ -184,6 +183,10 @@ def copyfile(srcfile,name):
         fpath,fname = os.path.split(srcfile)
         shutil.copy(srcfile, dstpath + fname)
 
+    
+    
+
 if __name__=="__main__":
+    # renew()
     readcsv()
     app.run(debug=True, port=5000, host= "0.0.0.0")
