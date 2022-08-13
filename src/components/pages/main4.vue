@@ -45,25 +45,6 @@
                     },
                     body: JSON.stringify(data)
                 }).then(() => {
-                    // let src = window.URL.createObjectURL(res);
-                    // this.img = src;
-                    // let blob = new Blob([res]);
-                    // console.log(res);
-                    // console.log(res);
-                    // let blob = res.blob();
-                    // let binaryData = [];
-                    // binaryData.push(blob);
-                    // let url = URL.createObjectURL(new Blob(binaryData));
-                    // console.log(url);
-                    // this.img = url;
-                    // const myBlob = new window.Blob([res], {type: 'image/jpeg'});
-                    // const qrUrl = window.URL.createObjectURL(myBlob);
-                    // console.log(qrUrl);
-                    // that.src = qrUrl;
-                    // that.loading = false;
-                    // that.img = 'data:image/jpeg;base64,'+that.arrayBufferToBase64(res);
-                    // console.log(that.img);
-                    // console.log(res);
                     that.img = "http://localhost:5000/api/passfile/" + data["file_name"];
                 })
             },
