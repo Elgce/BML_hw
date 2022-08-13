@@ -34,7 +34,7 @@
             <el-empty :image-size="250" description="空空如也" v-if="value=='open' || data_num==0">
             </el-empty>
             <div v-if="value!='open'">
-            <div v-for = "item in MessageInfo" :key="item.name">
+            <div v-for = "item in MessageShow" :key="item.name">
             <el-divider class="between" border-style="none"></el-divider>
                 <div class="table-header">
                     <div class="title">
@@ -127,6 +127,8 @@ import Breadcrumb from "../BreadCrumb.vue"
                 input: ref(''),
                 new_name: ref(''),
                 MessageInfo: reactive({}),
+                MessageShow: reactive({}),
+                MessageArray: reactive([]),
                 options : [
                     {
                         value: 'my',
@@ -269,14 +271,29 @@ import Breadcrumb from "../BreadCrumb.vue"
                 this.get_datanum();
                 let that = this;
                 fetch("/api/getdata").then((res) => res.json().then((j)=>{
-                    that.MessageInfo = j.MessageInfo
+                    that.MessageInfo = j.MessageInfo;
+                    // console.log(that.MessageInfo.value());
+                    for (let item in that.MessageInfo){
+                        that.MessageArray.push(item);
+                    }
+                    this.handleCurrentChange(1);
                 }))
             },
             handleSizeChange(newSize){
-                this.queryInfo.pagesize = newSize
+                this.queryInfo.pagesize = newSize;
+                this.handleCurrentChange(1);
             },
             handleCurrentChange(newPage){
-                this.queryInfo.pagenum = newPage 
+                this.queryInfo.pagenum = newPage;
+                let start = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize;
+                let end = start + this.queryInfo.pagesize;
+                if (this.MessageArray.length < end){
+                    end = this.MessageArray.length;
+                }
+                this.MessageShow = reactive({});
+                for (let i = start; i < end; i++){
+                    this.MessageShow[this.MessageArray[i]]=this.MessageInfo[this.MessageArray[i]];
+                }
             },
             // 用于设置页面表单的默认选项
             setvalue(){
