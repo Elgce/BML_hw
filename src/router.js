@@ -42,9 +42,9 @@ const routes = [
             },
             {
                 path: '/index/manage/dataset/pic/addtag',
-                component: () => import('./components/pages/AddTag.vue'),
-                name: '添加图片标签',
-                meta: {title:'添加图片标签'}
+                component: () => import('./components/pages/AddTagGroup.vue'),
+                name: '标签组管理',
+                meta: {title:'标签组管理'}
             },
             {
                 path: '/index/manage/dataset/video/addtag',
