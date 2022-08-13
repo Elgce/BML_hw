@@ -2,8 +2,10 @@
 import base64
 from hashlib import new
 import shutil
+from urllib import response
+from urllib.parse import quote
 from urllib.robotparser import RequestRate
-from flask import Flask, jsonify, request, abort, send_file,g, session
+from flask import Flask, jsonify, request, abort, send_file,g, session,make_response,send_from_directory
 import os
 import csv
 import shutil
@@ -183,7 +185,30 @@ def copyfile(srcfile,name):
         fpath,fname = os.path.split(srcfile)
         shutil.copy(srcfile, dstpath + fname)
 
-    
+# 用于调用前端需要的文件并返回
+@app.route("/api/passfile/<file_name>",methods=['GET','POST'])
+def pass_file(file_name):
+    # data = request.get_json()
+    name = session["name"]
+    basepath = os.path.dirname(__file__)
+    # file_name = data.get("file_name")
+    path = basepath + "\src\\" + name + "\\" + file_name
+    # response = make_response(
+    #     send_from_directory(path, file_name, as_attachment=True)
+    # )
+    # print(path + file_name)
+    # response.headers['Content-Type'] = 'image/jpg/png'
+    # print(response)
+    # print(send_file(path))
+    # return send_file(path)
+    # file = open(path, "rb").read()
+    # response = make_response(file)
+    # utf_filename = quote(file_name.encode("utf-8"))
+    # response.headers["Content-Disposition"] = "attachment;filename*=utf-8''{}".format(utf_filename)
+    # response.headers["Content-Type"] = "application/octet-stream; charset=UTF-8"
+    return send_file(path)
+
+     
     
 
 if __name__=="__main__":

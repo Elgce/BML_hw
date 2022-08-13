@@ -93,7 +93,7 @@
             <el-pagination
                 v-model:currentPage="queryInfo.pagenum"
                 v-model:page-size="queryInfo.pagesize"
-                :page-sizes="[1, 5, 10, 15, 20]"
+                :page-sizes="[1, 2, 3,4, 5]"
                 :background="background"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="data_num"
