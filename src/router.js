@@ -51,6 +51,12 @@ const routes = [
                 component: () => import('./components/pages/VideoTag.vue'),
                 name: '添加视频标签',
                 meta: {title:'添加视频标签'}
+            },
+            {
+                path: '/index/manage/dataset/text/addtag',
+                component: () => import('./components/pages/TxtTag.vue'),
+                name: '添加文本标签',
+                meta: {title:'添加文本标签'}
             }
         ]
     }

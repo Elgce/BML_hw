@@ -188,24 +188,9 @@ def copyfile(srcfile,name):
 # 用于调用前端需要的文件并返回
 @app.route("/api/passfile/<file_name>",methods=['GET','POST'])
 def pass_file(file_name):
-    # data = request.get_json()
     name = session["name"]
     basepath = os.path.dirname(__file__)
-    # file_name = data.get("file_name")
     path = basepath + "\src\\" + name + "\\" + file_name
-    # response = make_response(
-    #     send_from_directory(path, file_name, as_attachment=True)
-    # )
-    # print(path + file_name)
-    # response.headers['Content-Type'] = 'image/jpg/png'
-    # print(response)
-    # print(send_file(path))
-    # return send_file(path)
-    # file = open(path, "rb").read()
-    # response = make_response(file)
-    # utf_filename = quote(file_name.encode("utf-8"))
-    # response.headers["Content-Disposition"] = "attachment;filename*=utf-8''{}".format(utf_filename)
-    # response.headers["Content-Type"] = "application/octet-stream; charset=UTF-8"
     return send_file(path)
 
      
