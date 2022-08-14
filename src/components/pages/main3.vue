@@ -91,7 +91,7 @@
                     </el-header>
                     <el-header id="middle_main">
                         <br>              
-                        <el-input v-model="input4" class="w-50 m-2" placeholder="请输入标签名称">
+                        <el-input v-model="input_tagName" class="w-50 m-2" placeholder="请输入标签名称">
                             <template #prefix>
                                 <el-icon class="el-input__icon"><search /></el-icon>
                             </template>
@@ -141,6 +141,7 @@
 
 <script>
 import Breadcrumb from "../BreadCrumb.vue"
+import { ref } from "vue"
     export default
     {
         name: "MainThree",
@@ -158,6 +159,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 unlimited2:true,
                 unlimited3:true,
                 unlimited4:true,
+                input_tagName:ref(''),
                 options:[
                     {
                         value: '15',
