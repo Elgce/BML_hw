@@ -31,7 +31,50 @@
                     </div>
                 </el-collapse-item>
             </el-collapse>
-        </el-main>
+            <br>
+            <el-row>
+                <el-button type="primary" @click="dialogVisible = true">创建标签组</el-button>
+                <div id="search_tag_div">
+                    <el-input v-model="tagGroupName" placeholder="输入标签组名称">
+                        <template #prefix>
+                            <el-icon class="el-input__icon"><search /></el-icon>
+                        </template>
+                    </el-input>
+                </div>
+            </el-row>
+            <br>
+            <el-descriptions
+                direction="vertical"
+                :column="5"
+                size="large"
+                border
+            >
+                <el-descriptions-item label="标签组名称">123</el-descriptions-item>
+                <el-descriptions-item label="标签组描述">123</el-descriptions-item>
+                <el-descriptions-item label="创建时间">2022-06-01 20:03:35</el-descriptions-item>
+                <el-descriptions-item label="更新时间">2022-06-01 20:03:35</el-descriptions-item>
+                <el-descriptions-item label="操作">
+                    <el-button type="primary" link key="label" @click="multilabel(item.name)">标签管理</el-button>
+                    <el-button type="primary" link key="label" @click="insert(item.name)">编辑</el-button>
+                    <el-button type="primary" link key="delete" @click="deletedata(item.name)">删除</el-button>
+                </el-descriptions-item>
+            </el-descriptions>
+            <div id="pages">
+                <el-row>
+                    <p id="fotter_text">每页显示&nbsp;&nbsp;&nbsp;</p>
+                    <el-select v-model="value" placeholder="10" id="fotter_select">
+                        <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                            :disabled="item.disabled"
+                        />
+                    </el-select>
+                    <el-pagination id="fotter_pages" background layout="prev, pager, next" :total="1" />
+                </el-row>
+            </div>
+        </el-main> 
     </el-container>
     <el-dialog
         v-model="dialogVisible"
@@ -43,7 +86,7 @@
         <el-row id="name">
             <p>标签组名称</p>
             <p id="highlight">✳</p>
-            <el-input v-model="input4" placeholder="请输入名称" id="tag_name_input"></el-input>
+            <el-input v-model="newTagName" placeholder="请输入名称" id="tag_name_input" @input="if_diableBtn"></el-input>
         </el-row>
         <br>
         <el-row id="description">
@@ -55,13 +98,14 @@
                 show-word-limit
                 type="textarea"
                 :rows="6"
+                v-model="tagGroupDescription"
             />
         </el-row>
         <el-divider/>
         <div>
-            <el-button disabled>确认</el-button>
+            <el-button id="complete" :disabled="disabled" type="primary">确认</el-button>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-button>取消</el-button>
+            <el-button @click="dialogVisible = false">取消</el-button>
         </div>
     </el-dialog>
 </template>
@@ -69,6 +113,7 @@
 
 <script>
 import Breadcrumb from "../BreadCrumb.vue"
+import { ref } from "vue"
     export default{
         name: "AddTag",
         components: 
@@ -79,8 +124,39 @@ import Breadcrumb from "../BreadCrumb.vue"
         {
             return{
                 dialogVisible: true,
+                options:[
+                    {
+                        value: '10',
+                        label: '10',
+                    },
+                    {
+                        value: '20',
+                        label: '20',
+                    },
+                    {
+                        value: '30',
+                        label: '30',
+                    },
+                ],
+                tagGroupName:ref(''),
+                newTagName:ref(''),
+                tagGroupDescription:ref(''),
+                disabled:true
             };
         },
+        methods:{
+            if_diableBtn()
+            {
+                if(this.newTagName!="")
+                {
+                    this.disabled=false;
+                }
+                else
+                {
+                    this.disabled=true;
+                }
+            }
+        }
     }
 </script>
 
@@ -104,7 +180,7 @@ import Breadcrumb from "../BreadCrumb.vue"
     }
     #tag_name_input
     {
-        width:50px;
+        
     }
     #highlight
     {
@@ -188,5 +264,30 @@ import Breadcrumb from "../BreadCrumb.vue"
         left:783px;
         width:200px;
         text-align: left;
+    }
+    #search_tag_div
+    {
+        position:absolute;
+        right:0;
+        width:220px;
+    }
+    #fotter_text
+    {
+        margin-top:0px;
+        line-height:30px;
+    }
+    #fotter_select
+    {
+        margin-top:0px;
+    }
+    #fotter_pages
+    {
+        margin-left:10px;
+        margin-top:-12px;
+    }
+    #pages
+    {
+        margin-top:30px;
+        margin-left:860px;
     }
 </style>
