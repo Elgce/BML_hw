@@ -178,18 +178,10 @@ import { ref } from "vue"
         top:80px;
         right:40px;
     }
-    #tag_name_input
-    {
-        
-    }
     #highlight
     {
         color:red;
         font-weight:900;
-    }
-    #tag_description
-    {
-        
     }
     #dialog_divider
     {

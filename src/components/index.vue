@@ -66,7 +66,7 @@
             <el-menu-item index="/index/manage/dataset/pic/addtag">在线标注</el-menu-item>
             <el-menu-item index="/index/manage/dataset/video/addtag">智能标注</el-menu-item>
             <el-menu-item index="/index/manage/dataset/text/addtag">多人标注</el-menu-item>
-            <el-menu-item index="2-5">寻求标注支持</el-menu-item>
+            <el-menu-item index="/index/manage/dataset/text/taggroup">寻求标注支持</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
         <el-divider />

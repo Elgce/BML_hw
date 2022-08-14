@@ -57,6 +57,12 @@ const routes = [
                 component: () => import('./components/pages/TxtTag.vue'),
                 name: '添加文本标签',
                 meta: {title:'添加文本标签'}
+            },
+            {
+                path: '/index/manage/dataset/text/taggroup',
+                component: () => import('./components/pages/TagGroup.vue'),
+                name: '添加标签组',
+                meta: {title:'添加标签组'}
             }
         ]
     }
