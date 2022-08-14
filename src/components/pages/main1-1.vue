@@ -100,6 +100,7 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 v-if="value!='open' && data_num!=0"
+                id="pagination"
             />
 
         </el-main>
@@ -387,5 +388,8 @@ import Breadcrumb from "../BreadCrumb.vue"
     .table-header .op .op-item span{
         font-size: 12px;
         margin-left: 3px;
+    }
+    #pagination{
+        margin-left: 960px;
     }
 </style>

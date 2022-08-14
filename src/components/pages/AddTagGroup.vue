@@ -288,6 +288,6 @@ import { ref } from "vue"
     #pages
     {
         margin-top:30px;
-        margin-left:860px;
+        margin-left:960px;
     }
 </style>
