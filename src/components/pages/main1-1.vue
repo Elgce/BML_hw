@@ -277,6 +277,18 @@ import Breadcrumb from "../BreadCrumb.vue"
                     // console.log(that.MessageInfo.value());
                     for (let item in that.MessageInfo){
                         that.MessageArray.push(item);
+                        if(that.MessageInfo[item]["in_state"]==="finished"){
+                            that.MessageInfo[item]["in_state"] = "已完成";
+                        }
+                        if(that.MessageInfo[item]["specy"]==="pic"){
+                            that.MessageInfo[item]["specy"] = "图片标注";
+                        }
+                        else if(that.MessageInfo[item]["specy"]==="txt"){
+                            that.MessageInfo[item]["specy"] = "文本标注";
+                        }
+                        else{
+                            that.MessageInfo[item]["specy"] = "表格标注";
+                        }
                     }
                     this.handleCurrentChange(1);
                 }))
