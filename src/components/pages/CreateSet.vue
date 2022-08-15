@@ -227,8 +227,14 @@ export default{
                         body: JSON.stringify(data)
                     })
                     .then(res => res.json())
-                    .then(()=>{
-                        this.$router.push("/index/manage/dataset")
+                    .then((j)=>{
+                        if(j.isok === "repeat"){
+                            alert("数据集名字重复!");
+                        }
+                        else{
+                            this.$router.push("/index/manage/dataset")
+                        }
+                        
                     })
             }
             else if(inputName.value==""){
