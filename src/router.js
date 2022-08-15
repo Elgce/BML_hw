@@ -61,8 +61,8 @@ const routes = [
             {
                 path: '/index/manage/dataset/text/taggroup',
                 component: () => import('./components/pages/TagGroup.vue'),
-                name: '添加标签组',
-                meta: {title:'添加标签组'}
+                name: '标签管理',
+                meta: {title:'标签管理'}
             }
         ]
     }

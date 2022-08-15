@@ -28,40 +28,45 @@
                 >
                 <div>
                     <b>数据来源&nbsp;&nbsp;&nbsp;</b>
-                    <el-checkbox v-model="unlimited1" label="不限" size="large" @change="checkSource"/>
-                    <el-checkbox name="source" label="本地上传" size="large" @change="checkSource"/>
-                    <el-checkbox name="source" label="摄像头采集" size="large" @change="checkSource"/>
-                    <el-checkbox name="source" label="云服务调用数据采集" size="large" @change="checkSource"/>
-                    <el-checkbox name="source" label="数据清洗" size="large" @change="checkSource"/>
-                    <el-checkbox name="source" label="数据增强" size="large" @change="checkSource"/>
+                    <el-checkbox v-model="unlimited1" label="不限" size="large" @change="cleanSource"/>
+                    <el-checkbox v-model="source1" name="source" label="本地上传" size="large" @change="checkSource"/>
+                    <el-checkbox v-model="source2" name="source" label="摄像头采集" size="large" @change="checkSource"/>
+                    <el-checkbox v-model="source3" name="source" label="云服务调用数据采集" size="large" @change="checkSource"/>
+                    <el-checkbox v-model="source4" name="source" label="数据清洗" size="large" @change="checkSource"/>
+                    <el-checkbox v-model="source5" name="source" label="数据增强" size="large" @change="checkSource"/>
                 </div>
                 <div>
                     <b>导入日期&nbsp;&nbsp;&nbsp;</b>
-                    <el-checkbox v-model="unlimited2" label="不限" size="large" />
+                    <el-checkbox v-model="unlimited2" label="不限" size="large" @change="cleanIntrDate"/>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <el-date-picker
+                        v-model="intr_date"
                         type="daterange"
                         range-separator="To"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
+                        id="intr_date"
+                        @change="checkIntrDate"
                     />
                 </div>
                 <div>
                     <b>标注日期&nbsp;&nbsp;&nbsp;</b>
-                    <el-checkbox v-model="unlimited3" label="不限" size="large" />
+                    <el-checkbox v-model="unlimited3" label="不限" size="large" @change="cleanMarkingDate"/>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <el-date-picker
+                        v-model="marking_date"
                         type="daterange"
                         range-separator="To"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
+                        @change="checkMarkingDate"
                     />
                 </div>
                 <div>
                     <b>标签&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
-                    <el-checkbox v-model="unlimited4" label="不限" size="large" />
+                    <el-checkbox v-model="unlimited4" label="不限" size="large" @change="cleanMark" />
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <el-select placeholder="请选择" size="large"></el-select>
+                    <el-select placeholder="请选择" size="large" @change="checkMark"></el-select>
                 </div>
                     <template #reference>
                         <el-button @click="visible = !visible">筛选&nbsp;<el-icon><ArrowDownBold /></el-icon></el-button>
@@ -159,7 +164,14 @@ import { ref } from "vue"
                 unlimited2:true,
                 unlimited3:true,
                 unlimited4:true,
+                source1:false,
+                source2:false,
+                source3:false,
+                source4:false,
+                source5:false,
                 input_tagName:ref(''),
+                intr_date:ref(''),
+                marking_date:ref(''),
                 options:[
                     {
                         value: '15',
@@ -176,13 +188,72 @@ import { ref } from "vue"
                 ]
             };
         },
-        methodes:{
-            // checkSource()
-            // {
-            //     var source=document.getElementsByName("source");
-                
-
-            // }
+        methods:{
+            cleanSource()
+            {
+                if(this.unlimited1==true)
+                {
+                    this.source1=false;
+                    this.source2=false;
+                    this.source3=false;
+                    this.source4=false;
+                    this.source5=false;
+                }
+            },
+            checkSource()
+            {
+                var source=document.getElementsByName("source");
+                if(this.unlimited1==true)
+                {
+                    if(source[0].checked||source[1].checked||source[2].checked||source[3].checked||source[4].checked)
+                    {
+                        this.unlimited1=false;
+                    }
+                }
+                else
+                {
+                    if(!(source[0].checked||source[1].checked||source[2].checked||source[3].checked||source[4].checked))
+                    {
+                        this.unlimited1=true;
+                    }
+                }
+            },
+            checkIntrDate()
+            {
+                if(this.intr_date==null)
+                {
+                    this.unlimited2=true;
+                }
+                else
+                {
+                    this.unlimited2=false;
+                }
+            },
+            cleanIntrDate()
+            {
+                if(this.unlimited2!=false)
+                {
+                    this.intr_date=null
+                }
+            },
+            checkMarkingDate()
+            {
+                if(this.marking_date==null)
+                {
+                    this.unlimited3=true;
+                }
+                else
+                {
+                    this.unlimited3=false;
+                }
+            },
+            cleanMarkingDate()
+            {
+                if(this.unlimited3!=false)
+                {
+                    this.marking_date=null
+                }
+            }
         }
     }
 
