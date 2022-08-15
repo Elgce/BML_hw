@@ -1,4 +1,5 @@
-
+import uuid
+import datetime
 import base64
 from hashlib import new
 import shutil
@@ -16,19 +17,24 @@ MessageInfo = {}
 
 data_num = 0
 
+names = []
+
 app.secret_key = "bighw"
 
 def readcsv():
+    global names
+    names = []
     with open('./backend/data.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             global data_num
             data_num = data_num + 1
+            names.append(row["name"])
             MessageInfo.update({row["name"]:row})
 
 def writecsv(data):
     with open('./backend/data.csv', 'a+', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow(data)
         global data_num
@@ -38,7 +44,7 @@ def writecsv(data):
 # 用于将表头重新写入用于保存数据的csv文件
 def writecsvtitle():
     with open('./backend/data.csv', 'w', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -73,30 +79,49 @@ def index():
 @app.route("/api/adddata",methods=['GET','POST'])
 def add_data():
     data = request.get_json()
-    group_id = data.get("group_id")
     name = data.get("name")
-    version = data.get("version")
-    num = data.get("num")
-    data_id = data.get("data_id")
-    in_state = data.get("in_state")
-    specy = data.get("specy")
-    mark_state = data.get("mark_state")
-    clear_state = data.get("clear_state")
-    sing_one = {
-        "data_id": data_id,
-        "group_id": group_id,
-        "name": name,
-        "version": version,
-        "num": num,
-        "in_state": in_state,
-        "specy": specy,
-        "mark_state": mark_state,
-        "clear_state": clear_state,
-        "source": [],
-    }
-    MessageInfo.update({data_id:sing_one})
-    writecsv(sing_one)
-    return MessageInfo
+    isok = "no-repeat"
+    if (name in names):
+        isok = "repeat"
+    else:
+        names.append(name)
+        group_id = data.get("group_id")
+        version = data.get("version")
+        num = data.get("num")
+        data_id = data.get("data_id")
+        in_state = data.get("in_state")
+        specy = data.get("specy")
+        mark_state = data.get("mark_state")
+        clear_state = data.get("clear_state")
+        
+        label_type = data.get("label_type")
+        label_model = data.get("label_model")
+        data_single = data.get("data_single")
+        direction = data.get("direction")
+        
+        time = datetime.datetime.now()
+        group_id = (time.year%100)*10000 + time.month*100 + time.day
+        data_id = time.hour*10000 + time.minute*100 + time.second
+        
+        sing_one = {
+            "data_id": data_id,
+            "group_id": group_id,
+            "name": name,
+            "version": version,
+            "num": num,
+            "in_state": in_state,
+            "specy": specy,
+            "mark_state": mark_state,
+            "clear_state": clear_state,
+            "source": [],
+            "direction": direction,
+            "label_type": label_type,
+            "label_model": label_model,
+            "data_single": data_single,
+        }
+        MessageInfo.update({name:sing_one})
+        writecsv(sing_one)
+    return {"isok":isok}
     
 # 用于前端调用直接返回所有储存的信息
 @app.route("/api/getdata")
@@ -119,7 +144,11 @@ def delete_data():
     name = data.get("name")
     global data_num
     data_num = data_num - 1
+    print(MessageInfo)
     MessageInfo.pop(name)
+    global names
+    names.remove(name)
+    print(names)
     basepath = os.path.dirname(__file__)
     topath = basepath+"\src"+"\\"+name
     shutil.rmtree(topath, ignore_errors=True)
@@ -148,7 +177,7 @@ def reset_csv():
     writecsvtitle()
     for item in MessageInfo.values():
         with open('./backend/data.csv', 'a+', newline='') as csvfile:
-            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source"]
+            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source", 'direction', 'label_type', 'label_model', 'data_single']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(item)
 
