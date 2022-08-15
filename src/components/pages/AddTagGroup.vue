@@ -1,68 +1,125 @@
 <template>
-    <el-container>
+    <el-contanier>
         <el-header>
             <Breadcrumb></Breadcrumb>
+            <el-link id="example" type="primary" @click="dialogVisible = true">批量标注示例</el-link>
             <el-link id="submit" type="primary">提交工单</el-link>
         </el-header>
         <el-divider id="top_divider"/>
         <el-main>
-            <el-collapse v-model="activeNames" @change="handleChange">
-                <el-collapse-item title="标签组管理">
-                    <div>
-                        <el-row id="header_management">标签组管理</el-row>
-                        <p id="management_text">当数据集的标签数量过多，或多个数据集需共享标签时，通过标签组管理功能可将多个常用标签创建为“标签组”进行统一管理，支持批量添加、修改、删除标签；创建成功后，在数据标注过程中可一键导入“标签组”，避免重复手动添加标签。</p>
-                    </div>
-                    <div>
-                        <el-row id="header_handling">使用流程介绍</el-row>
-                        <br>
-                        <img src="../../assets/tag_group_description.png" width="600" height="39" id="pics">
-                        <br>
-                        <br>
-                        <div id="handling_text_left">1 新建标签组</div>
-                        <div id="handling_text_middle">2 管理标签组</div>
-                        <div id="handling_text_right">3 调用标签组</div>
-                        <br>
-                        <div id="handling_datail_left">点击“创建标签组”按钮，根据需要输入标签组名称和描述。</div>
-                        <div id="handling_datail_middle">支持手动或批量“添加/删除/修改”标签，您可上传csv、xls、txt格式文件批量添加标签。</div>
-                        <div id="handling_datail_right">在线标注数据时，您可一键导入“标签组”，使用组内标签进行标注。</div>
-                        <br>
-                        <br>
-                        <br>
-                    </div>
-                </el-collapse-item>
-            </el-collapse>
-            <br>
-            <el-row>
-                <el-button type="primary" @click="dialogVisible = true">创建标签组</el-button>
-                <div id="search_tag_div">
-                    <el-input v-model="tagGroupName" placeholder="输入标签组名称">
-                        <template #prefix>
-                            <el-icon class="el-input__icon"><search /></el-icon>
-                        </template>
-                    </el-input>
+            <el-row id="middle_btns">
+                <el-radio-group v-model="radio1" size="large">
+                    <el-radio-button label="全部(0)" />
+                    <el-radio-button label="有标注信息(0)" />
+                    <el-radio-button label="无标注信息(0)" />
+                </el-radio-group>
+                <div id="three_btns">
+                    <el-button>导入图片</el-button>
+                    <el-button>质检报告</el-button>
+                    <el-button>批量批注</el-button>
                 </div>
             </el-row>
-            <br>
-            <el-descriptions
-                direction="vertical"
-                :column="5"
-                size="large"
-                border
-            >
-                <el-descriptions-item label="标签组名称">123</el-descriptions-item>
-                <el-descriptions-item label="标签组描述">123</el-descriptions-item>
-                <el-descriptions-item label="创建时间">2022-06-01 20:03:35</el-descriptions-item>
-                <el-descriptions-item label="更新时间">2022-06-01 20:03:35</el-descriptions-item>
-                <el-descriptions-item label="操作">
-                    <el-button type="primary" link key="label" @click="multilabel(item.name)">标签管理</el-button>
-                    <el-button type="primary" link key="label" @click="insert(item.name)">编辑</el-button>
-                    <el-button type="primary" link key="delete" @click="deletedata(item.name)">删除</el-button>
-                </el-descriptions-item>
-            </el-descriptions>
+            <el-divider/>
+            <el-row>
+                <el-popover
+                    :visible="visible"
+                    placement="bottom-start"
+                    :width="750"
+                >
+                <div>
+                    <b>数据来源&nbsp;&nbsp;&nbsp;</b>
+                    <el-checkbox v-model="unlimited1" label="不限" size="large" @change="cleanSource"/>
+                    <el-checkbox v-model="source1" name="source" label="本地上传" size="large" @change="checkSource"/>
+                    <el-checkbox v-model="source2" name="source" label="摄像头采集" size="large" @change="checkSource"/>
+                    <el-checkbox v-model="source3" name="source" label="云服务调用数据采集" size="large" @change="checkSource"/>
+                    <el-checkbox v-model="source4" name="source" label="数据清洗" size="large" @change="checkSource"/>
+                    <el-checkbox v-model="source5" name="source" label="数据增强" size="large" @change="checkSource"/>
+                </div>
+                <div>
+                    <b>导入日期&nbsp;&nbsp;&nbsp;</b>
+                    <el-checkbox v-model="unlimited2" label="不限" size="large" @change="cleanIntrDate"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <el-date-picker
+                        v-model="intr_date"
+                        type="daterange"
+                        range-separator="To"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        id="intr_date"
+                        @change="checkIntrDate"
+                    />
+                </div>
+                <div>
+                    <b>标注日期&nbsp;&nbsp;&nbsp;</b>
+                    <el-checkbox v-model="unlimited3" label="不限" size="large" @change="cleanMarkingDate"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <el-date-picker
+                        v-model="marking_date"
+                        type="daterange"
+                        range-separator="To"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        @change="checkMarkingDate"
+                    />
+                </div>
+                <div>
+                    <b>标签&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                    <el-checkbox v-model="unlimited4" label="不限" size="large" @change="cleanMark" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <el-select placeholder="请选择" size="large" @change="checkMark"></el-select>
+                </div>
+                    <template #reference>
+                        <el-button @click="visible = !visible">筛选&nbsp;<el-icon><ArrowDownBold /></el-icon></el-button>
+                    </template>
+                </el-popover>
+                <div id="two_btns">
+                    <el-checkbox label="本页全选" size="large"/>
+                    <el-button id="delete_btn" disabled><el-icon><Delete/></el-icon>&nbsp;删除</el-button>
+                </div>
+            </el-row>
+            <el-container id="middle_data">
+                <el-container>
+                    <el-header id="middle_header">
+                        <b id="tag_column_text">标签栏</b>
+                        <el-button id="add_tag">添加标签</el-button>
+                        <el-popover
+                            placement="bottom-end"
+                            :width="20"
+                            trigger="hover"
+                        >
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <el-button id="add_tagGroup">添加标签组</el-button>
+                            <template #reference>
+                                <el-button id="more_settings">···</el-button>
+                            </template>
+                        </el-popover>
+                    </el-header>
+                    <el-header id="middle_main">
+                        <br>              
+                        <el-input v-model="input_tagName" class="w-50 m-2" placeholder="请输入标签名称">
+                            <template #prefix>
+                                <el-icon class="el-input__icon"><search /></el-icon>
+                            </template>
+                        </el-input>
+                        <span id="tag_search_text">根据图片内容，选择标签</span>
+                    </el-header>
+                    <el-footer id="middle_footer">
+                        <div id="empty_img_left"></div>
+                        <span id="empty_text_left">暂无可用标签 ，请点击上方按钮添加</span>
+                    </el-footer>
+                </el-container>
+                <el-aside id="middle_asider">
+                    <div id="empty_right">
+                        暂无可用数据
+                    </div>
+                </el-aside>
+            </el-container>
+        </el-main>
+        <el-fotter>
             <div id="pages">
                 <el-row>
                     <p id="fotter_text">每页显示&nbsp;&nbsp;&nbsp;</p>
-                    <el-select v-model="value" placeholder="10" id="fotter_select">
+                    <el-select v-model="value" placeholder="30" id="fotter_select">
                         <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -74,48 +131,25 @@
                     <el-pagination id="fotter_pages" background layout="prev, pager, next" :total="1" />
                 </el-row>
             </div>
-        </el-main> 
-    </el-container>
+        </el-fotter>
+    </el-contanier>
     <el-dialog
         v-model="dialogVisible"
-        title="创建标签组"
-        width="30%"
+        title="EasyData图像分类模板支持批量标注数据了"
+        width="40%"
         :before-close="handleClose"
     >
         <el-divider id="dialog_divider"/>
-        <el-row id="name">
-            <p>标签组名称</p>
-            <p id="highlight">✳</p>
-            <el-input v-model="newTagName" placeholder="请输入名称" id="tag_name_input" @input="if_diableBtn"></el-input>
-        </el-row>
-        <br>
-        <el-row id="description">
-            <p>标签组描述</p>
-            <el-input
-                id="tag_description"
-                maxlength="100"
-                placeholder="请输入标签组描述"
-                show-word-limit
-                type="textarea"
-                :rows="6"
-                v-model="tagGroupDescription"
-            />
-        </el-row>
-        <el-divider/>
-        <div>
-            <el-button id="complete" :disabled="disabled" type="primary">确认</el-button>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-button @click="dialogVisible = false">取消</el-button>
-        </div>
+        <img src="../../assets/marking_example.png" width="400" height="445">
     </el-dialog>
 </template>
-
 
 <script>
 import Breadcrumb from "../BreadCrumb.vue"
 import { ref } from "vue"
-    export default{
-        name: "AddTag",
+    export default
+    {
+        name: "MainThree",
         components: 
         {
             Breadcrumb,
@@ -124,42 +158,106 @@ import { ref } from "vue"
         {
             return{
                 dialogVisible: true,
+                radio1:'全部',
+                visible:false,
+                unlimited1:true,
+                unlimited2:true,
+                unlimited3:true,
+                unlimited4:true,
+                source1:false,
+                source2:false,
+                source3:false,
+                source4:false,
+                source5:false,
+                input_tagName:ref(''),
+                intr_date:ref(''),
+                marking_date:ref(''),
                 options:[
                     {
-                        value: '10',
-                        label: '10',
-                    },
-                    {
-                        value: '20',
-                        label: '20',
+                        value: '15',
+                        label: '15',
                     },
                     {
                         value: '30',
                         label: '30',
                     },
-                ],
-                tagGroupName:ref(''),
-                newTagName:ref(''),
-                tagGroupDescription:ref(''),
-                disabled:true
+                    {
+                        value: '45',
+                        label: '45',
+                    },
+                ]
             };
         },
         methods:{
-            if_diableBtn()
+            cleanSource()
             {
-                if(this.newTagName!="")
+                if(this.unlimited1==true)
                 {
-                    this.disabled=false;
+                    this.source1=false;
+                    this.source2=false;
+                    this.source3=false;
+                    this.source4=false;
+                    this.source5=false;
+                }
+            },
+            checkSource()
+            {
+                var source=document.getElementsByName("source");
+                if(this.unlimited1==true)
+                {
+                    if(source[0].checked||source[1].checked||source[2].checked||source[3].checked||source[4].checked)
+                    {
+                        this.unlimited1=false;
+                    }
                 }
                 else
                 {
-                    this.disabled=true;
+                    if(!(source[0].checked||source[1].checked||source[2].checked||source[3].checked||source[4].checked))
+                    {
+                        this.unlimited1=true;
+                    }
+                }
+            },
+            checkIntrDate()
+            {
+                if(this.intr_date==null)
+                {
+                    this.unlimited2=true;
+                }
+                else
+                {
+                    this.unlimited2=false;
+                }
+            },
+            cleanIntrDate()
+            {
+                if(this.unlimited2!=false)
+                {
+                    this.intr_date=null
+                }
+            },
+            checkMarkingDate()
+            {
+                if(this.marking_date==null)
+                {
+                    this.unlimited3=true;
+                }
+                else
+                {
+                    this.unlimited3=false;
+                }
+            },
+            cleanMarkingDate()
+            {
+                if(this.unlimited3!=false)
+                {
+                    this.marking_date=null
                 }
             }
         }
     }
-</script>
 
+</script>
 
 <style scoped>
     .el-header 
@@ -172,96 +270,120 @@ import { ref } from "vue"
         top:92px;
         left:200px;
     }
+    #example
+    {
+        position: absolute;
+        top:80px;
+        right:120px;
+    }
     #submit
     {
         position: absolute;
         top:80px;
         right:40px;
     }
-    #highlight
-    {
-        color:red;
-        font-weight:900;
-    }
     #dialog_divider
     {
-        margin-top:-30px;
+        position: absolute;
+        top:50px;
+        left:0px;
     }
-    #header_management
-    {
-        font-weight:900;
-        text-align:left;
-        font-size:16px;
-    }
-    #management_text
-    {
-        text-align:left;
-        font-size:13px;
-    }
-    #header_handling
-    {
-        font-weight:900;
-        text-align:left;
-        font-size:16px;
-    }
-    #pics
+    #three_btns
     {
         position: absolute;
-        left:217px;
+        left:1010px;
     }
-    #handling_text_left
+    #two_btns
     {
-        font-weight:500;
-        font-size:15px;
         position: absolute;
-        left:217px;
+        right:0px;
     }
-    #handling_text_middle
+    #delete_btn
     {
-        font-weight:500;
-        font-size:15px;
-        position: absolute;
-        left:500px;
+        border: none;
+        margin-top:-5px;
     }
-    #handling_text_right
+    #middle_btns
     {
-        font-weight:500;
-        font-size:15px;
-        position: absolute;
-        left:783px;
+        width:1300px;
     }
-    #handling_datail_left
+    #middle_data
     {
+        margin-top:20px;
+        width:1300px;
+        height:390px;
+    }
+    #middle_header
+    {
+        border:thin solid rgb(234, 229, 229);
+        width:350px;
+        height:70px;
+    }
+    #tag_column_text
+    {
+        line-height:70px;
+    }
+    #add_tag
+    {
+        margin-left:100px;
+        background-color: rgb(0, 110, 254);
+        color: white;
+    }
+    #more_settings
+    {
+        margin-left:0px;
+        background-color: rgb(0, 110, 254);
+        color: white;
+    }
+    #add_tagGroup
+    {
+        border: none;
+    }
+    #middle_main
+    {
+        border:thin solid rgb(234, 229, 229);
+        width:350px;
+        height:80px;
+    }
+    #middle_footer
+    {
+        border:thin solid rgb(234, 229, 229);
+        width:350px;
+        height:240px;
+    }
+    #middle_asider
+    {
+        border:thin solid rgb(234, 229, 229);
+        width:950px;
+        height:390px;
+    }
+    #tag_search_text
+    {
+        font-size:12px;
+        color:grey;
         font-weight:300;
-        font-size:13px;
-        position: absolute;
-        left:217px;
-        width:200px;
-        text-align: left;
     }
-    #handling_datail_middle
+    #empty_img_left
     {
-        font-weight:300;
-        font-size:13px;
-        position: absolute;
-        left:500px;
-        width:200px;
-        text-align: left;
+        background:url(../../assets/empty.png);
+        height:170px;
+        width:167px;
+        margin:auto;
     }
-    #handling_datail_right
+    #empty_text_left
     {
-        font-weight:300;
         font-size:13px;
-        position: absolute;
-        left:783px;
-        width:200px;
-        text-align: left;
     }
-    #search_tag_div
+    #empty_right
     {
-        position:absolute;
-        right:0;
-        width:220px;
+        background:url(../../assets/empty.png) no-repeat;
+        height:170px;
+        width:290px;
+        margin:auto;
+        font-size:15px;
+        text-align:right;
+        line-height:170px;
+        margin-top: 100px;
     }
     #fotter_text
     {
@@ -279,7 +401,7 @@ import { ref } from "vue"
     }
     #pages
     {
-        margin-top:30px;
-        margin-left:960px;
+        position: absolute;
+        right:50px; 
     }
 </style>
