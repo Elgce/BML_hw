@@ -1,4 +1,5 @@
-
+import uuid
+import datetime
 import base64
 from hashlib import new
 import shutil
@@ -88,6 +89,10 @@ def add_data():
     data_single = data.get("data_single")
     direction = data.get("direction")
     
+    time = datetime.datetime.now()
+    group_id = (time.year%100)*10000 + time.month*100 + time.day
+    data_id = time.hour*10000 + time.minute*100 + time.second
+    
     sing_one = {
         "data_id": data_id,
         "group_id": group_id,
@@ -158,7 +163,7 @@ def reset_csv():
     writecsvtitle()
     for item in MessageInfo.values():
         with open('./backend/data.csv', 'a+', newline='') as csvfile:
-            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source"]
+            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source", 'direction', 'label_type', 'label_model', 'data_single']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(item)
 

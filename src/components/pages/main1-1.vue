@@ -46,7 +46,7 @@
                         </el-button>
                         <el-input class="inline-editor" placeholder="请输入新名称" id="name_input" type="text" style="width:140px;visibility: hidden" v-model="new_name" visible="false" @change="change_name(item.name)"/>
                     
-                        <span>数据集组ID:{{item["data_id"]}}</span>
+                        <span>数据集组ID:{{item["group_id"]}}</span>
                     </div>
                     <div class="op">
                         <span class="op-item">
@@ -390,7 +390,5 @@ import Breadcrumb from "../BreadCrumb.vue"
         font-size: 12px;
         margin-left: 3px;
     }
-    #pagination{
-        margin-left: 960px;
-    }
+
 </style>
