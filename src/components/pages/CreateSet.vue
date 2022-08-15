@@ -232,7 +232,7 @@ export default{
                             alert("数据集名字重复!");
                         }
                         else{
-                            this.$router.push("/index/manage/dataset")
+                            this.$router.push("/index/manage/dataset/insert")
                         }
                         
                     })

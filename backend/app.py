@@ -80,6 +80,7 @@ def index():
 def add_data():
     data = request.get_json()
     name = data.get("name")
+    session["name"] = name
     isok = "no-repeat"
     if (name in names):
         isok = "repeat"
