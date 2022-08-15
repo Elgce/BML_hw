@@ -27,8 +27,9 @@
                         v-model="input"
                         class="w-50 m-2"
                         placeholder="输入数据集名称或ID"
-                        :suffix-icon="Search"
-                    />
+                        prefix-icon="Search"
+                    >
+                    </el-input>
                 </el-col>
             </el-row>
             <el-empty :image-size="250" description="空空如也" v-if="value=='open' || data_num==0">

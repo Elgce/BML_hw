@@ -28,7 +28,7 @@ def readcsv():
 
 def writecsv(data):
     with open('./backend/data.csv', 'a+', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow(data)
         global data_num
@@ -38,7 +38,7 @@ def writecsv(data):
 # 用于将表头重新写入用于保存数据的csv文件
 def writecsvtitle():
     with open('./backend/data.csv', 'w', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -82,6 +82,12 @@ def add_data():
     specy = data.get("specy")
     mark_state = data.get("mark_state")
     clear_state = data.get("clear_state")
+    
+    label_type = data.get("label_type")
+    label_model = data.get("label_model")
+    data_single = data.get("data_single")
+    direction = data.get("direction")
+    
     sing_one = {
         "data_id": data_id,
         "group_id": group_id,
@@ -93,6 +99,10 @@ def add_data():
         "mark_state": mark_state,
         "clear_state": clear_state,
         "source": [],
+        "direction": direction,
+        "label_type": label_type,
+        "label_model": label_model,
+        "data_single": data_single,
     }
     MessageInfo.update({data_id:sing_one})
     writecsv(sing_one)
@@ -197,6 +207,6 @@ def pass_file(file_name):
     
 
 if __name__=="__main__":
-    # renew()
+    renew()
     readcsv()
     app.run(debug=True, port=5000, host= "0.0.0.0")

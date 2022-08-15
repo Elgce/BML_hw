@@ -17,32 +17,32 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="数据集版本">
-                    <el-ratio-button disabled>V1</el-ratio-button>
+                    V1
                 </el-form-item>
             </el-form>
             <el-form id="test" v-if="qx.quanxian===1" :model="form" label-width="120px" style="max-width: 1550px" :key="1">
                 <el-form-item label="标注类型">
                     <el-radio-group v-model="form.type">
-                    <el-radio name="marking_type_pic" id="pic_assortment" label="图像分类" border @click="set_pic_value(1)"/>
-                    <el-radio name="marking_type_pic" id="object" label="物体检测" border @click="set_pic_value(2)"/>
-                    <el-radio name="marking_type_pic" id="split" label="图像分割" border @click="set_pic_value(3)"/>
-                    <el-radio name="marking_type_pic" id="marking" label="OCR标注" border @click="set_pic_value(4)"/>
+                    <el-radio name="marking_type_pic" id="pic_assortment" label="pic_cla" border @click="set_pic_value(1)">图像分类</el-radio>
+                    <el-radio name="marking_type_pic" id="object" label="pic_det" border @click="set_pic_value(2)">物体检测</el-radio>
+                    <el-radio name="marking_type_pic" id="split" label="pic_div" border @click="set_pic_value(3)">图像分割</el-radio>
+                    <el-radio name="marking_type_pic" id="marking" label="pic_ocr" border @click="set_pic_value(4)">OCR标注</el-radio>
                 </el-radio-group>
                 </el-form-item>
             </el-form>
             <el-form id="test" v-if="pic.quanxian===1 && qx.quanxian===1" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio name="module" label="单图单标签"/>
-                    <el-radio name="module" label="单图多标签"/>
-                </el-radio-group>
-            </el-form-item>
+                    <el-radio name="module" label="ss">单图单标签</el-radio>
+                    <el-radio name="module" label="sm">单图多标签</el-radio>
+                    </el-radio-group>
+                </el-form-item>
             </el-form>
 
             <el-form id="test" v-if="pic.quanxian===2 && qx.quanxian===1" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio name="module" label="矩形框标注"/>
+                    <el-radio name="module" label="rec">矩形框标注</el-radio>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -50,8 +50,8 @@
             <el-form id="test" v-if="pic.quanxian===3 && qx.quanxian===1" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio name="module" label="实例分割"/>
-                    <el-radio name="module" label="语义分割"/>
+                    <el-radio name="module" label="insdiv">实例分割</el-radio>
+                    <el-radio name="module" label="meandiv">语义分割</el-radio>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -59,7 +59,7 @@
             <el-form id="test" v-if="pic.quanxian===4 && qx.quanxian===1" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio name="module" label="非结构化文字识别"/>
+                    <el-radio name="module" label="recog">非结构化文字识别</el-radio>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -67,10 +67,10 @@
             <el-form id="test" v-if="qx.quanxian===2" :model="form" label-width="120px" style="max-width: 1550px" :key="1">
                 <el-form-item label="标注类型">
                     <el-radio-group v-model="form.type">
-                    <el-radio name="marking_type_text" id="text_assortment" label="文本分类" border @click="set_txt_value(1)"/>
-                    <el-radio name="marking_type_text" id="similarity" label="文本相似度" border @click="set_txt_value(2)"/>
-                    <el-radio name="marking_type_text" id="order_marking" label="序列标注" border @click="set_txt_value(3)"/>
-                    <el-radio name="marking_type_text" id="extracting" label="实体抽取" border @click="set_txt_value(4)"/>
+                    <el-radio name="marking_type_text" id="text_assortment" label="txt_cla" border @click="set_txt_value(1)">文本分类</el-radio>
+                    <el-radio name="marking_type_text" id="similarity" label="txt_sim" border @click="set_txt_value(2)">文本相似度</el-radio>
+                    <el-radio name="marking_type_text" id="order_marking" label="txt_cons" border @click="set_txt_value(3)">序列标注</el-radio>
+                    <el-radio name="marking_type_text" id="extracting" label="txt_extr" border @click="set_txt_value(4)">实体抽取</el-radio>
                 </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -78,8 +78,8 @@
             <el-form id="test" v-if="txt.quanxian===1 && qx.quanxian===2" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio name="module" label="短文本单标签"/>
-                    <el-radio name="module" label="短文本多标签"/>
+                    <el-radio name="module" label="txt_slabel">短文本单标签</el-radio>
+                    <el-radio name="module" label="txt_mlabel">短文本单标签</el-radio>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -87,7 +87,7 @@
             <el-form id="test" v-if="txt.quanxian===2 && qx.quanxian===2" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio name="module" label="短文本相似度"/>
+                    <el-radio name="module" label="txt_sim">短文本相似度</el-radio>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -95,10 +95,10 @@
             <el-form id="test" v-if="txt.quanxian===3 && qx.quanxian===2" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio name="module" label="IOB标注模式"/>
-                    <el-radio name="module" label="IO标注模式"/>
-                    <el-radio name="module" label="IOE标注模式"/>
-                    <el-radio name="module" label="IOBES标注模式"/>
+                    <el-radio name="module" label="txt_iob">IOB标注模式</el-radio>
+                    <el-radio name="module" label="txt_io">IO标注模式</el-radio>
+                    <el-radio name="module" label="txt_ioe">IOE标注模式</el-radio>
+                    <el-radio name="module" label="txt_iobes">IOBES标注模式</el-radio>
                 </el-radio-group>
             </el-form-item>
             </el-form>
@@ -106,16 +106,16 @@
             <el-form id="test" v-if="txt.quanxian===4 && qx.quanxian===2" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
-                    <el-radio name="module" label="文本实体抽取"/>
+                    <el-radio name="module" label="txt_extr">文本实体抽取</el-radio>
                 </el-radio-group>
             </el-form-item>
             </el-form>
 
             <el-form id="test" v-if="qx.quanxian===2 && txt.quanxian!=0" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="数据集属性">
-                    <el-radio-group v-model="form.direction">
-                        <el-radio name="dataPara" label="数据自动去重"/>
-                        <el-radio name="dataPara" label="数据不去重"/>
+                    <el-radio-group v-model="form.single">
+                        <el-radio name="dataPara" label="dir_auto">数据自动去重</el-radio>
+                        <el-radio name="dataPara" label="dir_no">数据不去重</el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -123,7 +123,7 @@
             <el-form id="test" v-if="qx.quanxian===3" :model="form" label-width="120px" style="max-width: 650px" :key="1">
                 <el-form-item label="技术方向">
                     <el-radio-group v-model="form.direction">
-                        <el-radio name="marking_type_table" id="predicting" label="表格预测" border/>
+                        <el-radio name="marking_type_table" id="predicting" label="table_pre" border>表格预测</el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -152,6 +152,7 @@ export default{
             type: '',
             model: '',
             direction: '',
+            single: '',
         });
         let qx = reactive({
             quanxian : 0,
@@ -198,6 +199,10 @@ export default{
             if (this.isfull()){
                 let name = this.form["name"];
                     let specy = this.radio;
+                    let label_type = this.form["type"];
+                    let label_model = this.form["model"];
+                    let is_single = this.form["single"];//数据去重或不去重
+                    let direction = this.form["direction"];
                     const data = {
                         "data_id": name,
                         "group_id": name,
@@ -205,10 +210,15 @@ export default{
                         "version": "V1",
                         "num": 0,
                         "in_state": "finished",
-                        "specy": specy,
+                        "specy": specy,//通过this.radio保存下创建过程中“数据类型”一栏的数据
                         "mark_state": 0,
                         "clear_state": "-",
-                    }
+                        "label_type": label_type,
+                        "label_model": label_model,
+                        "data_single": is_single,
+                        "direction": direction,
+                    };
+                    console.log(data);
                     return fetch("/api/adddata",{
                         method: 'POST',
                         headers: {
