@@ -13,7 +13,7 @@
         <el-button id="memo_cancel" @click="canceling_memo">取消</el-button>
     </div>
     <p class="text_left1" style="left:240px;top:250px">历史数据</p>
-    <p class="text_left2" style="left:350px;top:171px">123456</p>
+    <p class="text_left2" style="left:350px;top:171px" id="data_id">123456</p>
     <p class="text_left2" style="left:350px;top:250px">暂无导入记录</p>
     <p class="text_right2" style="left:600px;top:170px">版本号</p>
     <p class="text_right2" style="left:690px;top:171px">V1</p>
@@ -22,14 +22,14 @@
     <p class="text_left1" style="left:240px;top:380px">数据总量</p>
     <p class="text_left1" style="left:240px;top:420px">标签个数</p>
     <p class="text_left1" style="left:240px;top:460px">大小</p>
-    <p class="text_left2" style="left:350px;top:340px">图像分类</p>
+    <p class="text_left2" style="left:350px;top:340px" id="label_type">图像分类</p>
     <p class="text_left2" style="left:350px;top:381px">0</p>
     <p class="text_left2" style="left:350px;top:421px">0</p>
     <p class="text_left2" style="left:350px;top:461px">0M</p>
     <p class="text_right1" style="left:600px;top:343px">标注模块</p>
     <p class="text_right1" style="left:600px;top:383px">已标注</p>
     <p class="text_right1" style="left:600px;top:423px">待确认</p>
-    <p class="text_right2" style="left:690px;top:344px">单图单标签</p>
+    <p class="text_right2" style="left:690px;top:344px" id="label_module">单图单标签</p>
     <p class="text_right2" style="left:690px;top:385px">0</p>
     <p class="text_right2" style="left:690px;top:425px">0</p>
     <p class="item_heading" id="data_cle">数据清洗</p>
@@ -99,6 +99,7 @@
 </template>
 
 <script>
+import { reactive } from "vue";
 import Breadcrumb from "../BreadCrumb.vue"
     export default{
         name: "MainTwo",
@@ -110,11 +111,77 @@ import Breadcrumb from "../BreadCrumb.vue"
                 dialogVisible: false,
                 fileList: [],
                 file: {},
+                MessageInfo: reactive({}),
             };
+        },
+        created(){
+            this.get_data();
         },
         methods:{
             //written by bqw
-            
+            get_data(){
+                let that = this;
+                return fetch("/api/getone").then((res) => res.json())
+                .then((j)=>{
+                    console.log(j.data);
+                    that.MessageInfo = j.data;
+                    let data_id = document.getElementById("data_id");
+                    data_id.innerHTML = that.MessageInfo["data_id"];
+                    let label_type = document.getElementById("label_type");
+                    if(that.MessageInfo["specy"]==="pic"){
+                        label_type.innerHTML = "图像分类";
+                    }
+                    else if(that.MessageInfo["specy"]==="txt"){
+                        label_type.innerHTML = "文本分类";
+                    }
+                    else if(that.MessageInfo["specy"]==="table"){
+                        label_type.innerHTML = "表格分类";
+                    }
+                    let label_module = document.getElementById("label_module");
+                    if(that.MessageInfo[label_module]==="ss"){
+                        label_module.innerHTML = "单图单标签";
+                    }
+                    else if(that.MessageInfo[label_module]==="sm"){
+                        label_module.innerHTML = "单图多标签";
+                    }
+                    else if(that.MessageInfo[label_module]==="rec"){
+                        label_module.innerHTML = "矩形框标注";
+                    }
+                    else if(that.MessageInfo[label_module]==="insdiv"){
+                        label_module.innerHTML = "实例分割";
+                    }
+                    else if(that.MessageInfo[label_module]==="meandiv"){
+                        label_module.innerHTML = "语义分割";
+                    }
+                    else if(that.MessageInfo[label_module]==="recog"){
+                        label_module.innerHTML = "非结构化文字识别";
+                    }
+                    else if(that.MessageInfo[label_module]==="txt_slabel"){
+                        label_module.innerHTML = "短文本单标签";
+                    }
+                    else if(that.MessageInfo[label_module]==="txt_mlabel"){
+                        label_module.innerHTML = "短文本多标签"
+                    }
+                    else if(that.MessageInfo[label_module]==="txt_sim"){
+                        label_module.innerHTML = "短文本相似度";
+                    }
+                    else if(that.MessageInfo[label_module]==="txt_iob"){
+                        label_module.innerHTML = "IOB标注模式";
+                    }
+                    else if(that.MessageInfo[label_module]==="txt_io"){
+                        label_module.innerHTML = "IO标注模式";
+                    }
+                    else if(that.MessageInfo[label_module]==="txt_ioe"){
+                        label_module.innerHTML = "IOE标注模式";
+                    }
+                    else if(that.MessageInfo[label_module]==="txt_iobes"){
+                        label_module.innerHTML = "IOBES标注模式";
+                    }
+                    else if(that.MessageInfo[label_module]==="txt_extr"){
+                        label_module.innerHTML = "文本实体抽取";
+                    }
+                })
+            },
             back_index(){
                 return fetch("/api/clearsession").then((res) => res.json()).then(()=>{
                     this.$router.push("/index/manage/dataset");

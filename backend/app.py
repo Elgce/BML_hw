@@ -131,8 +131,9 @@ def get_data():
     
 # 用于前端获取特定条目的信息
 @app.route("/api/getone")
-def get_one(name):
-    return MessageInfo[name]
+def get_one():
+    name = session["name"]
+    return {"data":MessageInfo[name]}
 
 @app.route("/api/getnum")
 def get_num():

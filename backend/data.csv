@@ -1,5 +1,2 @@
 group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source,direction,label_type,label_model,data_single
-220815,1234,V1,0,164830,finished,pic,0,-,[],,pic_cla,ss,
-220815,123,V1,0,164840,finished,txt,0,-,[],,txt_cla,txt_slabel,dir_auto
-220815,123564,V1,0,164928,finished,pic,0,-,[],,pic_cla,ss,
-220815,31242151,V1,0,172203,finished,pic,0,-,['\\src\\31242151\\msi.jpg'],,pic_cla,ss,
+220816,1231324,V1,0,150019,finished,pic,0,-,[],,pic_cla,ss,
