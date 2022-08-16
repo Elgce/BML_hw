@@ -79,7 +79,7 @@
                 <el-form-item label="标注模板">
                     <el-radio-group v-model="form.model">
                     <el-radio name="module" label="txt_slabel">短文本单标签</el-radio>
-                    <el-radio name="module" label="txt_mlabel">短文本单标签</el-radio>
+                    <el-radio name="module" label="txt_mlabel">短文本多标签</el-radio>
                 </el-radio-group>
             </el-form-item>
             </el-form>

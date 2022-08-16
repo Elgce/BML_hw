@@ -20,13 +20,13 @@
                     </el-select>
                 </el-col>
                 <el-col :span="4">
-                    <el-cascader v-model="Tvalue" :options="Toptions"  placeholder="全部"/>
+                    <el-cascader v-model="Tvalue" :options="Toptions"  placeholder="全部" @change="handleChosenChange"/>
                 </el-col>
                 <el-col :span="4">
                     <el-input
                         v-model="input"
                         class="w-50 m-2"
-                        placeholder="输入数据集名称或ID"
+                        placeholder="输入数据集名称"
                         prefix-icon="Search"
                     >
                     </el-input>
@@ -148,51 +148,51 @@ import Breadcrumb from "../BreadCrumb.vue"
                         label: '图片',
                         children: [
                             {
-                                value: 'clapic',
+                                value: 'pic_cla',
                                 label: '图片分类',
                             },
                             {
-                                value: 'tach',
+                                value: 'pic_det',
                                 label: '物体检测',
                             },
                             {
-                                value: 'cut',
+                                value: 'pic_div',
                                 label: '图像分割',
                             },
                             {
-                                value: 'OCR',
+                                value: 'pic_ocr',
                                 label: 'OCR标注',
                             }
                         ]
                     },
                     {
-                        value: 'tex',
+                        value: 'txt',
                         label: '文本',
                         children: [
                             {
-                                value: 'clasi',
+                                value: 'txt_cla',
                                 label: '文本分类',
                             },
                             {
-                                value: 'accor',
+                                value: 'txt_sim',
                                 label: '短文本相似度'
                             },
                             {
-                                value: 'label',
+                                value: 'txt_cons',
                                 label: '序列标注',
                             },
                             {
-                                value: 'get',
+                                value: 'txt_extr',
                                 label: '文本实体抽取',
                             },
                         ]
                     },
                     {
-                        value: 'tab',
+                        value: 'table',
                         label: '表格',
                         children: [
                             {
-                                value: 'pred',
+                                value: 'table_pre',
                                 label: '表格预测',
                             },
                             {
@@ -204,6 +204,41 @@ import Breadcrumb from "../BreadCrumb.vue"
             }
         },
         methods:{
+            handleChosenChange(){
+                let that = this;
+                const data = {"specy":this.Tvalue[0],"type":this.Tvalue[1]}
+                return fetch("/api/searchdata",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then((j)=>{
+                    that.MessageInfo = j.MessageShow;
+                    console.log("~");
+                    console.log(that.MessageInfo);
+                    that.data_num = j.data_num;
+                    that.MessageArray = reactive([]);
+                    for (let item in that.MessageInfo){
+                        that.MessageArray.push(item);
+                        if(that.MessageInfo[item]["in_state"]==="finished"){
+                            that.MessageInfo[item]["in_state"] = "已完成";
+                        }
+                        if(that.MessageInfo[item]["specy"]==="pic"){
+                            that.MessageInfo[item]["specy"] = "图片标注";
+                        }
+                        else if(that.MessageInfo[item]["specy"]==="txt"){
+                            that.MessageInfo[item]["specy"] = "文本标注";
+                        }
+                        else{
+                            that.MessageInfo[item]["specy"] = "表格标注";
+                        }
+                    }
+                    this.handleCurrentChange(1);
+                })
+            },
             insert(name){
                 const data = {"name": name}
                 return fetch("/api/setsession",{
@@ -275,6 +310,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 fetch("/api/getdata").then((res) => res.json().then((j)=>{
                     that.MessageInfo = j.MessageInfo;
                     // console.log(that.MessageInfo.value());
+                    that.MessageArray = reactive([]);
                     for (let item in that.MessageInfo){
                         that.MessageArray.push(item);
                         if(that.MessageInfo[item]["in_state"]==="finished"){

@@ -52,6 +52,25 @@ def writecsvtitle():
 def renew():
     writecsvtitle()
 
+# 用于前端搜索时获取新的Message内容返回前端
+@app.route("/api/searchdata",methods=['GET','POST'])
+def search_data():
+    global num
+    num = 0
+    data = request.get_json()
+    specy = data.get("specy")
+    label_type = data.get("type")
+    print(label_type)
+    print(specy)
+    Message_Show = {}
+    for item in MessageInfo:
+        if MessageInfo[item]["specy"]==specy and (MessageInfo[item]["label_type"]==label_type or MessageInfo[item]["direction"]==label_type):
+            Message_Show.update({MessageInfo[item]["name"]:MessageInfo[item]})
+            num = num + 1
+    print(MessageInfo)
+    return {"MessageShow":Message_Show,"data_num":num}        
+    
+
 # 用于up-load的action
 @app.route("/api/call",methods=['GET','POST'])
 def test():
