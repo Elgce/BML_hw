@@ -50,17 +50,18 @@
         <option>BOS目录导入</option>
         <option>分享链接导入</option>
         <option>平台已有数据集</option>
-        <option>摄像头采集数据</option>
-        <option>云服务回流数据</option>
+        <option id="camera_data">摄像头采集数据</option>
+        <option id="cloud_data">云服务回流数据</option>
     </select>
     <select id="local_choice" @change="local_select_change">
         <option value="" disabled selected hidden>请选择</option>
-        <option value="pic">上传图片</option>
+        <option id="excel" hidden>上传Excel文件</option>
+        <option value="pic" id="txt">上传TXT文本</option>
         <option>上传压缩包</option>
         <option>API导入</option>
     </select>
     <!-- written by bqw -->
-    <el-button id="uploader" type="primary" @click="call_diagram">上传图片</el-button>
+    <el-button id="uploader" type="primary" @click="call_diagram"><el-icon><Upload /></el-icon>上传图片</el-button>
     <el-dialog
         title="上传图片"
         v-model="dialogVisible"
@@ -128,11 +129,23 @@ import Breadcrumb from "../BreadCrumb.vue"
                     let data_id = document.getElementById("data_id");
                     data_id.innerHTML = that.MessageInfo["data_id"];
                     let label_type = document.getElementById("label_type");
+                    var camera_data=document.getElementById("camera_data");
+                    var cloud_data=document.getElementById("cloud_data");
+                    var excel=document.getElementById("excel");
+                    var txt=document.getElementById("txt");
+                    var upload_pic=document.getElementById("upload_pic");
+                    var uploader=document.getElementById("uploader");
                     if(that.MessageInfo["specy"]==="pic"){
                         label_type.innerHTML = "图像分类";
+                        txt.innerHTML = "上传图片";
                     }
                     else if(that.MessageInfo["specy"]==="txt"){
                         label_type.innerHTML = "文本分类";
+                        cloud_data.hidden=true;
+                        camera_data.hidden=true;
+                        excel.hidden=false;
+                        upload_pic.innerHTML = "上传TXT文本";
+                        uploader.innerHTML = "上传TXT文本";
                     }
                     else if(that.MessageInfo["specy"]==="table"){
                         label_type.innerHTML = "表格分类";
