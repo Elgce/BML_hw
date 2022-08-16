@@ -28,6 +28,7 @@
                         class="w-50 m-2"
                         placeholder="输入数据集名称"
                         prefix-icon="Search"
+                        @change="Searchbyname"
                     >
                     </el-input>
                 </el-col>
@@ -217,8 +218,6 @@ import Breadcrumb from "../BreadCrumb.vue"
                 .then(res => res.json())
                 .then((j)=>{
                     that.MessageInfo = j.MessageShow;
-                    console.log("~");
-                    console.log(that.MessageInfo);
                     that.data_num = j.data_num;
                     that.MessageArray = reactive([]);
                     for (let item in that.MessageInfo){
@@ -278,9 +277,43 @@ import Breadcrumb from "../BreadCrumb.vue"
                     this.$router.push("/index/manage/test");
                 })
             },
+            Searchbyname(){
+                const data = {"name":this.input};
+                let that = this;
+                return fetch("/api/searchname",{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then((j)=>{
+                    that.MessageInfo = j.MessageShow;
+                    that.data_num = j.data_num;
+                    that.MessageArray = reactive([]);
+                    for (let item in that.MessageInfo){
+                        that.MessageArray.push(item);
+                        if(that.MessageInfo[item]["in_state"]==="finished"){
+                            that.MessageInfo[item]["in_state"] = "已完成";
+                        }
+                        if(that.MessageInfo[item]["specy"]==="pic"){
+                            that.MessageInfo[item]["specy"] = "图片标注";
+                        }
+                        else if(that.MessageInfo[item]["specy"]==="txt"){
+                            that.MessageInfo[item]["specy"] = "文本标注";
+                        }
+                        else{
+                            that.MessageInfo[item]["specy"] = "表格标注";
+                        }
+                    }
+                    this.handleCurrentChange(1);
+                })
+
+            },
             change_name(name){
                 // let that = this;
-                const data = {"new_name":this.new_name,"old_name":name}
+                const data = {"new_name":this.new_name,"old_name":name};
                 return fetch("/api/changename",{
                     method: 'POST',
                     headers:{

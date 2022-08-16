@@ -60,21 +60,17 @@ def search_data():
     data = request.get_json()
     specy = data.get("specy")
     label_type = data.get("type")
-    print(label_type)
-    print(specy)
     Message_Show = {}
     for item in MessageInfo:
         if MessageInfo[item]["specy"]==specy and (MessageInfo[item]["label_type"]==label_type or MessageInfo[item]["direction"]==label_type):
             Message_Show.update({MessageInfo[item]["name"]:MessageInfo[item]})
             num = num + 1
-    print(MessageInfo)
     return {"MessageShow":Message_Show,"data_num":num}        
     
 
 # 用于up-load的action
 @app.route("/api/call",methods=['GET','POST'])
 def test():
-    print(request.files.to_dict())
     file = request.files.to_dict()
     f = file["file"]
     basepath = os.path.dirname(__file__)
@@ -83,10 +79,8 @@ def test():
     if not os.path.exists(basepath + topath):
         os.makedirs(basepath+topath)
     upload_path = basepath + topath + "\\" +f.filename
-    print(upload_path)
     f.save(upload_path)
     MessageInfo[name]["source"].append(topath+"\\"+f.filename)
-    print(MessageInfo[name]["source"])
     reset_csv()
     return ""
 
@@ -165,11 +159,9 @@ def delete_data():
     name = data.get("name")
     global data_num
     data_num = data_num - 1
-    print(MessageInfo)
     MessageInfo.pop(name)
     global names
     names.remove(name)
-    print(names)
     basepath = os.path.dirname(__file__)
     topath = basepath+"\src"+"\\"+name
     shutil.rmtree(topath, ignore_errors=True)
@@ -213,9 +205,6 @@ def set_session():
 @app.route("/api/sessionname")
 def get_session_name():
     name = session["name"]
-    print(name)
-    print(MessageInfo)
-    print(MessageInfo[name]["source"])
     return {"name":name,"src_list":MessageInfo[name]["source"]}
     
 @app.route("/api/clearsession")
@@ -229,7 +218,6 @@ def copyfile(srcfile,name):
         print("%s not exist!"%(srcfile))
     else:
         dstpath = "./backend/src/" + name + "/"
-        print(dstpath)
         if not os.path.exists(dstpath):
             os.makedirs(dstpath)
         fpath,fname = os.path.split(srcfile)
@@ -243,7 +231,21 @@ def pass_file(file_name):
     path = basepath + "\src\\" + name + "\\" + file_name
     return send_file(path)
 
-     
+# 用于前端根据名字选取数据集
+@app.route("/api/searchname",methods=['GET','POST'])
+def search_name():
+    data = request.get_json()
+    name = data.get("name")
+    if(name==""):
+        return {"MessageShow":MessageInfo,"data_num":data_num}
+    global num
+    num = 0
+    Message_Show = {}
+    for item in MessageInfo:
+        if MessageInfo[item]["name"]==name:
+            Message_Show.update({MessageInfo[item]["name"]:MessageInfo[item]})
+            num = num + 1
+    return {"MessageShow":Message_Show,"data_num":num}   
     
 
 if __name__=="__main__":
