@@ -83,7 +83,7 @@
                     <el-descriptions-item label="标注状态">{{item["mark_state"]}}</el-descriptions-item>
                     <el-descriptions-item label="清洗状态">{{item["clear_state"]}}</el-descriptions-item>
                     <el-descriptions-item label="操作">
-                        <el-button type="primary" link key="label" @click="multilabel(item.name)">多人标注</el-button>
+                        <el-button type="primary" link key="label" @click="multilabel(item.name)">查看与标注</el-button>
                         <el-button type="primary" link key="label" @click="insert(item.name)">导入</el-button>
                         <el-button type="primary" link key="delete" @click="deletedata(item.name)">删除</el-button>
                     </el-descriptions-item>
@@ -274,7 +274,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 })
                 .then(res => res.json())
                 .then(()=>{
-                    this.$router.push("/index/manage/test");
+                    this.$router.push("/index/menu3");
                 })
             },
             Searchbyname(){

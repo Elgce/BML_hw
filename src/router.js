@@ -63,6 +63,12 @@ const routes = [
                 component: () => import('./components/pages/TagGroup.vue'),
                 name: '标签管理',
                 meta: {title:'标签管理'}
+            },
+            {
+                path: '/index/manage/dataset/pic/label/blank',
+                component: () => import("./components/pages/BlankLabel.vue"),
+                name: '图片标签空白页',
+                meta: {title:'图片标签空白页'}
             }
         ]
     }

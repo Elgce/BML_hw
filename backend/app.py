@@ -1,4 +1,3 @@
-import uuid
 import datetime
 import base64
 from hashlib import new
@@ -14,7 +13,9 @@ import shutil
 app = Flask(__name__,static_folder="../dist/",static_url_path="/")
 
 MessageInfo = {}
+LabelInfo = {}
 
+label_num = 0
 data_num = 0
 
 names = []
@@ -34,17 +35,18 @@ def readcsv():
 
 def writecsv(data):
     with open('./backend/data.csv', 'a+', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single', 'labels']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow(data)
         global data_num
         data_num = data_num + 1
             
 
+
 # 用于将表头重新写入用于保存数据的csv文件
 def writecsvtitle():
     with open('./backend/data.csv', 'w', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single', 'labels']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -80,7 +82,7 @@ def test():
         os.makedirs(basepath+topath)
     upload_path = basepath + topath + "\\" +f.filename
     f.save(upload_path)
-    MessageInfo[name]["source"].append(topath+"\\"+f.filename)
+    MessageInfo[name]["source"].append(f.filename)
     reset_csv()
     return ""
 
@@ -132,6 +134,7 @@ def add_data():
             "label_type": label_type,
             "label_model": label_model,
             "data_single": data_single,
+            "labels": [],
         }
         MessageInfo.update({name:sing_one})
         writecsv(sing_one)
@@ -193,7 +196,7 @@ def reset_csv():
     writecsvtitle()
     for item in MessageInfo.values():
         with open('./backend/data.csv', 'a+', newline='') as csvfile:
-            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source", 'direction', 'label_type', 'label_model', 'data_single']
+            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source", 'direction', 'label_type', 'label_model', 'data_single', 'labels']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(item)
 
@@ -250,6 +253,31 @@ def search_name():
             num = num + 1
     return {"MessageShow":Message_Show,"data_num":num}   
     
+# ---------------------------------------------------------
+# Below are something about lables
+# Written by bqw
+# ---------------------------------------------------------
+@app.route("/api/addlabel",methods=['GET','POST'])
+def add_label():
+    data = request.get_json()
+    label_name = data.get("name")
+    name = session["name"]
+    MessageInfo[name]["labels"].append(label_name);
+    reset_csv()
+    print(MessageInfo[name]["labels"])
+    return {"labels":MessageInfo[name]["labels"]}
+
+@app.route("/api/getlabels",methods=['GET',"POST"])
+def get_labels():
+    name = session["name"]
+    print(MessageInfo[name]["labels"])
+    num = len(MessageInfo[name]["labels"])
+    return {"labels":MessageInfo[name]["labels"],"label_num": num}
+
+@app.route("/api/getresources")
+def get_resources():
+    name = session["name"]
+    return {"sources":MessageInfo[name]["source"]}
 
 if __name__=="__main__":
     # renew()
