@@ -112,9 +112,9 @@
                             <div v-for="item in Label_info" :key="item" class="scrollbar-demo-item">
                                 <el-card shadow="hover" class="card">
                                     <div class="card_info">
-                                        
-                                        <el-button type="primary" text class="card_edit">编辑</el-button>
-                                        <el-button type="info" text class="card_delete">删除</el-button>
+                                        <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button>
+                                        <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
+                                        <el-input type="text" style="width:120px;visibility:hidden"></el-input>
                                         <p class="card_name">{{item}}</p>
                                     </div>
                                 </el-card>
@@ -131,12 +131,8 @@
                     <div id="empty_right" v-if="src_list.length===0">
                         暂无可用数据
                     </div>
-                    <div class="show_area">
-                        <div
-                            v-for="item in src_list"
-                            :key="item"
-                            class="pic_show"
-                            >
+                    <el-row :gutter="20"  class="el-row" type="flex" >
+                    <el-col :span="4" v-for="item in src_list" :key="item" class="pic_show" >
                             <el-card class="show_pic_card">
                                 <el-image
                                 :src="item"
@@ -148,8 +144,8 @@
                                 </div>
                                 </div>
                             </el-card>
-                        </div>
-                    </div>
+                    </el-col>
+                    </el-row>
                     </el-scrollbar>
                 </el-aside>
             </el-container>
@@ -203,7 +199,7 @@ import { reactive, ref } from "vue"
                 sources: reactive([]),
 
                 show_btn: false,
-                dialogVisible: true,
+                dialogVisible: false,
                 radio1:'全部',
                 visible:false,
                 unlimited1:true,
@@ -240,11 +236,27 @@ import { reactive, ref } from "vue"
         },
         methods:{
         //  written by bqw
+            edit_label(name){
+                console.log(name);
+                // let std = document.getElementById("");
+            },
+            delete_label(name){
+                const data = {"label_name": name};
+                return fetch("/api/deletelabel",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res)=>res.json()
+                .then(()=>{
+                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                }))
+            },
             get_pics(){
                 let that = this;
                 return fetch("/api/getresources").then((res)=>res.json().then((j)=>{
-                    console.log("!!!");
-                    console.log(j.sources);
                     that.sources = j.sources;
                 }))
             },
@@ -268,17 +280,7 @@ import { reactive, ref } from "vue"
                     console.log(that.src_list);
                 }
             },
-            cleanSource()
-            {
-                if(this.unlimited1==true)
-                {
-                    this.source1=false;
-                    this.source2=false;
-                    this.source3=false;
-                    this.source4=false;
-                    this.source5=false;
-                }
-            },
+
            
             add_label(){
                 const data = {"name": this.labelname};
@@ -316,6 +318,18 @@ import { reactive, ref } from "vue"
                 this.$router.push("/index/manage/dataset/insert");
             },
             //written over
+
+            cleanSource()
+            {
+                if(this.unlimited1==true)
+                {
+                    this.source1=false;
+                    this.source2=false;
+                    this.source3=false;
+                    this.source4=false;
+                    this.source5=false;
+                }
+            },
             checkSource()
             {
                 var source=document.getElementsByName("source");
@@ -536,7 +550,7 @@ import { reactive, ref } from "vue"
     }
     .card_name{
         margin-top: 6px;
-        margin-left: 140px;
+        margin-left: 120px;
     }
     .card_edit{
         margin-left: -20px;
@@ -550,10 +564,10 @@ import { reactive, ref } from "vue"
     }
     .show_area{
         display: flex;
-        width: 160px;
+        width: 180px;
     }
     .pic_show{
-        width: 160px;
+        width: 180px;
     }
     .show_pic_card{
         width: 160px;

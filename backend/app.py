@@ -270,7 +270,6 @@ def add_label():
 @app.route("/api/getlabels",methods=['GET',"POST"])
 def get_labels():
     name = session["name"]
-    print(MessageInfo[name]["labels"])
     num = len(MessageInfo[name]["labels"])
     return {"labels":MessageInfo[name]["labels"],"label_num": num}
 
@@ -278,6 +277,20 @@ def get_labels():
 def get_resources():
     name = session["name"]
     return {"sources":MessageInfo[name]["source"]}
+
+@app.route("/api/deletelabel",methods=['GET','POST'])
+def delete_label():
+    data = request.get_json()
+    label_name = data.get("label_name")
+    name = session["name"]
+    print(MessageInfo[name]["labels"])
+    index = MessageInfo[name]["labels"].index(label_name)
+    MessageInfo[name]["labels"].pop(index)
+    print(name)
+    print(label_name)
+    reset_csv()
+    return {"lebel_name":label_name}
+    
 
 if __name__=="__main__":
     # renew()
