@@ -1,5 +1,5 @@
 <template>
-    <el-contanier>
+    <el-container>
         <el-header>
             <Breadcrumb></Breadcrumb>
             <el-link id="example" type="primary" @click="dialogVisible = true">批量标注示例</el-link>
@@ -14,7 +14,7 @@
                     <el-radio-button label="无标注信息(0)" />
                 </el-radio-group>
                 <div id="three_btns">
-                    <el-button>导入图片</el-button>
+                    <el-button @click="insert_pic">导入图片</el-button>
                     <el-button>质检报告</el-button>
                     <el-button>批量批注</el-button>
                 </div>
@@ -80,12 +80,16 @@
             <el-container id="middle_data">
                 <el-container>
                     <el-header id="middle_header">
-                        <b id="tag_column_text">标签栏</b>
-                        <el-button id="add_tag">添加标签</el-button>
+                        <b v-if="show_btn===false" id="tag_column_text">标签栏</b>
+                        <el-button v-if="show_btn===false" id="add_tag" @click="create_label">添加标签</el-button>
+                        <el-input  v-if="show_btn===true" id="label_name" v-model="labelname" placeholder="请输入标签名字" style="margin-left:-20px;margin-top:18px;width: 240px;"/>
+                        <el-button v-if="show_btn===true" type="primary" @click="add_label" link style="margin-left:5px;" >确定</el-button>
+                        <el-button v-if="show_btn===true" type="info" @click="cancel_label" link style="margin-left:-2px;">取消</el-button>
                         <el-popover
                             placement="bottom-end"
                             :width="20"
                             trigger="hover"
+                            v-if="show_btn===false"
                         >
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <el-button id="add_tagGroup">添加标签组</el-button>
@@ -104,18 +108,53 @@
                         <span id="tag_search_text">根据图片内容，选择标签</span>
                     </el-header>
                     <el-footer id="middle_footer">
-                        <div id="empty_img_left"></div>
-                        <span id="empty_text_left">暂无可用标签 ，请点击上方按钮添加</span>
+                        <el-scrollbar height="400px">
+                            <div v-for="item in Label_info" :key="item" class="scrollbar-demo-item">
+                                <el-card shadow="hover" class="card">
+                                    <div class="card_info">
+                                        
+                                        <el-button type="primary" text class="card_edit">编辑</el-button>
+                                        <el-button type="info" text class="card_delete">删除</el-button>
+                                        <p class="card_name">{{item}}</p>
+                                    </div>
+                                </el-card>
+                            </div>
+                        </el-scrollbar>
+
+
+                        <div id="empty_img_left" v-if="label_num===0"></div>
+                        <span id="empty_text_left" v-if="label_num===0">暂无可用标签 ，请点击上方按钮添加</span>
                     </el-footer>
                 </el-container>
                 <el-aside id="middle_asider">
-                    <div id="empty_right">
+                    <el-scrollbar height="390px">
+                    <div id="empty_right" v-if="src_list.length===0">
                         暂无可用数据
                     </div>
+                    <div class="show_area">
+                        <div
+                            v-for="item in src_list"
+                            :key="item"
+                            class="pic_show"
+                            >
+                            <el-card class="show_pic_card">
+                                <el-image
+                                :src="item"
+                                class="image"
+                                :fit="cover"
+                                />
+                                <div style="padding: 14px">
+                                <div class="bottom">
+                                </div>
+                                </div>
+                            </el-card>
+                        </div>
+                    </div>
+                    </el-scrollbar>
                 </el-aside>
             </el-container>
         </el-main>
-        <el-fotter>
+        <el-footer>
             <div id="pages">
                 <el-row>
                     <p id="fotter_text">每页显示&nbsp;&nbsp;&nbsp;</p>
@@ -131,8 +170,8 @@
                     <el-pagination id="fotter_pages" background layout="prev, pager, next" :total="1" />
                 </el-row>
             </div>
-        </el-fotter>
-    </el-contanier>
+        </el-footer>
+    </el-container>
     <el-dialog
         v-model="dialogVisible"
         title="EasyData图像分类模板支持批量标注数据了"
@@ -146,7 +185,7 @@
 
 <script>
 import Breadcrumb from "../BreadCrumb.vue"
-import { ref } from "vue"
+import { reactive, ref } from "vue"
     export default
     {
         name: "MainThree",
@@ -157,6 +196,13 @@ import { ref } from "vue"
         data()
         {
             return{
+                label_num: -1,
+                labelname: ref(''),
+                Label_info:reactive([]),
+                src_list:reactive([]),
+                sources: reactive([]),
+
+                show_btn: false,
                 dialogVisible: true,
                 radio1:'全部',
                 visible:false,
@@ -188,7 +234,39 @@ import { ref } from "vue"
                 ]
             };
         },
+        created(){
+            this.get_labels();
+            this.get_pics().then(this.show_pics);
+        },
         methods:{
+            get_pics(){
+                let that = this;
+                return fetch("/api/getresources").then((res)=>res.json().then((j)=>{
+                    console.log("!!!");
+                    console.log(j.sources);
+                    that.sources = j.sources;
+                }))
+            },
+            show_pics(){
+                for(let item=0; item<this.sources.length;item++){
+                    console.log(this.sources[item]);
+                    const data = {"file_name":this.sources[item]};
+                    let that = this;
+                    let url = "/api/passfile/" + data["file_name"];
+                    fetch(url,{
+                        method: 'POST',
+                        responseType: 'blob',
+                        headers:{
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    }).then(()=>{
+                        let u_url = "http://localhost:5000/api/passfile/" + data["file_name"];
+                        that.src_list.push(u_url);
+                    });
+                    console.log(that.src_list);
+                }
+            },
             cleanSource()
             {
                 if(this.unlimited1==true)
@@ -200,6 +278,43 @@ import { ref } from "vue"
                     this.source5=false;
                 }
             },
+            //  written by bqw
+            add_label(){
+                const data = {"name": this.labelname};
+                console.log("abd");
+                console.log(data);
+                return fetch("/api/addlabel",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res=>res.json())
+                .then((j)=>{
+                    console.log(j);
+                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                })
+            },
+           
+            get_labels(){
+                let that = this;
+                return fetch("/api/getlabels").then((res) => res.json().then((j)=>{
+                    that.label_num = j.label_num;
+                    that.Label_info = j.labels;
+                    console.log(that.label_num);
+                }))
+            },
+            create_label(){
+                this.show_btn = true;
+            },
+            cancel_label(){
+                this.show_btn = false;
+            },
+            insert_pic(){
+                this.$router.push("/index/manage/dataset/insert");
+            },
+            //written over
             checkSource()
             {
                 var source=document.getElementsByName("source");
@@ -374,6 +489,9 @@ import { ref } from "vue"
     {
         font-size:13px;
     }
+    .card{
+        height: 40px;
+    }
     #empty_right
     {
         background:url(../../assets/empty.png) no-repeat;
@@ -384,6 +502,9 @@ import { ref } from "vue"
         text-align:right;
         line-height:170px;
         margin-top: 100px;
+    }
+    .scrollbar-demo-item{
+        display: flex;
     }
     #fotter_text
     {
@@ -403,5 +524,37 @@ import { ref } from "vue"
     {
         position: absolute;
         right:50px; 
+    }
+    .card_info{
+        display: flex;
+        margin-top: -15px;
+    }
+    .el-card{
+        width: 360px;
+    }
+    .card_name{
+        margin-top: 6px;
+        margin-left: 140px;
+    }
+    .card_edit{
+        margin-left: -20px;
+    }
+    .card_delete{
+        margin-left: -5px;
+    }
+    .image{
+        height: 80px;
+        width: 80px;
+    }
+    .show_area{
+        display: flex;
+        width: 160px;
+    }
+    .pic_show{
+        width: 160px;
+    }
+    .show_pic_card{
+        width: 160px;
+        margin-right: 240px;
     }
 </style>

@@ -203,9 +203,6 @@ import Breadcrumb from "../BreadCrumb.vue"
             call_diagram(){
                 this.dialogVisible = true;
             },
-
-
-            
             //written over
 
             //written by wjz
