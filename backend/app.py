@@ -157,6 +157,8 @@ def get_num():
 def delete_data():
     data = request.get_json()
     name = data.get("name")
+    if name not in MessageInfo:
+        return {"name":name}
     global data_num
     data_num = data_num - 1
     MessageInfo.pop(name)
@@ -178,7 +180,8 @@ def change_name():
     basepath = os.path.dirname(__file__)
     origin_path = basepath + "\src" + "\\" + old_name
     new_path = basepath + "\src" + "\\" + new_name
-    os.rename(origin_path,new_path)
+    if os.path.exists(origin_path):
+        os.rename(origin_path,new_path)
     new_mes = MessageInfo[old_name]
     new_mes["name"] = new_name
     MessageInfo.pop(old_name)
