@@ -239,6 +239,7 @@ import { reactive, ref } from "vue"
             this.get_pics().then(this.show_pics);
         },
         methods:{
+        //  written by bqw
             get_pics(){
                 let that = this;
                 return fetch("/api/getresources").then((res)=>res.json().then((j)=>{
@@ -278,7 +279,7 @@ import { reactive, ref } from "vue"
                     this.source5=false;
                 }
             },
-            //  written by bqw
+           
             add_label(){
                 const data = {"name": this.labelname};
                 console.log("abd");
@@ -525,6 +526,7 @@ import { reactive, ref } from "vue"
         position: absolute;
         right:50px; 
     }
+    /* written by bqw */
     .card_info{
         display: flex;
         margin-top: -15px;
@@ -557,4 +559,5 @@ import { reactive, ref } from "vue"
         width: 160px;
         margin-right: 240px;
     }
+    /* written over */
 </style>
