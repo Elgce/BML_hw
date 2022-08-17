@@ -2,6 +2,7 @@ import datetime
 import base64
 from hashlib import new
 import shutil
+from tkinter import Label
 from urllib import response
 from urllib.parse import quote
 from urllib.robotparser import RequestRate
@@ -272,6 +273,22 @@ def get_labels():
     name = session["name"]
     num = len(MessageInfo[name]["labels"])
     return {"labels":MessageInfo[name]["labels"],"label_num": num}
+
+@app.route("/api/searchtagname",methods=['GET','POST'])
+def search_tagname():
+    name = session["name"]
+    data = request.get_json()
+    tagname = data.get("tagname")
+    Label_show = []
+    num = 0
+    for item in MessageInfo[name]["labels"]:
+        if item == tagname:
+            Label_show.append(item)
+            num = num + 1
+    if tagname=="":
+        Label_show = MessageInfo[name]["labels"]
+        num = len(MessageInfo[name]["labels"])
+    return {"labels":Label_show,'label_num': num}
 
 @app.route("/api/getresources")
 def get_resources():

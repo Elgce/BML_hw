@@ -100,7 +100,7 @@
                     </el-header>
                     <el-header id="middle_main">
                         <br>              
-                        <el-input v-model="input_tagName" class="w-50 m-2" placeholder="请输入标签名称">
+                        <el-input type="text" v-model="input_tagName" class="w-50 m-2" placeholder="请输入标签名称" @change="searchlabel">
                             <template #prefix>
                                 <el-icon class="el-input__icon"><search /></el-icon>
                             </template>
@@ -114,8 +114,8 @@
                                     <div class="card_info">
                                         <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button>
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
-                                        <el-input type="text" style="width:120px;visibility:hidden"></el-input>
-                                        <p class="card_name">{{item}}</p>
+                                        <p class="card_name" style="visibility:visible">{{item}}</p>
+                                        <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input>
                                     </div>
                                 </el-card>
                             </div>
@@ -194,10 +194,10 @@ import { reactive, ref } from "vue"
             return{
                 label_num: -1,
                 labelname: ref(''),
+                new_labelname: ref(''),
                 Label_info:reactive([]),
                 src_list:reactive([]),
                 sources: reactive([]),
-
                 show_btn: false,
                 dialogVisible: false,
                 radio1:'全部',
@@ -236,9 +236,61 @@ import { reactive, ref } from "vue"
         },
         methods:{
         //  written by bqw
+            searchlabel(){
+                let data = {"tagname":this.input_tagName};
+                let that = this;
+                return fetch("/api/searchtagname",{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then((j)=>{
+                    // that.Label_info = j.labels;
+                    that.Label_info = reactive([]);
+                    console.log("!!");
+                    console.log(j.labels);
+                    if(j.label_num!=0){
+                        for(let item in j.labels){
+                            that.Label_info.push(j.labels[item]);
+                        }
+                    }
+                    else{
+                        alert("没有此名称的标签!");
+                    }
+                    console.log(that.Label_info);
+                    that.label_num = j.label_num;
+                })
+            },
+            change_name(name){
+                let new_name= this.new_labelname;
+                this.delete_label(name);
+                const data = {"name": new_name};
+                return fetch("/api/addlabel",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res=>res.json())
+                .then((j)=>{
+                    console.log(j);
+                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                })
+            },
             edit_label(name){
                 console.log(name);
-                // let std = document.getElementById("");
+                let std = document.getElementById("new_name_txt");
+                if(std.style.visibility==='hidden'){
+                    std.style.visibility='visible';
+                    std.style.backgroundColor="rgb(221, 218, 218)";
+                }
+                else{
+                    std.style.visibility='hidden';
+                }
             },
             delete_label(name){
                 const data = {"label_name": name};
@@ -499,10 +551,13 @@ import { reactive, ref } from "vue"
         height:170px;
         width:167px;
         margin:auto;
+        margin-top: -200px;
     }
     #empty_text_left
     {
         font-size:13px;
+        margin-top: -100px;
+
     }
     .card{
         height: 40px;
@@ -550,7 +605,7 @@ import { reactive, ref } from "vue"
     }
     .card_name{
         margin-top: 6px;
-        margin-left: 120px;
+        margin-left: 5px;
     }
     .card_edit{
         margin-left: -20px;
@@ -572,6 +627,11 @@ import { reactive, ref } from "vue"
     .show_pic_card{
         width: 160px;
         margin-right: 240px;
+    }
+    .edit_txt{
+        margin-left: 10px;
+        margin-top: -10px;
+        border-radius: 10%;
     }
     /* written over */
 </style>
