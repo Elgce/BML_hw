@@ -101,10 +101,33 @@ import Breadcrumb from '../BreadCrumb.vue'
     },
     methods:{
         btn_click(scope){
-            console.log(scope.row);
+            console.log(scope.row["num"]);
+            const data = {"page":scope.row["num"]};
+            return fetch("/api/txtpagesession",{
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+            .then((res) => res.json)
+            .then(()=>{
+                this.$router.push("/index/manage/dataset/textmarking");
+            })
         },
         label_txt(){
-            this.$router.push("/index/manage/dataset/textmarking");
+            const data = {"page":1};
+            return fetch("/api/txtpagesession",{
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+            .then((res) => res.json)
+            .then(()=>{
+                this.$router.push("/index/manage/dataset/textmarking");
+            })
         },  
         btn_delete(scope){
             console.log(scope.row["text"]);

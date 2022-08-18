@@ -1,1 +1,2 @@
 group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source,direction,label_type,label_model,data_single,labels
+220818,1234,V1,0,231148,finished,txt,0,-,"['ge.txt', 'te.txt']",,txt_cla,txt_slabel,dir_auto,"['132', '253']"

@@ -3,6 +3,8 @@ import datetime
 import base64
 from glob import glob
 from hashlib import new
+from operator import length_hint
+from pydoc import pager
 import re
 import shutil
 from tkinter import Label
@@ -362,6 +364,39 @@ def delete_txt():
         for item in new_context:
             f.write(item)
     return {"name":name}
+
+# 用于文本页面跳转时确定谁是第一个展示的文本标签
+@app.route("/api/txtpagesession",methods=['GET','POST'])
+def txt_pagesession():
+    data = request.get_json()
+    page = data.get("page")
+    session["page"] = page
+    return {"page":page}
+
+# 用于获取页面配置的数据
+@app.route("/api/txtgetpage")
+def txt_getpage():
+    return {"page":session["page"]}
+
+@app.route("/api/prepage")
+def pre_page():
+    page = int(session["page"]) - 1
+    if page > 0 :
+        session["page"] = page
+        return {"page":page}
+    else:
+        return {"page":"fail"}
+
+@app.route("/api/nextpage")
+def next_page():
+    page = int(session["page"]) + 1
+    global context
+    length = len(context)
+    if page <= length:
+        session["page"] = page
+        return {"page":page}
+    else:
+        return {"page":"fail"}
 
 if __name__=="__main__":
     # renew()

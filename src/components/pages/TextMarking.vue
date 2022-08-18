@@ -41,7 +41,7 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-button text id="previous">上一篇</el-button>
+                                    <el-button text id="previous" @click="previous_txt">上一篇</el-button>
                                 </template>
                                 <p>上一篇（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
                             </el-popover>
@@ -52,13 +52,13 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-button text id="latter">下一篇</el-button>
+                                    <el-button text id="latter" @click="latter_txt">下一篇</el-button>
                                 </template>
                                 <p>下一篇（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
-                        <p class="written">hdjkasadshfjkashdsfhewuirewuihjkdhfajkshfajksdhfjklahsfkjlhsdf</p>
-                        <div id="empty_right" v-if="src_list.length===1">
+                        <p class="written">{{show_context}}</p>
+                        <div id="empty_right" v-if="num===0">
                             暂无可用数据
                         </div>
                     </el-scrollbar>
@@ -142,11 +142,15 @@ import { reactive, ref } from "vue"
         data()
         {
             return{
-                label_num: -1,
+                context: reactive([]),
+                num: -1,
+                name : ref(''),
+                page : -1,
+                show_context: ref(''),
+
                 labelname: ref(''),
                 new_labelname: ref(''),
                 Label_info:reactive([]),
-                src_list:reactive([]),
                 sources: reactive([]),
                 show_btn: false,
                 dialogVisible:false,
@@ -170,10 +174,49 @@ import { reactive, ref } from "vue"
             };
         },
         created(){
-            this.get_labels();
+            this.get_labels().then(this.calltxt()).then(this.callpage());
+            
         },
         methods:{
         //  written by bqw
+            latter_txt(){
+                return fetch("/api/nextpage").then((res)=>res.json().then((j)=>{
+                    let passa = j.page;
+                    if(passa==="fail"){
+                        alert("已是最后一页!");
+                    }
+                    else{
+                        this.$router.push("/index/manage/dataset/txt/blank");
+                    }
+                }))
+            },
+            previous_txt(){
+                return fetch("/api/prepage").then((res)=>res.json().then((j)=>{
+                    let passa = j.page;
+                    if(passa==="fail"){
+                        alert("已是第一页!");
+                    }
+                    else{
+                        this.$router.push("/index/manage/dataset/txt/blank");
+                    }
+                }))
+            },
+            callpage(){
+                let that = this;
+                return fetch("/api/txtgetpage").then((res)=>res.json().then((j)=>{
+                    that.page = j.page;
+                    let page = parseInt(that.page) - 1;
+                    that.show_context = that.context[page];
+                }))
+            },
+            calltxt(){
+                let that = this;
+                return fetch("/api/gettxt").then((res) => res.json().then((j) => {
+                    that.context = j.context;
+                    that.num = j.num;
+                    that.name = j.name;
+                }))
+            },
             searchlabel(){
                 let data = {"tagname":this.input_tagName};
                 let that = this;
@@ -188,8 +231,6 @@ import { reactive, ref } from "vue"
                 .then((j)=>{
                     // that.Label_info = j.labels;
                     that.Label_info = reactive([]);
-                    console.log("!!");
-                    console.log(j.labels);
                     if(j.label_num!=0){
                         for(let item in j.labels){
                             that.Label_info.push(j.labels[item]);
@@ -244,32 +285,10 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/txt/blank");
                 }))
             },
-            show_pics(){
-                for(let item=0; item<this.sources.length;item++){
-                    console.log(this.sources[item]);
-                    const data = {"file_name":this.sources[item]};
-                    let that = this;
-                    let url = "/api/passfile/" + data["file_name"];
-                    fetch(url,{
-                        method: 'POST',
-                        responseType: 'blob',
-                        headers:{
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(data)
-                    }).then(()=>{
-                        let u_url = "http://localhost:5000/api/passfile/" + data["file_name"];
-                        that.src_list.push(u_url);
-                    });
-                    console.log(that.src_list);
-                }
-            },
 
            
             add_label(){
                 const data = {"name": this.labelname};
-                console.log("abd");
-                console.log(data);
                 return fetch("/api/addlabel",{
                     method: 'POST',
                     headers: {
@@ -289,7 +308,6 @@ import { reactive, ref } from "vue"
                 return fetch("/api/getlabels").then((res) => res.json().then((j)=>{
                     that.label_num = j.label_num;
                     that.Label_info = j.labels;
-                    console.log(that.label_num);
                 }))
             },
             create_label(){
