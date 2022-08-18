@@ -28,6 +28,39 @@
             </el-row>
             <el-divider/>
             <el-container id="middle_data">
+                <el-aside id="middle_asider">
+                    <el-scrollbar height="500px">
+                        <el-row id="text_top">
+                            <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
+                            <p id="_mark_strong">请在右侧选择标签</p>
+                            <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除视频</el-button>
+                            <el-popover
+                                placement="bottom"
+                                :width="200"
+                                trigger="hover"
+                            >
+                                <template #reference>
+                                    <el-link id="previous">上一个视频</el-link>
+                                </template>
+                                <p>上一个视频（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
+                            </el-popover>
+                            &nbsp;&nbsp;&nbsp;
+                            <el-popover
+                                placement="bottom"
+                                :width="200"
+                                trigger="hover"
+                            >
+                                <template #reference>
+                                    <el-link>下一个视频</el-link>
+                                </template>
+                                <p>下一个视频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
+                            </el-popover>
+                        </el-row>
+                        <div id="empty_right" v-if="src_list.length===0">
+                            暂无可用数据
+                        </div>
+                    </el-scrollbar>
+                </el-aside>
                 <el-container>
                     <el-header id="middle_header">
                         <b v-if="show_btn===false" id="tag_column_text">标签栏</b>
@@ -76,39 +109,7 @@
                         <span id="empty_text_left" v-if="label_num===0">暂无可用标签 ，请点击上方按钮添加</span>
                     </el-footer>
                 </el-container>
-                <el-aside id="middle_asider">
-                    <el-scrollbar height="500px">
-                        <el-row id="text_top">
-                            <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
-                            <p id="_mark_strong">请在右侧选择标签</p>
-                            <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除视频</el-button>
-                            <el-popover
-                                placement="bottom"
-                                :width="200"
-                                trigger="hover"
-                            >
-                                <template #reference>
-                                    <el-link id="previous">上一个视频</el-link>
-                                </template>
-                                <p>上一个视频（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
-                            </el-popover>
-                            &nbsp;&nbsp;&nbsp;
-                            <el-popover
-                                placement="bottom"
-                                :width="200"
-                                trigger="hover"
-                            >
-                                <template #reference>
-                                    <el-link>下一个视频</el-link>
-                                </template>
-                                <p>下一个视频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
-                            </el-popover>
-                        </el-row>
-                        <div id="empty_right" v-if="src_list.length===0">
-                            暂无可用数据
-                        </div>
-                    </el-scrollbar>
-                </el-aside>
+                
             </el-container>
         </el-main>
     </el-container>

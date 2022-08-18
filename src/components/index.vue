@@ -76,8 +76,8 @@
             <span class="submenu">数据采集</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="3-1">摄像头采集图片</el-menu-item>
-            <el-menu-item index="3-2">云服务回流图片</el-menu-item>
+            <el-menu-item index="/index/manage/dataset/textmarking">摄像头采集图片</el-menu-item>
+            <el-menu-item index="/index/manage/dataset/videomarking">云服务回流图片</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
         <el-divider />

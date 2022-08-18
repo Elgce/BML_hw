@@ -77,13 +77,13 @@ const routes = [
                 meta: {title:'文本标签空白页'}
             },
             {
-                path: '/index/3-1',
+                path: '/index/manage/dataset/textmarking',
                 component: () => import("./components/pages/TextMarking.vue"),
-                name: '标注',
-                meta: {title:'标注'}
+                name: '文本标注',
+                meta: {title:'文本标注'}
             },
             {
-                path: '/index/3-2',
+                path: '/index/manage/dataset/videomarking',
                 component: () => import("./components/pages/VideoMarking.vue"),
                 name: '视频标注',
                 meta: {title:'视频标注'}

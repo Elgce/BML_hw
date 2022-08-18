@@ -1,3 +1,4 @@
+<!-- 图片展示页 -->
 <template>
     <el-container>
         <el-header>
