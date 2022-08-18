@@ -101,6 +101,7 @@
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p class="card_name" style="visibility:visible">{{item}}</p>
                                         <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input>
+                                        <el-button type="success" text @click="addtable(item)">选择</el-button>
                                     </div>
                                 </el-card>
                             </div>
