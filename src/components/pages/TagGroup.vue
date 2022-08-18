@@ -27,12 +27,24 @@
                 border
             >
                 <el-descriptions-item label="标签名称">
-                    <el-checkbox label="" size="large"/>
-                    &nbsp;&nbsp;&nbsp;123
+                    <el-checkbox label="" size="large" id="item_checkbox"/>
+                    <!-- <div id="color_box">1</div> -->
+                    &nbsp;&nbsp;
+                    <el-color-picker v-model="markColor" id="mark_color"/>
+                    &nbsp;&nbsp;
+                    <div id="id_box">123</div>
+                    <el-row id="row_of_input">
+                        <el-input
+                            v-model="input_id"
+                            class="w-50 m-2"
+                            placeholder=""
+                            id="input_id"
+                        />
+                    </el-row>
                 </el-descriptions-item>
                 <el-descriptions-item label="操作">
-                    <el-button type="primary" link key="label" @click="insert(item.name)">编辑</el-button>
-                    <el-button type="primary" link key="delete" @click="deletedata(item.name)">删除</el-button>
+                    <el-button id="change_btn" type="primary" link key="label" @click="change_mark">编辑</el-button>
+                    <el-button id="delete_btn" type="primary" link key="delete" @click="delete_mark">删除</el-button>
                 </el-descriptions-item>
             </el-descriptions>
             <div id="pages">
@@ -82,8 +94,62 @@ import { ref } from "vue"
                     },
                 ],
                 tagName:ref(''),
+                markColor:ref('#409EFF'),
+                input_id:ref('')
             };
         },
+        methods:{
+            change_mark()
+            {
+                var change_btn=document.getElementById("change_btn");
+                // var mark_color=document.getElementById("color_box");
+                //var color_box=document.getElementById("color_box");
+                //var item_checkbox=document.getElementById("item_checkbox");
+                var id_box=document.getElementById("id_box");
+                var row_of_input=document.getElementById("row_of_input");
+                var delete_btn=document.getElementById("delete_btn");
+                if(change_btn.innerText=="确认")
+                {
+                    //color_box.style.visibility='hidden';
+                    //item_checkbox.style.visibility='hidden';
+                    id_box.style.visibility='visible';
+                    //mark_color.style.visibility='hidden';
+                    row_of_input.style.visibility='hidden';
+                    change_btn.innerText="编辑";
+                    delete_btn.innerText="删除";
+                }
+                else
+                {
+                    //color_box.style.visibility='hidden';
+                    //item_checkbox.style.visibility='hidden';
+                    id_box.style.visibility='hidden';
+                    //mark_color.style.visibility='hidden';
+                    row_of_input.style.visibility='visible';
+                    change_btn.innerText="确认";
+                    delete_btn.innerText="取消";
+                }
+            },
+            delete_mark()
+            {
+                var change_btn=document.getElementById("change_btn");
+                // var mark_color=document.getElementById("color_box");
+                //var color_box=document.getElementById("color_box");
+                //var item_checkbox=document.getElementById("item_checkbox");
+                var id_box=document.getElementById("id_box");
+                var row_of_input=document.getElementById("row_of_input");
+                var delete_btn=document.getElementById("delete_btn");
+                if(change_btn.innerText=="确认")
+                {
+                    //color_box.style.visibility='hidden';
+                    //item_checkbox.style.visibility='hidden';
+                    id_box.style.visibility='visible';
+                    //mark_color.style.visibility='hidden';
+                    row_of_input.style.visibility='hidden';
+                    change_btn.innerText="编辑";
+                    delete_btn.innerText="删除";
+                }
+            }
+        }
     }
 </script>
 
@@ -128,5 +194,30 @@ import { ref } from "vue"
     {
         margin-top:30px;
         margin-left:860px;
+    }
+    #color_box
+    {
+        margin-left:20px;
+        background-color: #409EFF;
+        color: #409EFF;
+        display: inline-block;
+    }
+    /* #mark_color
+    {
+        margin-left:20px;
+    } */
+    #id_box
+    {
+        display: inline-block;
+    }
+    #input_id
+    {
+        /* width:100px; */
+    }
+    #row_of_input
+    {
+        width:400px;
+        display: inline-block;
+        visibility: hidden;
     }
 </style>
