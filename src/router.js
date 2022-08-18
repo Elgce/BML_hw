@@ -76,6 +76,24 @@ const routes = [
                 name: '文本标签空白页',
                 meta: {title:'文本标签空白页'}
             },
+            {
+                path: '/index/3-1',
+                component: () => import("./components/pages/TextMarking.vue"),
+                name: '标注',
+                meta: {title:'标注'}
+            },
+            {
+                path: '/index/3-2',
+                component: () => import("./components/pages/VideoMarking.vue"),
+                name: '视频标注',
+                meta: {title:'视频标注'}
+            },
+            {
+                path: '/index/4-1',
+                component: () => import("./components/pages/PlatformIntroduction.vue"),
+                name: '平台说明',
+                meta: {title:'平台说明'}
+            }
         ]
     }
 ]
