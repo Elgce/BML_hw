@@ -1,19 +1,22 @@
 <template>
-    <div class="mytest1">我的数据总览 >
-    </div>
-     <div class="mytest2">【文本】 test/V1/查看
-        </div>
+        <el-container>
+            <el-header>
+                <Breadcrumb></Breadcrumb>
+            </el-header>
+            <el-divider />
+            <el-main>
+                <el-radio-group v-model="radio1" size="large" class="mytest3">
+                                <el-radio-button label="全部(6)" />
+                                <el-radio-button label="有标注信息(6)" />
+                                <el-radio-button label="无标注信息(0)" />
+                            </el-radio-group>
 
-    <el-radio-group v-model="radio1" size="large" class="mytest3">
-                    <el-radio-button label="全部(6)" />
-                    <el-radio-button label="有标注信息(6)" />
-                    <el-radio-button label="无标注信息(0)" />
-                </el-radio-group>
+                <el-button class="txt_in" @click="insert_txt">导入文本</el-button>
+                <el-button class="txt_label" type="primary">标注文本</el-button>
+            <div id="top_table">
+                <div class="txt_list">{{name}}V1版本的文本列表</div>
 
-    <el-button class="mytest4">导入文本</el-button>
-    <div class="mytest5">testV1版本的文本列表</div>
-
-<el-popover
+                <el-popover
                     :visible="visible"
                     placement="bottom-start"
                     :width="750"
@@ -44,80 +47,97 @@
                 </div>
              
                     <template #reference>
-                        <el-button @click="visible = !visible"   class="mytest6">筛选&nbsp;<el-icon><ArrowDownBold /></el-icon></el-button>
+                        <el-button type="primary" @click="visible = !visible"   class="choose_btn">筛选&nbsp;<el-icon><ArrowDownBold /></el-icon></el-button>
                     </template>
                 </el-popover>
+            </div>
+                <el-table
+                        :data="tableData"
+                        stripe="true"
+                        style="width: 100%"
+                        class="mytest8">
+                    <el-table-column
+                                    prop="num"
+                                    label="序号">
+                    </el-table-column>
+                    <el-table-column
+                                    prop="text"
+                                    label="文本内容摘要">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template #default="scope">
+                            <el-button type="primary" @click="btn_click(scope)">查看</el-button>
+                            <el-button @click="btn_delete(scope)">删除</el-button>
+                        </template>
+                    </el-table-column>
 
-    <div class="mytest7">当前数据集标注模板：短文本单标签，共有文本：6个</div>
-
-<el-table
-          :data="tableData"
-          stripe="true"
-          style="width: 100%"
-          class="mytest8">
-    <el-table-column
-                     prop="num"
-                     label="序号">
-    </el-table-column>
-    <el-table-column
-                     prop="text"
-                     label="文本内容摘要">
-    </el-table-column>
-    <el-table-column
-                     prop="todo"
-                     label="操作">
-    </el-table-column>
-
-</el-table>
-
-
+                </el-table>
+            
+                <div class="txt_num">当前数据集标注模板：短文本单标签，共有文本：{{num}}个</div>
+            </el-main>
+</el-container>
 
 </template>
 
 <script>
-export default{
-    name: 'TxtTag',
-data(){
+import { reactive } from 'vue';
+import Breadcrumb from '../BreadCrumb.vue'
+
+    export default{
+        name: 'TxtTag',
+        components:{
+            Breadcrumb,
+        },
+    data(){
         return {
-            tableData: [
-            {
-                num: 1,
-                text: '西瓜',
-                todo:'?',
-
-            },
-            {
-                num: 2,
-                text: '苹果',
-                todo: '?',
-
-            },
-             {
-                num: 3,
-                text: '香蕉',
-                todo: '?',
-
-            },
-             {
-                num: 4,
-                text: '语文',
-                todo: '?',
-
-            },
-             {
-                num: 5,
-                text: '数学',
-                todo: '?',
-
-            },
-             {
-                num: 6,
-                text: '英语',
-                todo: '?',
-
-            }
-            ]
+            context: reactive([]),
+            num: -1,
+            tableData: [],
+            name:"",
         }
+    },
+    created(){
+        this.calltxt();
+    },
+    methods:{
+        btn_click(scope){
+            console.log(scope.row);
+        },
+        btn_delete(scope){
+            console.log(scope.row["text"]);
+            let text = scope.row["text"];
+            let num = scope.row["num"];
+            const data = {"text": text,"num":num};
+            return fetch("/api/deletetxt",{
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(()=>{
+                this.$router.push('/index/manage/dataset/txt/label/blank');
+            })
+        },
+        insert_txt(){
+            this.$router.push("/index/manage/dataset/insert");
+        },
+        calltxt(){
+            let that = this;
+            return fetch("/api/gettxt").then((res) => res.json().then((j) => {
+                that.context = j.context;
+                that.num = j.num;
+                that.name = j.name
+                console.log(that.context);
+                for (let item in that.context){
+                    let txt = that.context[item];
+                    let nu = parseInt(item) + 1;
+                    let data = {"num":nu,"text":txt};
+                    that.tableData.push(data);
+                }
+            }))
+        },
     }
 
 
@@ -125,58 +145,43 @@ data(){
 </script>
 
 <style scoped>
-.mytest1{
-    margin-left: 15px;
-    margin-top: 25px;
-    font-size:15px;
-     color: #8e8483;
-}
-.mytest2{
-   margin:5px;
-    margin-top: 25px;
-    margin-left:15px;
-    font-size:15px;
-     color: #0d0c0c;
-}
-.mytest3{
-    position: absolute;
-    margin-top:80px;
-    margin-left:210px;
-}
-.mytest4{
-    position: absolute;
-    margin-top:90px;
-    margin-left:1000px;
-}
-.mytest5{
-    position:absolute;
-    margin-top: 160px;
-    margin-left:210px;
-    font-size:15px;
-     color: #0d0c0c;
-}
-
-.mytest6{
-    position:absolute;
-    margin-top: 155px;
-    margin-left:405px;
-}
-
-.mytest7{
-    position:absolute;
-    margin-left: 210px;
-    margin-top: 500px;
-    font-size:15px;
-     color: #8e8483;
-}
-
-.mytest8{
-    position:absolute;
-    margin-left: 210px;
-    margin-top: 200px;
-    font-size:15px;
-     color: #8e8483;
-}
+    #top_table{
+        position: relative;
+        display: flex;
+        margin-top: 20px;
+    }
+    .el-header{
+        height: 56px;
+    }
+    .el-divider{
+        margin:0;
+    }
+    .txt_list{
+        position: relative;
+    }
+    .mytest3{
+        position: relative;
+        margin-left: -40px;
+    }
+    .txt_in{
+        position: relative;
+        margin-left: 880px;
+    }
+    .txt_label{
+        position: relative;
+        margin-left: 40px;
+    }
+    .txt_num{
+        position: relative;
+        font-size:15px;
+        color: #8e8483;
+        margin-top: 40px;
+        margin-left: -1080px;
+    }
+    .choose_btn{
+        position: relative;
+        margin-left: 40px;
+    }
 
 
 </style>

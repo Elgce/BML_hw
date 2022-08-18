@@ -1,6 +1,8 @@
+
 import datetime
 import base64
 from hashlib import new
+import re
 import shutil
 from tkinter import Label
 from urllib import response
@@ -15,6 +17,9 @@ app = Flask(__name__,static_folder="../dist/",static_url_path="/")
 
 MessageInfo = {}
 LabelInfo = {}
+
+context = []
+context_txt = []
 
 label_num = 0
 data_num = 0
@@ -307,7 +312,51 @@ def delete_label():
     print(label_name)
     reset_csv()
     return {"lebel_name":label_name}
+
+@app.route("/api/gettxt")
+def get_txt():
+    global context
+    global context_txt
+    context = []
+    context_txt = []
+    name = session["name"]
+    sources = MessageInfo[name]["source"]
+    basepath = os.path.dirname(__file__)
+    num = 0
+    for item in sources:
+        path = basepath + "\src\\" + name + "\\" + item
+        with open(path,"r",encoding='utf-8') as f:
+            data_list = f.readlines()
+            for line in data_list:
+                num = num + 1
+                line = line.strip()
+                context.append(line)
+                context_txt.append(item)
+    return {"context":context,"num":num,"name":name}
     
+@app.route("/api/deletetxt",methods=['GET','POST'])
+def delete_txt():
+    global context_txt
+    global context
+    data = request.get_json()
+    text = data.get("text")
+    name = session["name"]
+    num = data.get("num")
+    num = int(num) - 1
+    basepath = os.path.dirname(__file__)
+    path = basepath + "\src\\" + name + "\\" + context_txt[num]
+    if context[num]!=text:
+        print("error!")
+    length = len(context)
+    new_context = []
+    for i in range(length):
+        if context_txt[i] == context_txt[num] and i!=num:
+            new_context.append(context[i]+"\n")
+    print(new_context)
+    with open(path, 'w', encoding='utf-8') as f:
+        for item in new_context:
+            f.write(item)
+    return {"name":name}
 
 if __name__=="__main__":
     # renew()
