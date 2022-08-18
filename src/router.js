@@ -69,7 +69,13 @@ const routes = [
                 component: () => import("./components/pages/BlankLabel.vue"),
                 name: '图片标签空白页',
                 meta: {title:'图片标签空白页'}
-            }
+            },
+            {
+                path: '/index/manage/dataset/txt/label/blank',
+                component: () => import("./components/pages/BlankTxt.vue"),
+                name: '文本标签空白页',
+                meta: {title:'文本标签空白页'}
+            },
         ]
     }
 ]
