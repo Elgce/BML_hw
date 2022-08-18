@@ -1,6 +1,7 @@
 
 import datetime
 import base64
+from glob import glob
 from hashlib import new
 import re
 import shutil
@@ -186,6 +187,10 @@ def change_name():
     data = request.get_json()
     new_name = data.get("new_name")
     old_name = data.get("old_name")
+    global names
+    
+    names.pop(names.index(old_name))
+    names.append(new_name)
     basepath = os.path.dirname(__file__)
     origin_path = basepath + "\src" + "\\" + old_name
     new_path = basepath + "\src" + "\\" + new_name

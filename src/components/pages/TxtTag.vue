@@ -12,7 +12,7 @@
                             </el-radio-group>
 
                 <el-button class="txt_in" @click="insert_txt">导入文本</el-button>
-                <el-button class="txt_label" type="primary">标注文本</el-button>
+                <el-button class="txt_label" type="primary" @click="label_txt">标注文本</el-button>
             <div id="top_table">
                 <div class="txt_list">{{name}}V1版本的文本列表</div>
 
@@ -103,6 +103,9 @@ import Breadcrumb from '../BreadCrumb.vue'
         btn_click(scope){
             console.log(scope.row);
         },
+        label_txt(){
+            this.$router.push("/index/manage/dataset/textmarking");
+        },  
         btn_delete(scope){
             console.log(scope.row["text"]);
             let text = scope.row["text"];

@@ -77,6 +77,12 @@ const routes = [
                 meta: {title:'文本标签空白页'}
             },
             {
+                path: '/index/manage/dataset/txt/blank',
+                component: () => import("./components/pages/BlankTxtl.vue"),
+                name: '文本标注空白页',
+                meta: {title:'文本标注空白页'}
+            },
+            {
                 path: '/index/manage/dataset/textmarking',
                 component: () => import("./components/pages/TextMarking.vue"),
                 name: '文本标注',

@@ -36,16 +36,16 @@
             <el-empty :image-size="250" description="空空如也" v-if="value=='open' || data_num==0">
             </el-empty>
             <div v-if="value!='open'">
-            <div v-for = "item in MessageShow" :key="item.name">
+            <div v-for = "(item,index) in MessageShow" :key="item.name">
             <el-divider class="between" border-style="none"></el-divider>
                 <div class="table-header">
                     <div class="title">
-                        <el-button class="inline-editor" link @click="show_nametxt" id="edit_name">
+                        <el-button class="inline-editor" link @click="show_nametxt(index)" id="edit_name">
                             <span title="name" class="inline-editor-txt">{{item["name"]}}</span>
                             <el-icon><Edit /></el-icon>
                             
                         </el-button>
-                        <el-input class="inline-editor" placeholder="请输入新名称" id="name_input" type="text" style="width:140px;visibility: hidden" v-model="new_name" visible="false" @change="change_name(item.name)"/>
+                        <el-input class="inline-editor" placeholder="请输入新名称" :id="generate_id(index)" type="text" style="width:140px;visibility: hidden" v-model="new_name" visible="false" @change="change_name(item.name)"/>
                     
                         <span>数据集组ID:{{item["group_id"]}}</span>
                     </div>
@@ -205,6 +205,9 @@ import Breadcrumb from "../BreadCrumb.vue"
             }
         },
         methods:{
+            generate_id(index){
+                return "name_"+index
+            },
             handleChosenChange(){
                 let that = this;
                 const data = {"specy":this.Tvalue[0],"type":this.Tvalue[1]}
@@ -334,8 +337,9 @@ import Breadcrumb from "../BreadCrumb.vue"
                 })
 
             },
-            show_nametxt(){
-                let txt = document.getElementById("name_input");
+            show_nametxt(index){
+                console.log(index)
+                let txt = document.getElementById("name_"+index);
                 if(txt.style.visibility==='visible'){
                     txt.style.visibility='hidden';
                 }

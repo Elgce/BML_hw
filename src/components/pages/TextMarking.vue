@@ -41,7 +41,7 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-link id="previous">上一篇</el-link>
+                                    <el-button text id="previous">上一篇</el-button>
                                 </template>
                                 <p>上一篇（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
                             </el-popover>
@@ -52,12 +52,13 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-link>下一篇</el-link>
+                                    <el-button text id="latter">下一篇</el-button>
                                 </template>
                                 <p>下一篇（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
-                        <div id="empty_right" v-if="src_list.length===0">
+                        <p class="written">hdjkasadshfjkashdsfhewuirewuihjkdhfajkshfajksdhfjklahsfkjlhsdf</p>
+                        <div id="empty_right" v-if="src_list.length===1">
                             暂无可用数据
                         </div>
                     </el-scrollbar>
@@ -170,7 +171,6 @@ import { reactive, ref } from "vue"
         },
         created(){
             this.get_labels();
-            this.get_pics().then(this.show_pics);
         },
         methods:{
         //  written by bqw
@@ -216,7 +216,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    this.$router.push("/index/manage/dataset/txt/blank");
                 })
             },
             edit_label(name){
@@ -241,13 +241,7 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json()
                 .then(()=>{
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
-                }))
-            },
-            get_pics(){
-                let that = this;
-                return fetch("/api/getresources").then((res)=>res.json().then((j)=>{
-                    that.sources = j.sources;
+                    this.$router.push("/index/manage/dataset/txt/blank");
                 }))
             },
             show_pics(){
@@ -286,7 +280,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    this.$router.push("/index/manage/dataset/txt/blank");
                 })
             },
            
@@ -303,9 +297,6 @@ import { reactive, ref } from "vue"
             },
             cancel_label(){
                 this.show_btn = false;
-            },
-            insert_pic(){
-                this.$router.push("/index/manage/dataset/insert");
             },
             //written over
 
@@ -437,9 +428,14 @@ import { reactive, ref } from "vue"
         margin-top: 5px;
         margin-left:500px;
     }
+    #latter{
+        margin-left: -10px;
+        margin-top: 5px;
+    }
     #previous
     {
-        margin-left:50px;
+        margin-left:20px;
+        margin-top:5px;
     }
     #middle_btns
     {
@@ -550,5 +546,27 @@ import { reactive, ref } from "vue"
     {
         position: absolute;
         right:50px; 
+    }
+    .card_info{
+        display: flex;
+        margin-top: -15px;
+    }
+    .card_name{
+        margin-top: 6px;
+        margin-left: 5px;
+    }
+    .card_edit{
+        margin-left: -20px;
+    }
+    .card_delete{
+        margin-left: -5px;
+    }
+    .el-card{
+        width: 360px;
+    }
+    .written{
+        font-size: 20px;
+        vertical-align: center;
+        text-align: center;
     }
 </style>
