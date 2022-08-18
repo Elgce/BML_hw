@@ -1,19 +1,24 @@
 <template>
     <el-main>
-        <video id="myVideo" width="500" height="400" >
+        <video ref="video" id="myVideo" width="500" height="400" 
+            @timeupdate="timeupdate">
             <source src="../../assets/movie.mp4"  type="video/mp4">
         </video>
+        <el-slider v-model="sliderTime" 
+            :show-tooltip="false"  
+            @input = "changeCurrentTime"/>
         <el-button color="#F56C6C" @click="classify(1)" :disabled="state!=2">第一类</el-button>
         <el-button color="#409EFF" @click="classify(2)" :disabled="state!=2">第二类</el-button>
         <el-button @click="del()" :disabled="state!=3">删除该片段</el-button>
-        <div id="test" style="width:500px; height:100px; display: block;"
+        <div id="progress" style="width:500px; height:104px; display: block;"
             @mousedown="down($event)"
             @mouseup="up($event)"
-            @mousemove="move($event)">
+            @mousemove="move($event)"
+            @mouseleave="leave($event)">
             <div v-for="(slice,index) in slices" :key="index" 
                 :class="'sl sl'+slice.type"
                 :id="'sl'+index"
-                :style="{left:slice.ts+'px',width:slice.te-slice.ts+'px'}"
+                :style="{left:slice.ts - 2+'px',width:slice.te-slice.ts -2 +'px'}"
                 @mousedown="chooseSlice(index,$event)"
                 @mousemove="resize(index,$event)"
                 @mouseenter="addConf(index,$event)">
@@ -39,6 +44,8 @@ export default{
             state:0,
             chosenIndex:-1,
             sliceConflict:-1,
+
+            sliderTime:0
         }
     },
     mounted(){
@@ -46,14 +53,23 @@ export default{
 
     },
     methods:{
+        changeCurrentTime(){
+            this.$refs.video.currentTime =  this.$refs.video.duration/100 * this.sliderTime
+        },
+
+        timeupdate(){
+            this.sliderTime = this.$refs.video.currentTime/this.$refs.video.duration * 100
+        },
+
         setVideoTime(t){
             var video = document.getElementById("myVideo")
-            video.currentTime = t;
+            video.currentTime = t
+            this.sliderTime = t/video.duration * 100
         },
 
         convertXtoT(x){
             var video = document.getElementById("myVideo")
-            var progress = document.getElementById("test")
+            var progress = document.getElementById("progress")
             var w_str = progress.style.width
             var w = w_str.substring(0,w_str.length-2)
             var l = progress.getBoundingClientRect().left
@@ -102,6 +118,16 @@ export default{
             this.setVideoTime(t)
         },
 
+        leave(e){
+            if(this.state == 1){
+                this.chooseEnd(e)
+            }
+
+            else if(this.state == 4 || this.state == 5){
+                this.resizeEnd(e)
+            }
+        },
+
         checkConflict(){
             if(this.sliceConflict != -1){
                 if(this.start < this.sliceConflict && this.sliceConflict < this.end){
@@ -111,15 +137,30 @@ export default{
                     this.end = this.sliceConflict
                 }
             }
+            this.sliceConflict = -1
         },
 
-        checkNear(){
+        checkNear(x){
             // 遍历所有区间，分别找最近的一条边
             for(var i = 0;i<this.slices.length;i++){
-                var nearE = this.nearEdge(i,this.end)
-                if(Math.abs(nearE - this.end) < 30){
-                    this.end = nearE
+                var nearE = this.nearEdge(i,x)
+                if(Math.abs(nearE - x) < 30){
+                    return nearE
                 }
+            }
+
+            return x
+        },
+
+        checkSE(){
+            var pr = document.getElementById('progress')
+            var l = pr.getBoundingClientRect().left
+            var r = pr.getBoundingClientRect().right
+            if(this.start < r && r < this.end){
+                this.end = r
+            }
+            else if(this.end < l && l < this.start){
+                this.end = l
             }
         },
 
@@ -128,7 +169,9 @@ export default{
             // 1如果跨过其他区间，则只取最近一个区间
             this.checkConflict()
             // 2如果没有跨其他区间，但终点和某个区间很近，则贴上去
-            this.checkNear()
+            this.end = this.checkNear(this.end)
+            // 3如果超过了开头和结尾，则固定到结尾
+            this.checkSE()
 
             if(Math.abs(this.start - this.end) > 30){
                 this.state = 2 // 表示选择完毕
@@ -142,36 +185,81 @@ export default{
             if(this.state == 1){
                 this.chooseEnd(e)
             }
-
             else if(this.state == 4 || this.state == 5){
                 this.resizeEnd(e)
             }
 
         },
 
+        mouseleave(e){
+            var pr = document.getElementById('progress')
+            var l = pr.getBoundingClientRect().left
+            var r = pr.getBoundingClientRect().right
+            if(e.x < l || e.x > r ){
+                return true
+            }
+            return false 
+        },
+
+        checkConflictRe(e){
+            // 检测e.x位置是否已有slice,是则返回最近一条边坐标，否则返回-1
+            for(var i = 0;i<this.slices.length;i++){
+                if(i == this.chosenIndex) continue
+                var ts = this.slices[i].ts
+                var te = this.slices[i].te
+                if(e.x >= ts && e.x <= te){
+                    return true
+                }
+            }
+            return false
+        },
+
         move(e){
             if(this.state == 1){
                 this.end = e.x
+
+                if(this.mouseleave(e)){
+                    this.chooseEnd(e)
+                }
+
+                if(this.checkConflictRe(e)){
+                    this.chooseEnd(e)
+                }
+
                 var t = this.convertXtoT(e.x)
                 this.setVideoTime(t)
             }
-            if(this.state == 4){
-                if(e.x <= this.slices[this.chosenIndex].te - 30){
-                    this.slices[this.chosenIndex].ts = e.x
-                    t = this.convertXtoT(e.x)
-                    this.setVideoTime(t)
+
+            
+
+            if(this.state == 4 || this.state == 5){
+                // 出圈即停止
+                if(this.mouseleave(e)){
+                    this.resizeEnd(e)
                 }
-            } 
-            if(this.state == 5){
-                if(e.x >= this.slices[this.chosenIndex].ts + 30){
-                    this.slices[this.chosenIndex].te = e.x
-                    t = this.convertXtoT(e.x)
-                    this.setVideoTime(t)
+
+                // 冲突即停止
+                if(this.checkConflictRe(e)){
+                    this.resizeEnd(e)
                 }
+
+                if(this.state == 4){
+                    if(e.x <= this.slices[this.chosenIndex].te - 30){
+                        this.slices[this.chosenIndex].ts = e.x
+                        t = this.convertXtoT(e.x)
+                        this.setVideoTime(t)
+                    }
+                }
+
+                if(this.state == 5){
+                    if(e.x >= this.slices[this.chosenIndex].ts + 30){
+                        this.slices[this.chosenIndex].te = e.x
+                        t = this.convertXtoT(e.x)
+                        this.setVideoTime(t)
+                    }
+                }
+
             }
-
-            // 如果进入其他slice的领地，立即
-
         },
 
         classify(type){
@@ -226,12 +314,27 @@ export default{
 
                 var mb = this.mouseBoundary(index,e)
                 if(mb == 0) return
+                if(this.mouseleave(e)) return
+                if(this.checkConflictRe(e)) return
                 this.state = 3 + mb // 正在拖动,4左5右
             }
             
         },
 
         resizeEnd(e){
+            if(this.state == 4 || this.state == 5){
+                var pr = document.getElementById('progress')
+                var l = pr.getBoundingClientRect().left
+                var r = pr.getBoundingClientRect().right
+
+                if(this.slices[this.chosenIndex].ts <= l){
+                    this.slices[this.chosenIndex].ts = l
+                }
+                else if(this.slices[this.chosenIndex].te >= r){
+                    this.slices[this.chosenIndex].te = r
+                }
+            }
+
             if(this.state == 4){
                 this.slices[this.chosenIndex].ts = e.x
                 if(this.slices[this.chosenIndex].te - this.slices[this.chosenIndex].ts < 30){
@@ -283,20 +386,15 @@ export default{
 #myVideo{
     display: block;
 }
-#progressBar{
-    width: 320px;
-    height: 100px;
-    display: block;
-}
 
-#test{
+#progress{
     background-color: rgb(114, 114, 118);
 }
 
 #chosen{
     position: absolute;
     opacity: 50%;
-    height: 100px;
+    height: 104px;
     background-color:darkgrey
 }
 
