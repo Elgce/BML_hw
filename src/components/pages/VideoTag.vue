@@ -1,16 +1,21 @@
 <template>
-    <el-main>
-        <video ref="video" id="myVideo" width="500" height="400" 
+    <el-col align="middle" style="overflow:hidden;">
+        
+
+
+        <video ref="video" id="myVideo" width="800" height="450" controls
+            controlslist="nodownload noplaybackrate"
+            disablePictureInPicture="true"
             @timeupdate="timeupdate">
+                
             <source src="../../assets/movie.mp4"  type="video/mp4">
         </video>
-        <el-slider v-model="sliderTime" 
+       
+        <!-- <el-slider v-model="sliderTime" 
             :show-tooltip="false"  
-            @input = "changeCurrentTime"/>
-        <el-button color="#F56C6C" @click="classify(1)" :disabled="state!=2">第一类</el-button>
-        <el-button color="#409EFF" @click="classify(2)" :disabled="state!=2">第二类</el-button>
-        <el-button @click="del()" :disabled="state!=3">删除该片段</el-button>
-        <div id="progress" style="width:500px; height:104px; display: block;"
+            @input = "changeCurrentTime"/> -->
+        
+        <div id="progress" style="width:800px; height:74px;"
             @mousedown="down($event)"
             @mouseup="up($event)"
             @mousemove="move($event)"
@@ -18,7 +23,7 @@
             <div v-for="(slice,index) in slices" :key="index" 
                 :class="'sl sl'+slice.type"
                 :id="'sl'+index"
-                :style="{left:slice.ts - 2+'px',width:slice.te-slice.ts -2 +'px'}"
+                :style="{position:fixed,left:slice.ts - 2+'px',width:slice.te-slice.ts -2 +'px'}"
                 @mousedown="chooseSlice(index,$event)"
                 @mousemove="resize(index,$event)"
                 @mouseenter="addConf(index,$event)">
@@ -27,7 +32,11 @@
                 :style="{left:Math.min(start,end) + 'px',width:Math.abs(end - start) + 'px'}">
             </div>
         </div>
-    </el-main>
+
+        <el-button color="#F56C6C" @click="classify(1)" :disabled="state!=2">第一类</el-button>
+        <el-button color="#409EFF" @click="classify(2)" :disabled="state!=2">第二类</el-button>
+        <el-button @click="del()" :disabled="state!=3">删除该片段</el-button>
+    </el-col>
     
 </template>
 
@@ -105,6 +114,7 @@ export default{
                 this.end = e.x
                 this.state = 1 // 表示进入选择状态
                 this.sliceConflict = -1
+                console.log(e.x)
             }
 
             if(this.state == 3){
@@ -188,7 +198,7 @@ export default{
             else if(this.state == 4 || this.state == 5){
                 this.resizeEnd(e)
             }
-
+            console.log(this.start,this.end)
         },
 
         mouseleave(e){
@@ -385,24 +395,32 @@ export default{
 <style scoped>
 #myVideo{
     display: block;
+    object-fit:contain;
+    background-color: rgb(230, 230, 230);
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border:2px solid lightgray
+
 }
 
 #progress{
-    background-color: rgb(114, 114, 118);
+    background-color: gray;
+    border:2px solid lightgray
 }
 
 #chosen{
     position: absolute;
-    opacity: 50%;
-    height: 104px;
+    opacity: 80%;
+    height: 74px;
     background-color:darkgrey
 }
 
 .sl{
     position: absolute;
     opacity: 50%;
-    height: 100px;
-    border:2px solid
+    height: 70px;
+    border:2px solid;
+
 }
 
 .sl1{

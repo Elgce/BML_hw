@@ -15,7 +15,7 @@
             </el-row>
         </el-header>
         <el-divider id="top_divider"/>
-        <el-main>
+        <el-main style="overflow:hidden;">
             <el-row id="middle_btns">
                 <el-radio-group v-model="radio1" size="large">
                     <el-radio-button label="全部(0)" />
@@ -29,7 +29,7 @@
             <el-divider/>
             <el-container id="middle_data">
                 <el-aside id="middle_asider">
-                    <el-scrollbar height="500px">
+                    <el-main height="500px" style="padding:0px;">
                         <el-row id="text_top">
                             <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
                             <p id="_mark_strong">请在右侧选择标签</p>
@@ -56,12 +56,17 @@
                                 <p>下一个视频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
-                        <div id="empty_right" v-if="src_list.length===0">
+                        
+                        <Videotag></Videotag>
+                        
+                        
+
+                        <!-- <div id="empty_right" v-if="src_list.length===0">
                             暂无可用数据
-                        </div>
-                    </el-scrollbar>
+                        </div> -->
+                    </el-main>
                 </el-aside>
-                <el-container>
+                <el-container >
                     <el-header id="middle_header">
                         <b v-if="show_btn===false" id="tag_column_text">标签栏</b>
                         <el-button v-if="show_btn===false" id="add_tag" @click="create_label">添加标签</el-button>
@@ -129,14 +134,18 @@
 
 <script>
 import Breadcrumb from "../BreadCrumb.vue"
+import Videotag from "./VideoTag.vue"
+
 import { reactive, ref } from "vue"
+
     export default
     {
         name: "MainThree",
         components: 
         {
-            Breadcrumb,
-        },
+    Breadcrumb,
+    Videotag,
+},
         data()
         {
             return{
@@ -434,7 +443,7 @@ import { reactive, ref } from "vue"
         border: none;
         background-color: rgb(243, 244, 243);
         margin-top: 5px;
-        margin-left:450px;
+        margin-left:400px;
     }
     #previous
     {
@@ -448,7 +457,7 @@ import { reactive, ref } from "vue"
     {
         margin-top:20px;
         width:1300px;
-        height:500px;
+        height:700px;
     }
     #middle_header
     {
@@ -492,7 +501,7 @@ import { reactive, ref } from "vue"
     {
         border:thin solid rgb(234, 229, 229);
         width:950px;
-        height:500px;
+        height:700px;
     }
     #tag_search_text
     {
