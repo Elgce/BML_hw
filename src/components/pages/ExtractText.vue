@@ -146,7 +146,8 @@
         <!-- <el-card shadow="hover" class="card">
             <el-button class="labels_choice" style="visibility:visible">{{item}}</el-button>
         </el-card> -->
-        <el-button class="labels_choice">
+        <el-color-picker v-model="markColor" id="mark_color"/>
+        <el-button class="labels_choice" @click="mark_text">
             123
         </el-button>
     </div>
@@ -199,6 +200,7 @@ import { reactive, ref } from "vue"
                 options:[
                     
                 ],
+                markColor:ref('#409EFF'),
             };
         },
         created(){
@@ -405,8 +407,8 @@ import { reactive, ref } from "vue"
                     var scrolly= document.documentElement.scrollTop || document.body.scrollTop;
                     var x = e.pageX || e.clientX + scrollx;
                     var y = e.pageY || e.clientY + scrolly;
-                    x+=10;
-                    y+=10;
+                    x+=20;
+                    y+=20;
                     choose_label.style.top=String(y)+'px';
                     choose_label.style.left=String(x)+'px';
                 }
@@ -475,6 +477,18 @@ import { reactive, ref } from "vue"
                 {
                     this.marking_date=null
                 }
+            },
+            mark_text()
+            {
+                var selection=window.getSelection();
+                var range = selection.getRangeAt(0);
+                var selectionContents = range.extractContents();
+                var span = document.createElement("span");
+                span.style.color = this.markColor;
+                span.appendChild(selectionContents);
+                range.insertNode(span);
+                var choose_label=document.getElementById("choose_label");
+                choose_label.style.visibility='hidden';
             }
         }
     }
