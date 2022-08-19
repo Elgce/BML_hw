@@ -5,6 +5,7 @@ from hashlib import new
 from operator import length_hint
 from pydoc import pager
 import re
+import zipfile
 import shutil
 from tkinter import Label
 from urllib import response
@@ -84,20 +85,28 @@ def search_data():
 def test():
     file = request.files.to_dict()
     f = file["file"]
-    # f_type = f.filename.split('.')
-    # ff_type = f_type[1]
-    # if(ff_type=='zip'):
-        
+    f_type = f.filename.split('.')
+    ff_type = f_type[1]
     basepath = os.path.dirname(__file__)
     name = session["name"]
     topath = "\src" + "\\" + name
     if not os.path.exists(basepath + topath):
         os.makedirs(basepath+topath)
-    upload_path = basepath + topath + "\\" +f.filename
-    f.save(upload_path)
-    MessageInfo[name]["source"].append(f.filename)
-    MessageInfo[name]["num"] = int(MessageInfo[name]["num"]) + 1
-    reset_csv()
+    
+    if(ff_type=='zip'):
+        zip_file = zipfile.ZipFile(f,'r')
+        zip_file.extractall(basepath+topath)
+        for z in zip_file.namelist():
+            MessageInfo[name]["source"].append(z)
+            MessageInfo[name]["num"] = int(MessageInfo[name]["num"]) + 1
+            reset_csv()
+        
+    else:
+        upload_path = basepath + topath + "\\" +f.filename
+        f.save(upload_path)
+        MessageInfo[name]["source"].append(f.filename)
+        MessageInfo[name]["num"] = int(MessageInfo[name]["num"]) + 1
+        reset_csv()
     return ""
 
 @app.route("/")
