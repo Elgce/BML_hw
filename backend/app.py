@@ -1,5 +1,6 @@
 import datetime
 import base64
+from genericpath import isfile
 from glob import glob
 from hashlib import new
 from operator import length_hint
@@ -245,16 +246,21 @@ def clear_session():
     session.clear()
     return {"baby":""}
 
-# 用于复制文件夹
-def copyfile(srcfile,name):
-    if not os.path.isfile(srcfile):
-        print("%s not exist!"%(srcfile))
-    else:
-        dstpath = "./backend/src/" + name + "/"
-        if not os.path.exists(dstpath):
-            os.makedirs(dstpath)
-        fpath,fname = os.path.split(srcfile)
-        shutil.copy(srcfile, dstpath + fname)
+# 用于复制文件夹(导出)
+@app.route("/api/exportdata")
+def copyfile():
+    name = session["name"]
+    src = "./backend/src/"+name
+    src_files = os.listdir(src)
+    dstpath = "./export/" + name + "/"
+    if not os.path.exists(dstpath):
+        os.makedirs(dstpath)
+    for file_name in src_files:
+        full_file_name = os.path.join(src,file_name)
+        if os.path.isfile(full_file_name):
+            shutil.copy(full_file_name, dstpath)
+    return {"name":name}
+
 
 # 用于调用前端需要的文件并返回
 @app.route("/api/passfile/<file_name>",methods=['GET','POST'])

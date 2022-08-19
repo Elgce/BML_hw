@@ -86,6 +86,7 @@
                         <el-button type="primary" link key="label" @click="multilabel(item.name,item.specy)">查看与标注</el-button>
                         <el-button type="primary" link key="label" @click="insert(item.name)">导入</el-button>
                         <el-button type="primary" link key="delete" @click="deletedata(item.name)">删除</el-button>
+                        <el-button type="primary" link key="export" @click="exportdata(item.name)">导出</el-button>
                     </el-descriptions-item>
                 </el-descriptions>
             <el-divider class="between" border-style="none"></el-divider>
@@ -207,6 +208,20 @@ import Breadcrumb from "../BreadCrumb.vue"
         methods:{
             generate_id(index){
                 return "name_"+index
+            },
+            exportdata(name){
+                const data = {"name":name}
+                return fetch("/api/setsession",{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res=>res.json())
+                .then(()=>{
+                    this.$router.push("/index/manage/dataset/4-2");
+                })
             },
             handleChosenChange(){
                 let that = this;

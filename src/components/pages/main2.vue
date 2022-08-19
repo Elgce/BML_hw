@@ -151,46 +151,46 @@ import Breadcrumb from "../BreadCrumb.vue"
                         label_type.innerHTML = "表格分类";
                     }
                     let label_module = document.getElementById("label_module");
-                    if(that.MessageInfo[label_module]==="ss"){
+                    if(that.MessageInfo["label_model"]==="ss"){
                         label_module.innerHTML = "单图单标签";
                     }
-                    else if(that.MessageInfo[label_module]==="sm"){
+                    else if(that.MessageInfo["label_model"]==="sm"){
                         label_module.innerHTML = "单图多标签";
                     }
-                    else if(that.MessageInfo[label_module]==="rec"){
+                    else if(that.MessageInfo["label_model"]==="rec"){
                         label_module.innerHTML = "矩形框标注";
                     }
-                    else if(that.MessageInfo[label_module]==="insdiv"){
+                    else if(that.MessageInfo["label_model"]==="insdiv"){
                         label_module.innerHTML = "实例分割";
                     }
-                    else if(that.MessageInfo[label_module]==="meandiv"){
+                    else if(that.MessageInfo["label_model"]==="meandiv"){
                         label_module.innerHTML = "语义分割";
                     }
-                    else if(that.MessageInfo[label_module]==="recog"){
+                    else if(that.MessageInfo["label_model"]==="recog"){
                         label_module.innerHTML = "非结构化文字识别";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_slabel"){
+                    else if(that.MessageInfo["label_model"]==="txt_slabel"){
                         label_module.innerHTML = "短文本单标签";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_mlabel"){
+                    else if(that.MessageInfo["label_model"]==="txt_mlabel"){
                         label_module.innerHTML = "短文本多标签"
                     }
-                    else if(that.MessageInfo[label_module]==="txt_sim"){
+                    else if(that.MessageInfo["label_model"]==="txt_sim"){
                         label_module.innerHTML = "短文本相似度";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_iob"){
+                    else if(that.MessageInfo["label_model"]==="txt_iob"){
                         label_module.innerHTML = "IOB标注模式";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_io"){
+                    else if(that.MessageInfo["label_model"]==="txt_io"){
                         label_module.innerHTML = "IO标注模式";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_ioe"){
+                    else if(that.MessageInfo["label_model"]==="txt_ioe"){
                         label_module.innerHTML = "IOE标注模式";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_iobes"){
+                    else if(that.MessageInfo["label_model"]==="txt_iobes"){
                         label_module.innerHTML = "IOBES标注模式";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_extr"){
+                    else if(that.MessageInfo["label_model"]==="txt_extr"){
                         label_module.innerHTML = "文本实体抽取";
                     }
                 })

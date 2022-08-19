@@ -40,16 +40,14 @@
     <p class="text_left1" style="left:240px;top:810px" id="upload_pic">上传图片</p>
     <p class="text_left1" style="left:240px;top:730px">导出数据</p>
     <form id="markingInfo_radio_group">
-        <input type="radio" value="no_marking_info" name="marking_info">导出全部数据，包含源文件及已有的标注文件&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="radio" value="_marking_info" name="marking_info">仅导出源文件
+        <input type="radio" value="_marking_info" name="marking_info">导出标注文件
     </form>
     <p class="text_left1" style="left:240px;top:770px">标注格式</p>
     <select id="fashion_choice" @change="select_change">
         <option value="" disabled selected hidden>请选择</option>
-        <option value="json">json</option>
-        <option>xml</option>
+        <option value="json">标注文件</option>
     </select>
-    <el-button id="submit_button" @click="back_index">开始导出</el-button>
+    <el-button id="submit_button" @click="backindex">开始导出</el-button>
 </template>
 
 <script>
@@ -73,6 +71,12 @@ import Breadcrumb from "../BreadCrumb.vue"
         },
         methods:{
             //written by bqw
+            backindex(){
+                return fetch("/api/exportdata").then((res) => res.json())
+                .then(()=>{
+                    this.$router.push("/index/manage/dataset");
+                })
+            },
             get_data(){
                 let that = this;
                 return fetch("/api/getone").then((res) => res.json())
@@ -82,68 +86,56 @@ import Breadcrumb from "../BreadCrumb.vue"
                     let data_id = document.getElementById("data_id");
                     data_id.innerHTML = that.MessageInfo["data_id"];
                     let label_type = document.getElementById("label_type");
-                    var camera_data=document.getElementById("camera_data");
-                    var cloud_data=document.getElementById("cloud_data");
-                    var excel=document.getElementById("excel");
-                    var txt=document.getElementById("txt");
-                    var upload_pic=document.getElementById("upload_pic");
-                    var uploader=document.getElementById("uploader");
                     if(that.MessageInfo["specy"]==="pic"){
                         label_type.innerHTML = "图像分类";
-                        txt.innerHTML = "上传图片";
                     }
                     else if(that.MessageInfo["specy"]==="txt"){
                         label_type.innerHTML = "文本分类";
-                        cloud_data.hidden=true;
-                        camera_data.hidden=true;
-                        excel.hidden=false;
-                        upload_pic.innerHTML = "上传TXT文本";
-                        uploader.innerHTML = "上传TXT文本";
                     }
                     else if(that.MessageInfo["specy"]==="table"){
                         label_type.innerHTML = "表格分类";
                     }
                     let label_module = document.getElementById("label_module");
-                    if(that.MessageInfo[label_module]==="ss"){
+                    if(that.MessageInfo["label_model"]==="ss"){
                         label_module.innerHTML = "单图单标签";
                     }
-                    else if(that.MessageInfo[label_module]==="sm"){
+                    else if(that.MessageInfo["label_model"]==="sm"){
                         label_module.innerHTML = "单图多标签";
                     }
-                    else if(that.MessageInfo[label_module]==="rec"){
+                    else if(that.MessageInfo["label_model"]==="rec"){
                         label_module.innerHTML = "矩形框标注";
                     }
-                    else if(that.MessageInfo[label_module]==="insdiv"){
+                    else if(that.MessageInfo["label_model"]==="insdiv"){
                         label_module.innerHTML = "实例分割";
                     }
-                    else if(that.MessageInfo[label_module]==="meandiv"){
+                    else if(that.MessageInfo["label_model"]==="meandiv"){
                         label_module.innerHTML = "语义分割";
                     }
-                    else if(that.MessageInfo[label_module]==="recog"){
+                    else if(that.MessageInfo["label_model"]==="recog"){
                         label_module.innerHTML = "非结构化文字识别";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_slabel"){
+                    else if(that.MessageInfo["label_model"]==="txt_slabel"){
                         label_module.innerHTML = "短文本单标签";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_mlabel"){
+                    else if(that.MessageInfo["label_model"]==="txt_mlabel"){
                         label_module.innerHTML = "短文本多标签"
                     }
-                    else if(that.MessageInfo[label_module]==="txt_sim"){
+                    else if(that.MessageInfo["label_model"]==="txt_sim"){
                         label_module.innerHTML = "短文本相似度";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_iob"){
+                    else if(that.MessageInfo["label_model"]==="txt_iob"){
                         label_module.innerHTML = "IOB标注模式";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_io"){
+                    else if(that.MessageInfo["label_model"]==="txt_io"){
                         label_module.innerHTML = "IO标注模式";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_ioe"){
+                    else if(that.MessageInfo["label_model"]==="txt_ioe"){
                         label_module.innerHTML = "IOE标注模式";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_iobes"){
+                    else if(that.MessageInfo["label_model"]==="txt_iobes"){
                         label_module.innerHTML = "IOBES标注模式";
                     }
-                    else if(that.MessageInfo[label_module]==="txt_extr"){
+                    else if(that.MessageInfo["label_model"]==="txt_extr"){
                         label_module.innerHTML = "文本实体抽取";
                     }
                 })
@@ -186,45 +178,6 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var two_btns=document.getElementById("two_btns");
                 two_btns.style.visibility='hidden';
             },
-            select_change()
-            {
-                var select_fashion=document.getElementById("fashion_choice");
-                var select_local=document.getElementById("local_choice");
-                var upPic=document.getElementById("upload_pic");
-                var submit_btn=document.getElementById("submit_button");
-                var up_loader = document.getElementById("uploader");
-                if(select_fashion.value=="local")
-                {
-                    select_local.style.visibility='visible';
-                    this.local_select_change();
-                }
-                else
-                {
-                    select_local.style.visibility='hidden';
-                    upPic.style.visibility='hidden';
-                    submit_btn.style.top='830px';
-                    up_loader.style.visibility='hidden';
-                }
-            },
-            local_select_change()
-            {
-                var upPic=document.getElementById("upload_pic");
-                var select_local=document.getElementById("local_choice");
-                var submit_btn=document.getElementById("submit_button");
-                var up_loader = document.getElementById("uploader");
-                if(select_local.value=="pic")
-                {
-                    upPic.style.visibility='visible';
-                    up_loader.style.visibility='visible';
-                    submit_btn.style.top='870px';
-                }
-                else
-                {
-                    upPic.style.visibility='hidden';
-                    up_loader.style.visibility='hidden';
-                    submit_btn.style.top='830px';
-                }
-            }
         }
     }
 
