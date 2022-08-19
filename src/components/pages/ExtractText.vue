@@ -32,8 +32,15 @@
                 <el-aside id="middle_asider">
                     <el-scrollbar height="500px">
                         <el-row id="text_top">
-                            <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
-                            <p id="_mark_strong">{{this_tag}}</p>
+                            <!-- <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
+                            <p id="_mark_strong">{{this_tag}}</p> -->
+                            <div id="content_search">
+                            <el-input type="text" v-model="input_text" class="w-50 m-2" placeholder="定位文本内容">
+                            <template #prefix>
+                                <el-icon class="el-input__icon"><search /></el-icon>
+                            </template>
+                        </el-input>
+                        </div>
                             <el-popover
                                 placement="bottom"
                                 :width="200"
@@ -56,7 +63,9 @@
                                 <p>下一篇（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
-                        <p class="written">{{show_context}}</p>
+                        <p class="written" @click="checkChoice">
+                            啊哈哈哈哈哈哈哈哈
+                        </p>
                         <div id="empty_right" v-if="num===0">
                             暂无可用数据
                         </div>
@@ -127,6 +136,20 @@
         <br>
         <img src="../../assets/text_marking_description.png" width="500" height="202">
     </el-dialog>
+    <div 
+        id="choose_label"
+    >
+        <p id="choose_label_text">
+            请选择文本实体分类标签：
+        </p>
+        <el-divider id="choose_label_divider"/>
+        <!-- <el-card shadow="hover" class="card">
+            <el-button class="labels_choice" style="visibility:visible">{{item}}</el-button>
+        </el-card> -->
+        <el-button class="labels_choice">
+            123
+        </el-button>
+    </div>
 </template>
 
 <script>
@@ -151,6 +174,7 @@ import { reactive, ref } from "vue"
                 page : -1,
                 show_context: ref(''),
                 this_tag: ref('请在右侧选择标签'),
+                input_text:ref(''),
 
                 labelname: ref(''),
                 new_labelname: ref(''),
@@ -367,6 +391,26 @@ import { reactive, ref } from "vue"
             },
             //written over
 
+
+            checkChoice()
+            {
+                var selection=window.getSelection();
+                var selectionStr=selection.toString();
+                if(selectionStr!="")
+                {
+                    var choose_label=document.getElementById("choose_label");
+                    choose_label.style.visibility='visible';
+                    var e = window.event;
+                    var scrollx = document.documentElement.scrollLeft || document.body.scrollTop;
+                    var scrolly= document.documentElement.scrollTop || document.body.scrollTop;
+                    var x = e.pageX || e.clientX + scrollx;
+                    var y = e.pageY || e.clientY + scrolly;
+                    x+=10;
+                    y+=10;
+                    choose_label.style.top=String(y)+'px';
+                    choose_label.style.left=String(x)+'px';
+                }
+            },
             cleanSource()
             {
                 if(this.unlimited1==true)
@@ -501,7 +545,7 @@ import { reactive, ref } from "vue"
     }
     #previous
     {
-        margin-left:620px;
+        margin-left:430px;
         margin-top:5px;
     }
     #middle_btns
@@ -635,5 +679,33 @@ import { reactive, ref } from "vue"
         font-size: 20px;
         vertical-align: center;
         text-align: center;
+    }
+    #choose_label
+    {
+        visibility: hidden;
+        position: absolute;
+        box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3); 
+    }
+    #choose_label_text
+    {
+        font-weight: 300;
+        font-size: 13px;
+        line-height: 13px;
+    }
+    #choose_label_divider
+    {
+        margin-top: -5px;
+    }
+    .labels_choice
+    {
+        font-size: 13px;
+        width:120px;
+        border: none;
+    }
+    #content_search
+    {
+        width:300px;
+        margin-left:20px;
+        margin-top:2px;
     }
 </style>
