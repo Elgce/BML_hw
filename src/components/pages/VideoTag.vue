@@ -6,20 +6,18 @@
         <video ref="video" id="myVideo" width="800" height="450" controls
             controlslist="nodownload noplaybackrate"
             disablePictureInPicture="true"
-            @timeupdate="timeupdate">
-                
-            <source src="../../assets/movie.mp4"  type="video/mp4">
+            @timeupdate="timeupdate"
+            :src = "url"
+            >
         </video>
-       
-        <!-- <el-slider v-model="sliderTime" 
-            :show-tooltip="false"  
-            @input = "changeCurrentTime"/> -->
-        
+
+        <!-- @keyup.enter="del()" -->
         <div id="progress" style="width:800px; height:74px;"
             @mousedown="down($event)"
             @mouseup="up($event)"
             @mousemove="move($event)"
-            @mouseleave="leave($event)">
+            @mouseleave="leave($event)"
+            >
             <div v-for="(slice,index) in slices" :key="index" 
                 :class="'sl sl'+slice.type"
                 :id="'sl'+index"
@@ -45,6 +43,7 @@
 
 export default{
     name: "AddTag",
+    props:["url"],
     data(){
         return{
             slices:[],
@@ -53,12 +52,10 @@ export default{
             state:0,
             chosenIndex:-1,
             sliceConflict:-1,
-
             sliderTime:0
         }
     },
     mounted(){
-
 
     },
     methods:{
@@ -361,6 +358,8 @@ export default{
         },
 
         del(){
+            if(this.state != 3) return
+            console.log(1111111)
             this.slices.splice(this.chosenIndex,1)
             var chosenSl = document.getElementById('sl'+this.chosenIndex)
             chosenSl.style.opacity = '50%'
@@ -386,7 +385,8 @@ export default{
                 sl.style.cursor = 'default'
             }
 
-        }
+        },
+
     },
 }
 </script>
@@ -400,7 +400,7 @@ export default{
     margin-top: 30px;
     margin-bottom: 30px;
     border:2px solid lightgray
-
+    
 }
 
 #progress{
