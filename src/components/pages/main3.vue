@@ -113,6 +113,8 @@
                             <div v-for="item in Label_info" :key="item" class="scrollbar-demo-item">
                                 <el-card shadow="hover" class="card">
                                     <div class="card_info">
+                                        <el-color-picker v-model="markColor" id="mark_color"/>
+                                        &nbsp;&nbsp;
                                         <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button>
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p class="card_name" style="visibility:visible">{{item}}</p>
@@ -228,7 +230,8 @@ import { reactive, ref } from "vue"
                         value: '45',
                         label: '45',
                     },
-                ]
+                ],
+                markColor:ref('#409EFF'),
             };
         },
         created(){
