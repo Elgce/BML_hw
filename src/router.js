@@ -114,10 +114,10 @@ const routes = [
             },
             {
                 path: '/index/manage/dataset/wholetxt',
-                component: () => import("./components/pages/WholeTxt.vue"),
-                name: '整文本编辑',
-                meta: {title:'整文本编辑'}
-            }
+                component: () => import("./components/pages/ExtractText.vue"),
+                name: '文本实体抽取',
+                meta: {title:'文本实体抽取'}
+            },
         ]
     }
 ]
