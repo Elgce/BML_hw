@@ -232,7 +232,15 @@ import Breadcrumb from "../BreadCrumb.vue"
                             that.MessageInfo[item]["specy"] = "图片标注";
                         }
                         else if(that.MessageInfo[item]["specy"]==="txt"){
-                            that.MessageInfo[item]["specy"] = "文本标注";
+                            if(that.MessageInfo[item]["label_type"]==="txt_cla"){
+                                that.MessageInfo[item]["specy"] = "文本标注";
+                            }
+                            else if(that.MessageInfo[item]["label_type"]==="txt_sim"){
+                                that.MessageInfo[item]["specy"] = "文本相似度";
+                            }
+                            else if(that.MessageInfo[item]["label_type"]==="txt_extr"){
+                                that.MessageInfo[item]["specy"] = "文本实体抽取";
+                            }
                         }
                         else{
                             that.MessageInfo[item]["specy"] = "表格标注";
@@ -294,7 +302,20 @@ import Breadcrumb from "../BreadCrumb.vue"
                         .then(()=>{
                             this.$router.push("/index/manage/dataset/text/addtag");
                         })
-                        
+                    }
+                    else if(specy==="文本相似度"){
+                        const data = {"t_type": "all"};
+                        fetch("/api/sessiontype",{
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then((res)=>res.json())
+                        .then(()=>{
+                            this.$router.push("/index/manage/dataset/text/similarity");
+                        })
                     }
                     
                 })
@@ -323,7 +344,15 @@ import Breadcrumb from "../BreadCrumb.vue"
                             that.MessageInfo[item]["specy"] = "图片标注";
                         }
                         else if(that.MessageInfo[item]["specy"]==="txt"){
-                            that.MessageInfo[item]["specy"] = "文本标注";
+                            if(that.MessageInfo[item]["label_type"]==="txt_cla"){
+                                that.MessageInfo[item]["specy"] = "文本标注";
+                            }
+                            else if(that.MessageInfo[item]["label_type"]==="txt_sim"){
+                                that.MessageInfo[item]["specy"] = "文本相似度";
+                            }
+                            else if(that.MessageInfo[item]["label_type"]==="txt_extr"){
+                                that.MessageInfo[item]["specy"] = "文本实体抽取";
+                            }
                         }
                         else{
                             that.MessageInfo[item]["specy"] = "表格标注";
@@ -376,7 +405,15 @@ import Breadcrumb from "../BreadCrumb.vue"
                             that.MessageInfo[item]["specy"] = "图片标注";
                         }
                         else if(that.MessageInfo[item]["specy"]==="txt"){
-                            that.MessageInfo[item]["specy"] = "文本标注";
+                            if(that.MessageInfo[item]["label_type"]==="txt_cla"){
+                                that.MessageInfo[item]["specy"] = "文本标注";
+                            }
+                            else if(that.MessageInfo[item]["label_type"]==="txt_sim"){
+                                that.MessageInfo[item]["specy"] = "文本相似度";
+                            }
+                            else if(that.MessageInfo[item]["label_type"]==="txt_extr"){
+                                that.MessageInfo[item]["specy"] = "文本实体抽取";
+                            }
                         }
                         else{
                             that.MessageInfo[item]["specy"] = "表格标注";

@@ -313,11 +313,8 @@ def delete_label():
     data = request.get_json()
     label_name = data.get("label_name")
     name = session["name"]
-    print(MessageInfo[name]["labels"])
     index = MessageInfo[name]["labels"].index(label_name)
     MessageInfo[name]["labels"].pop(index)
-    print(name)
-    print(label_name)
     reset_csv()
     return {"lebel_name":label_name}
 
@@ -327,8 +324,6 @@ def get_txt():
     global context_txt
     global context_tag
     t_type = session["t_type"]
-    print(t_type)
-    print("!")
     context = []
     context_tag = []
     context_txt = []
@@ -381,6 +376,32 @@ def delete_txt():
     for i in range(length):
         if context_txt[i] == context_txt[num] and i!=num:
             new_context.append(context[i]+"\n")
+    print(new_context)
+    with open(path, 'w', encoding='utf-8') as f:
+        for item in new_context:
+            f.write(item)
+    return {"name":name}
+
+# 用于文本相似度删除数据
+@app.route("/api/deletetxtsim",methods=['GET','POST'])
+def delete_txtsim():
+    global context_txt
+    global context
+    global context_tag
+    data = request.get_json()
+    text = data.get("text")
+    name = session["name"]
+    num = data.get("num")
+    num = int(num) - 1
+    basepath = os.path.dirname(__file__)
+    path = basepath + "\src\\" + name + "\\" + context_txt[num]
+    if context[num][0]!=text:
+        print("error!")
+    length = len(context)
+    new_context = []
+    for i in range(length):
+        if context_txt[i] == context_txt[num] and i!=num:
+            new_context.append(context[i][0]+" "+context[i][1]+" "+context_tag[i]+"\n")
     print(new_context)
     with open(path, 'w', encoding='utf-8') as f:
         for item in new_context:
@@ -442,6 +463,34 @@ def tag_label():
         for item in new_context:
             f.write(item)
     return {"tag":tag}
+      
+# 用于文本相似度打标签并保存
+@app.route("/api/taglabelsim",methods=["GET","POST"])
+def tag_labelsim():
+    data = request.get_json()
+    tag = data.get("label")
+    global context
+    global context_tag
+    global context_txt
+    inx = data.get("num")
+    ind = int(inx) - 1
+    context_tag[ind] = tag
+    name = session["name"]
+    basepath = os.path.dirname(__file__)
+    path = basepath + "\src\\" + name + "\\" + context_txt[ind]
+    length = len(context)
+    new_context = []
+    print(context)
+    print(context_tag)
+    print(context_txt)
+    for i in range(length):
+        if(context_txt[i]==context_txt[ind]):
+            new_context.append(context[i][0]+" "+context[i][1]+" "+context_tag[i]+"\n")
+    with open(path, 'w', encoding='utf-8') as f:
+        for item in new_context:
+            f.write(item)
+    return {"tag":tag}
+      
         
 # 用于获取文本编辑时当前页面的标签信息
 @app.route("/api/calltag")
@@ -455,11 +504,48 @@ def call_tag():
 def session_type():
     data = request.get_json()
     t_type = data.get("t_type")
-    print("t_type:")
-    print(t_type)
     session["t_type"] = t_type
     session["page"] = 1
     return {"t_type":t_type}
+
+# 用于文本相似度获取文本
+@app.route("/api/gettxtsim")
+def get_txtsim():
+    global context
+    global context_txt
+    global context_tag
+    t_type = session["t_type"]
+    context = []
+    context_tag = []
+    context_txt = []
+    name = session["name"]
+    sources = MessageInfo[name]["source"]
+    basepath = os.path.dirname(__file__)
+    all_num = 0
+    to_num = 0
+    ed_num = 0
+    for item in sources:
+        path = basepath + "\src\\" + name + "\\" + item
+        with open(path,"r",encoding='utf-8') as f:
+            data_list = f.readlines()
+            for line in data_list:
+                all_num = all_num + 1
+                line = line.strip()
+                datas = line.split()
+                if len(datas)==3:
+                    ed_num = ed_num + 1
+                    if t_type=="ed" or t_type=="all":
+                        context_tag.append(datas[2])
+                        context.append([datas[0],datas[1]])
+                        context_txt.append(item)
+                else:
+                    if t_type=="to" or t_type=="all":
+                        context_tag.append("")
+                        context.append([datas[0],datas[1]])
+                        context_txt.append(item)
+                    to_num = to_num + 1
+                   
+    return {"context_tag":context_tag,"context":context,"t_type":t_type,"all_num":all_num,"name":name,"to_num":to_num,"ed_num":ed_num}
 
 if __name__=="__main__":
     # renew()

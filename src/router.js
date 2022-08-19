@@ -59,6 +59,12 @@ const routes = [
                 meta: {title:'添加文本标签'}
             },
             {
+                path: '/index/manage/dataset/text/similarity',
+                component: () => import('./components/pages/TxtSim.vue'),
+                name: '文本相似度',
+                meta: {title:'文本相似度'}
+            },
+            {
                 path: '/index/manage/dataset/text/taggroup',
                 component: () => import('./components/pages/TagGroup.vue'),
                 name: '标签管理',
@@ -87,6 +93,12 @@ const routes = [
                 component: () => import("./components/pages/TextMarking.vue"),
                 name: '文本标注',
                 meta: {title:'文本标注'}
+            },
+            {
+                path: '/index/manage/dataset/blank/similarity',
+                component: () => import("./components/pages/BlankSim.vue"),
+                name: '文本相似度空白页',
+                meta: {title:'文本相似度空白页'}
             },
             {
                 path: '/index/manage/dataset/videomarking',
