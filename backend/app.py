@@ -1,4 +1,5 @@
 
+
 import datetime
 import base64
 from glob import glob
@@ -23,6 +24,7 @@ LabelInfo = {}
 
 context = []
 context_txt = []
+context_tag = []
 
 label_num = 0
 data_num = 0
@@ -324,7 +326,9 @@ def delete_label():
 def get_txt():
     global context
     global context_txt
+    global context_tag
     context = []
+    context_tag = []
     context_txt = []
     name = session["name"]
     sources = MessageInfo[name]["source"]
@@ -337,7 +341,12 @@ def get_txt():
             for line in data_list:
                 num = num + 1
                 line = line.strip()
-                context.append(line)
+                datas = line.split()
+                if len(datas)==2:
+                    context_tag.append(datas[1])
+                else:
+                    context_tag.append("")
+                context.append(datas[0])
                 context_txt.append(item)
     return {"context":context,"num":num,"name":name}
     
@@ -345,6 +354,7 @@ def get_txt():
 def delete_txt():
     global context_txt
     global context
+    global context_tag
     data = request.get_json()
     text = data.get("text")
     name = session["name"]
@@ -397,6 +407,43 @@ def next_page():
         return {"page":page}
     else:
         return {"page":"fail"}
+
+# 用于文本打标签并保存
+@app.route("/api/taglabel",methods=["GET","POST"])
+def tag_label():
+    data = request.get_json()
+    tag = data.get("tag")
+    global context
+    global context_tag
+    global context_txt
+    ind = int(session["page"]) - 1
+    print("内容:")
+    print(context[ind])
+    context_tag[ind] = tag
+    name = session["name"]
+    basepath = os.path.dirname(__file__)
+    path = basepath + "\src\\" + name + "\\" + context_txt[ind]
+    length = len(context)
+    length1 = len(context_tag)
+    length2 = len(context_txt)
+    new_context = []
+    for i in range(length):
+        if(context_txt[i]==context_txt[ind]):
+            print(context[i])
+            print(context_tag[i])
+            new_context.append(context[i]+" "+context_tag[i]+"\n")
+    with open(path, 'w', encoding='utf-8') as f:
+        for item in new_context:
+            f.write(item)
+    return {"tag":tag}
+        
+# 用于获取文本编辑时当前页面的标签信息
+@app.route("/api/calltag")
+def call_tag():
+    ind = int(session["page"]) - 1
+    print(ind)
+    global context_tag
+    return {"tag":context_tag[ind]}
 
 if __name__=="__main__":
     # renew()

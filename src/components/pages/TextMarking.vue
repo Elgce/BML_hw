@@ -33,7 +33,7 @@
                     <el-scrollbar height="500px">
                         <el-row id="text_top">
                             <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
-                            <p id="_mark_strong">请在右侧选择标签</p>
+                            <p id="_mark_strong">{{this_tag}}</p>
                             <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除文本</el-button>
                             <el-popover
                                 placement="bottom"
@@ -101,7 +101,7 @@
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p class="card_name" style="visibility:visible">{{item}}</p>
                                         <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input>
-                                        <el-button type="success" text @click="addtable(item)">选择</el-button>
+                                        <el-button type="success" text @click="taglabel(item)">选择</el-button>
                                     </div>
                                 </el-card>
                             </div>
@@ -148,6 +148,7 @@ import { reactive, ref } from "vue"
                 name : ref(''),
                 page : -1,
                 show_context: ref(''),
+                this_tag: ref('请在右侧选择标签'),
 
                 labelname: ref(''),
                 new_labelname: ref(''),
@@ -175,11 +176,38 @@ import { reactive, ref } from "vue"
             };
         },
         created(){
-            this.get_labels().then(this.calltxt()).then(this.callpage());
+            this.get_labels().then(this.calltxt()).then(this.callpage()).then(this.calltag());
             
         },
         methods:{
         //  written by bqw
+            taglabel(item){
+                console.log(item);
+                this.this_tag = item;
+                const data = {"tag": item};
+                return fetch("/api/taglabel",{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res)=>res.json())
+                .then((j)=>{
+                    console.log(j);
+                })
+            },
+            calltag(){
+                let that = this;
+                return fetch("/api/calltag").then((res)=>res.json().then((j)=>{
+                    if(j.tag===""){
+                        that.this_tag = '请在右侧选择标签';
+                    }
+                    else{
+                        that.this_tag = j.tag;
+                    }
+                }))
+            },
             latter_txt(){
                 return fetch("/api/nextpage").then((res)=>res.json().then((j)=>{
                     let passa = j.page;
