@@ -84,6 +84,10 @@ def search_data():
 def test():
     file = request.files.to_dict()
     f = file["file"]
+    # f_type = f.filename.split('.')
+    # ff_type = f_type[1]
+    # if(ff_type=='zip'):
+        
     basepath = os.path.dirname(__file__)
     name = session["name"]
     topath = "\src" + "\\" + name

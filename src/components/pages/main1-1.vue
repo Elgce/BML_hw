@@ -317,6 +317,21 @@ import Breadcrumb from "../BreadCrumb.vue"
                             this.$router.push("/index/manage/dataset/text/similarity");
                         })
                     }
+                    else if(specy==="表格标注"){
+                        const data = {"t_type": "all"};
+                        fetch("/api/sessiontype",{
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then((res)=>res.json())
+                        .then(()=>{
+                            this.$router.push("/index/manage/dataset/videomarking");
+                        })
+                        
+                    }
                     
                 })
             },
