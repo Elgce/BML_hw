@@ -99,6 +99,12 @@ const routes = [
                 component: () => import("./components/pages/PlatformIntroduction.vue"),
                 name: '平台说明',
                 meta: {title:'平台说明'}
+            },
+            {
+                path: '/index/manage/dataset/wholetxt',
+                component: () => import("./components/pages/WholeTxt.vue"),
+                name: '整文本编辑',
+                meta: {title:'整文本编辑'}
             }
         ]
     }

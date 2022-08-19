@@ -87,7 +87,7 @@
             <span class="submenu">数据处理</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="4-1">清洗任务管理</el-menu-item>
+            <el-menu-item index="/index/manage/dataset/wholetxt">清洗任务管理</el-menu-item>
             <el-menu-item index="4-2">增强任务管理</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
