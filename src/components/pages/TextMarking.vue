@@ -17,10 +17,10 @@
         <el-divider id="top_divider"/>
         <el-main>
             <el-row id="middle_btns">
-                <el-radio-group v-model="radio1" size="large">
-                    <el-radio-button label="全部(0)" />
-                    <el-radio-button label="有标注信息(0)" />
-                    <el-radio-button label="无标注信息(0)" />
+                <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
+                                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                 </el-radio-group>
                 <div id="link">
                     <el-link type="primary" @click="dialogVisible = true">批注示例</el-link>
@@ -34,7 +34,6 @@
                         <el-row id="text_top">
                             <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
                             <p id="_mark_strong">{{this_tag}}</p>
-                            <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除文本</el-button>
                             <el-popover
                                 placement="bottom"
                                 :width="200"
@@ -144,7 +143,10 @@ import { reactive, ref } from "vue"
         {
             return{
                 context: reactive([]),
-                num: -1,
+                all_num: -1,
+                ed_num: -1,
+                to_num: -1,
+                t_type: ref("all"),
                 name : ref(''),
                 page : -1,
                 show_context: ref(''),
@@ -176,11 +178,26 @@ import { reactive, ref } from "vue"
             };
         },
         created(){
-            this.get_labels().then(this.calltxt()).then(this.callpage()).then(this.calltag());
+            this.calltxt().then(this.get_labels()).then(this.callpage()).then(this.calltag());
             
         },
         methods:{
         //  written by bqw
+            handleradiochange(){
+                console.log(this.t_type);
+                const data = {"t_type": this.t_type};
+                return fetch("/api/sessiontype",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res)=>res.json())
+                .then(()=>{
+                    this.$router.push("/index/manage/dataset/txt/blank");
+                })
+            },
             taglabel(item){
                 console.log(item);
                 this.this_tag = item;
@@ -242,8 +259,11 @@ import { reactive, ref } from "vue"
                 let that = this;
                 return fetch("/api/gettxt").then((res) => res.json().then((j) => {
                     that.context = j.context;
-                    that.num = j.num;
+                    that.all_num = j.all_num;
                     that.name = j.name;
+                    that.to_num = j.to_num;
+                    that.ed_num = j.ed_num;
+                    that.t_type = j.t_type;
                 }))
             },
             searchlabel(){
@@ -481,7 +501,7 @@ import { reactive, ref } from "vue"
     }
     #previous
     {
-        margin-left:20px;
+        margin-left:620px;
         margin-top:5px;
     }
     #middle_btns

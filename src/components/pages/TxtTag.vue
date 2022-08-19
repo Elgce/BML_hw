@@ -5,10 +5,10 @@
             </el-header>
             <el-divider />
             <el-main>
-                <el-radio-group v-model="radio1" size="large" class="mytest3">
-                                <el-radio-button label="全部(6)" />
-                                <el-radio-button label="有标注信息(6)" />
-                                <el-radio-button label="无标注信息(0)" />
+                <el-radio-group v-model="t_type" @change="handleradiochange" size="large" class="mytest3">
+                                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                             </el-radio-group>
 
                 <el-button class="txt_in" @click="insert_txt">导入文本</el-button>
@@ -73,14 +73,14 @@
 
                 </el-table>
             
-                <div class="txt_num">当前数据集标注模板：短文本单标签，共有文本：{{num}}个</div>
+                <div class="txt_num">当前数据集标注模板：短文本单标签，共有文本：{{all_num}}个</div>
             </el-main>
 </el-container>
 
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import Breadcrumb from '../BreadCrumb.vue'
 
     export default{
@@ -90,10 +90,14 @@ import Breadcrumb from '../BreadCrumb.vue'
         },
     data(){
         return {
+            all_num: -1,
+            ed_num: -1,
+            to_num: -1,
+            t_type: ref('all'),
             context: reactive([]),
-            num: -1,
             tableData: [],
             name:"",
+
         }
     },
     created(){
@@ -113,6 +117,21 @@ import Breadcrumb from '../BreadCrumb.vue'
             .then((res) => res.json)
             .then(()=>{
                 this.$router.push("/index/manage/dataset/textmarking");
+            })
+        },
+        handleradiochange(){
+            console.log(this.t_type);
+            const data = {"t_type": this.t_type};
+            return fetch("/api/sessiontype",{
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+            .then((res)=>res.json())
+            .then(()=>{
+                this.$router.push("/index/manage/dataset/txt/label/blank");
             })
         },
         label_txt(){
@@ -153,8 +172,11 @@ import Breadcrumb from '../BreadCrumb.vue'
             let that = this;
             return fetch("/api/gettxt").then((res) => res.json().then((j) => {
                 that.context = j.context;
-                that.num = j.num;
+                that.all_num = j.all_num;
+                that.to_num = j.to_num;
+                that.ed_num = j.ed_num;
                 that.name = j.name
+                that.t_type = j.t_type;
                 console.log(that.context);
                 for (let item in that.context){
                     let txt = that.context[item];

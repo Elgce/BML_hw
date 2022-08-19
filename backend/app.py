@@ -1,5 +1,3 @@
-
-
 import datetime
 import base64
 from glob import glob
@@ -94,6 +92,7 @@ def test():
     upload_path = basepath + topath + "\\" +f.filename
     f.save(upload_path)
     MessageInfo[name]["source"].append(f.filename)
+    MessageInfo[name]["num"] = int(MessageInfo[name]["num"]) + 1
     reset_csv()
     return ""
 
@@ -327,28 +326,41 @@ def get_txt():
     global context
     global context_txt
     global context_tag
+    t_type = session["t_type"]
+    print(t_type)
+    print("!")
     context = []
     context_tag = []
     context_txt = []
     name = session["name"]
     sources = MessageInfo[name]["source"]
     basepath = os.path.dirname(__file__)
-    num = 0
+    all_num = 0
+    to_num = 0
+    ed_num = 0
     for item in sources:
         path = basepath + "\src\\" + name + "\\" + item
         with open(path,"r",encoding='utf-8') as f:
             data_list = f.readlines()
             for line in data_list:
-                num = num + 1
+                all_num = all_num + 1
                 line = line.strip()
                 datas = line.split()
                 if len(datas)==2:
-                    context_tag.append(datas[1])
+                    ed_num = ed_num + 1
+                    if t_type=="ed" or t_type=="all":
+                        context_tag.append(datas[1])
+                        context.append(datas[0])
+                        context_txt.append(item)
                 else:
-                    context_tag.append("")
-                context.append(datas[0])
-                context_txt.append(item)
-    return {"context":context,"num":num,"name":name}
+                    if t_type=="to" or t_type=="all":
+                        context_tag.append("")
+                        context.append(datas[0])
+                        context_txt.append(item)
+                    to_num = to_num + 1
+                
+    print(context)       
+    return {"context":context,"t_type":t_type,"all_num":all_num,"name":name,"to_num":to_num,"ed_num":ed_num}
     
 @app.route("/api/deletetxt",methods=['GET','POST'])
 def delete_txt():
@@ -417,20 +429,14 @@ def tag_label():
     global context_tag
     global context_txt
     ind = int(session["page"]) - 1
-    print("内容:")
-    print(context[ind])
     context_tag[ind] = tag
     name = session["name"]
     basepath = os.path.dirname(__file__)
     path = basepath + "\src\\" + name + "\\" + context_txt[ind]
     length = len(context)
-    length1 = len(context_tag)
-    length2 = len(context_txt)
     new_context = []
     for i in range(length):
         if(context_txt[i]==context_txt[ind]):
-            print(context[i])
-            print(context_tag[i])
             new_context.append(context[i]+" "+context_tag[i]+"\n")
     with open(path, 'w', encoding='utf-8') as f:
         for item in new_context:
@@ -440,10 +446,20 @@ def tag_label():
 # 用于获取文本编辑时当前页面的标签信息
 @app.route("/api/calltag")
 def call_tag():
-    ind = int(session["page"]) - 1
-    print(ind)
     global context_tag
+    ind = int(session["page"]) - 1
     return {"tag":context_tag[ind]}
+
+# 用于设置文本视图需要的种类
+@app.route("/api/sessiontype",methods=["GET","POST"])
+def session_type():
+    data = request.get_json()
+    t_type = data.get("t_type")
+    print("t_type:")
+    print(t_type)
+    session["t_type"] = t_type
+    session["page"] = 1
+    return {"t_type":t_type}
 
 if __name__=="__main__":
     # renew()
