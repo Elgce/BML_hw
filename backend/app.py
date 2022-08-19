@@ -527,6 +527,84 @@ def session_type():
     session["page"] = 1
     return {"t_type":t_type}
 
+# 用于文本抽取获取文本信息
+@app.route("/api/gettxtextracted")
+def get_txtextracted():
+    global context
+    global context_txt
+    global context_tag
+    t_type = session["t_type"]
+    context = []
+    context_tag = []
+    context_txt = []
+    name = session["name"]
+    sources = MessageInfo[name]["source"]
+    basepath = os.path.dirname(__file__)
+    all_num = 0
+    to_num = 0
+    ed_num = 0
+    for item in sources:
+        path = basepath + "\src\\" + name + "\\" + item
+        with open(path,"r",encoding='utf-8') as f:
+            data_list = f.readlines()
+            for line in data_list:
+                all_num = all_num + 1
+                line = line.strip()
+                datas = line.split()
+                if len(datas)>1:
+                    ed_num = ed_num + 1
+                    if t_type=="ed" or t_type=="all":
+                        context_tag.append("")
+                        context.append(datas[0])
+                        context_txt.append(item)
+                else:
+                    if t_type=="to" or t_type=="all":
+                        context_tag.append("")
+                        context.append(datas[0])
+                        context_txt.append(item)
+                    to_num = to_num + 1
+                   
+    return {"context_tag":context_tag,"context":context,"t_type":t_type,"all_num":all_num,"name":name,"to_num":to_num,"ed_num":ed_num}
+
+# 用于文本实体数据页面获取文本信息
+@app.route("/api/gettxtextract")
+def get_txtextract():
+    global context
+    global context_txt
+    global context_tag
+    t_type = session["t_type"]
+    context = []
+    context_tag = []
+    context_txt = []
+    name = session["name"]
+    sources = MessageInfo[name]["source"]
+    basepath = os.path.dirname(__file__)
+    all_num = 0
+    to_num = 0
+    ed_num = 0
+    for item in sources:
+        path = basepath + "\src\\" + name + "\\" + item
+        with open(path,"r",encoding='utf-8') as f:
+            data_list = f.readlines()
+            for line in data_list:
+                all_num = all_num + 1
+                line = line.strip()
+                datas = line.split()
+                if len(datas)>1:
+                    ed_num = ed_num + 1
+                    if t_type=="ed" or t_type=="all":
+                        context_tag.append("")
+                        context.append(datas[0])
+                        context_txt.append(item)
+                else:
+                    if t_type=="to" or t_type=="all":
+                        context_tag.append("")
+                        context.append(datas[0])
+                        context_txt.append(item)
+                    to_num = to_num + 1
+                   
+    return {"context_tag":context_tag,"context":context,"t_type":t_type,"all_num":all_num,"name":name,"to_num":to_num,"ed_num":ed_num}
+
 # 用于文本相似度获取文本
 @app.route("/api/gettxtsim")
 def get_txtsim():

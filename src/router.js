@@ -89,6 +89,18 @@ const routes = [
                 meta: {title:'文本标注空白页'}
             },
             {
+                path: '/index/manage/dataset/txt/extract/blank',
+                component: () => import("./components/pages/BlankExtract.vue"),
+                name: '文本抽取标签空白页',
+                meta: {title:'文本抽取标签空白页'}
+            },
+            {
+                path: '/index/manage/dataset/txt/extracted/blank',
+                component: () => import("./components/pages/BlankExtracted.vue"),
+                name: '文本抽取空白页',
+                meta: {title:'文本抽取空白页'}
+            },
+            {
                 path: '/index/manage/dataset/textmarking',
                 component: () => import("./components/pages/TextMarking.vue"),
                 name: '文本标注',
@@ -117,6 +129,12 @@ const routes = [
                 component: () => import("./components/pages/ExtractText.vue"),
                 name: '文本实体抽取',
                 meta: {title:'文本实体抽取'}
+            },
+            {
+                path: '/index/manage/dataset/extracttag',
+                component: () => import("./components/pages/ExtractTag.vue"),
+                name: '文本实体抽取数据',
+                meta: {title:'文本实体抽取数据'}
             },
             {
                 path: '/index/manage/dataset/4-2',

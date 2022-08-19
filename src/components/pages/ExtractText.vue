@@ -64,9 +64,9 @@
                             </el-popover>
                         </el-row>
                         <p class="written" @click="checkChoice">
-                            啊哈哈哈哈哈哈哈哈
+                            {{show_context}}
                         </p>
-                        <div id="empty_right" v-if="num===0">
+                        <div id="empty_right" v-if="all_num===0">
                             暂无可用数据
                         </div>
                     </el-scrollbar>
@@ -147,9 +147,11 @@
             <el-button class="labels_choice" style="visibility:visible">{{item}}</el-button>
         </el-card> -->
         <el-color-picker v-model="markColor" id="mark_color"/>
-        <el-button class="labels_choice" @click="mark_text">
-            123
-        </el-button>
+        <div v-for="item in Label_info" :key="item" >
+            <el-button class="labels_choice" @click="mark_text(item)">
+            {{item}}
+            </el-button>
+        </div>
     </div>
 </template>
 
@@ -176,6 +178,7 @@ import { reactive, ref } from "vue"
                 show_context: ref(''),
                 this_tag: ref('请在右侧选择标签'),
                 input_text:ref(''),
+                start_end: reactive([]),
 
                 labelname: ref(''),
                 new_labelname: ref(''),
@@ -204,7 +207,7 @@ import { reactive, ref } from "vue"
             };
         },
         created(){
-            this.calltxt().then(this.get_labels()).then(this.callpage()).then(this.calltag());
+            this.calltxt().then(this.get_labels()).then(this.callpage());
             
         },
         methods:{
@@ -221,7 +224,7 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json())
                 .then(()=>{
-                    this.$router.push("/index/manage/dataset/txt/blank");
+                    this.$router.push("/index/manage/dataset/txt/extracted/blank");
                 })
             },
             taglabel(item){
@@ -240,17 +243,6 @@ import { reactive, ref } from "vue"
                     console.log(j);
                 })
             },
-            calltag(){
-                let that = this;
-                return fetch("/api/calltag").then((res)=>res.json().then((j)=>{
-                    if(j.tag===""){
-                        that.this_tag = '请在右侧选择标签';
-                    }
-                    else{
-                        that.this_tag = j.tag;
-                    }
-                }))
-            },
             latter_txt(){
                 return fetch("/api/nextpage").then((res)=>res.json().then((j)=>{
                     let passa = j.page;
@@ -258,7 +250,7 @@ import { reactive, ref } from "vue"
                         alert("已是最后一页!");
                     }
                     else{
-                        this.$router.push("/index/manage/dataset/txt/blank");
+                        this.$router.push("/index/manage/dataset/txt/extracted/blank");
                     }
                 }))
             },
@@ -269,7 +261,7 @@ import { reactive, ref } from "vue"
                         alert("已是第一页!");
                     }
                     else{
-                        this.$router.push("/index/manage/dataset/txt/blank");
+                        this.$router.push("/index/manage/dataset/txt/extracted/blank");
                     }
                 }))
             },
@@ -283,7 +275,7 @@ import { reactive, ref } from "vue"
             },
             calltxt(){
                 let that = this;
-                return fetch("/api/gettxt").then((res) => res.json().then((j) => {
+                return fetch("/api/gettxtextracted").then((res) => res.json().then((j) => {
                     that.context = j.context;
                     that.all_num = j.all_num;
                     that.name = j.name;
@@ -332,7 +324,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/txt/blank");
+                    this.$router.push("/index/manage/dataset/txt/extracted/blank");
                 })
             },
             edit_label(name){
@@ -357,7 +349,7 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json()
                 .then(()=>{
-                    this.$router.push("/index/manage/dataset/txt/blank");
+                    this.$router.push("/index/manage/dataset/txt/extracted/blank");
                 }))
             },
 
@@ -374,7 +366,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/txt/blank");
+                    this.$router.push("/index/manage/dataset/txt/extracted/blank");
                 })
             },
            
@@ -478,14 +470,19 @@ import { reactive, ref } from "vue"
                     this.marking_date=null
                 }
             },
-            mark_text()
+            mark_text(item)
             {
+                console.log(item)
                 var selection=window.getSelection();
                 var range = selection.getRangeAt(0);
+                // console.log(range["startOffset"]);
+                // console.log(range["endOffset"]);
                 var selectionContents = range.extractContents();
+                console.log(range["anchorNode"]);
                 var span = document.createElement("span");
                 span.style.color = this.markColor;
                 span.appendChild(selectionContents);
+
                 range.insertNode(span);
                 var choose_label=document.getElementById("choose_label");
                 choose_label.style.visibility='hidden';

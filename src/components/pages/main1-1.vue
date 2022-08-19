@@ -347,6 +347,20 @@ import Breadcrumb from "../BreadCrumb.vue"
                         })
                         
                     }
+                    else if(specy==="文本实体抽取"){
+                        const data = {"t_type": "all"};
+                        fetch("/api/sessiontype",{
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then((res)=>res.json())
+                        .then(()=>{
+                            this.$router.push("/index/manage/dataset/extracttag");
+                        })
+                    }
                     
                 })
             },
