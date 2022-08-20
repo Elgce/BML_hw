@@ -11,7 +11,6 @@
             >
         </video>
 
-        <!-- @keyup.enter="del()" -->
         <div id="progress" style="width:800px; height:74px;"
             @mousedown="down($event)"
             @mouseup="up($event)"
@@ -390,6 +389,11 @@ export default{
             }
 
         },
+
+        mark(item,color){
+            console.log(item)
+            console.log(color)
+        }
 
     },
 }
