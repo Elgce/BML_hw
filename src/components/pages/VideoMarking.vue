@@ -57,10 +57,8 @@
                             </el-popover>
                         </el-row>
                         
-                        <Videotag></Videotag>
-                        
-                        
-
+                        <Videotag
+                            :url = "url"></Videotag>
                         <!-- <div id="empty_right" v-if="src_list.length===0">
                             暂无可用数据
                         </div> -->
@@ -174,11 +172,13 @@ import { reactive, ref } from "vue"
                 options:[
                     
                 ],
+                url:ref(''),
             };
         },
         created(){
             this.get_labels();
             this.get_pics().then(this.show_pics);
+            console.log(this.url)
         },
         methods:{
         //  written by bqw
@@ -252,12 +252,14 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/pic/label/blank");
                 }))
             },
+
             get_pics(){
                 let that = this;
                 return fetch("/api/getresources").then((res)=>res.json().then((j)=>{
                     that.sources = j.sources;
                 }))
             },
+
             show_pics(){
                 for(let item=0; item<this.sources.length;item++){
                     console.log(this.sources[item]);
@@ -274,8 +276,9 @@ import { reactive, ref } from "vue"
                     }).then(()=>{
                         let u_url = "http://localhost:5000/api/passfile/" + data["file_name"];
                         that.src_list.push(u_url);
+                        this.url = u_url
+                        console.log(this.url)
                     });
-                    console.log(that.src_list);
                 }
             },
 
