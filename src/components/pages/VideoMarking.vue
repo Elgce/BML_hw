@@ -57,14 +57,15 @@
                             </el-popover>
                         </el-row>
                         
-                        <Videotag
+                        <Videotag ref="video"
                             :url = "url"></Videotag>
-                        <!-- <div id="empty_right" v-if="src_list.length===0">
+                        <div id="empty_right" v-if="src_list.length===0">
                             暂无可用数据
-                        </div> -->
+                        </div>
                     </el-main>
                 </el-aside>
-                <el-container >
+
+                <el-container style="height:700px">
                     <el-header id="middle_header">
                         <b v-if="show_btn===false" id="tag_column_text">标签栏</b>
                         <el-button v-if="show_btn===false" id="add_tag" @click="create_label">添加标签</el-button>
@@ -95,13 +96,14 @@
                     </el-header>
                     <el-footer id="middle_footer">
                         <el-scrollbar height="400px">
-                            <div v-for="item in Label_info" :key="item" class="scrollbar-demo-item">
+                            <div v-for="(item,index) in Label_info" :key="item" class="scrollbar-demo-item">
                                 <el-card shadow="hover" class="card">
                                     <div class="card_info">
                                         <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button>
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
-                                        <p class="card_name" style="visibility:visible">{{item}}</p>
+                                        <p :class="'card_name label'+index" :style="randomRgb()">{{item}}</p>
                                         <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input>
+                                        <el-button type="defult" text @click="taglabel(item,index)">选择</el-button>
                                     </div>
                                 </el-card>
                             </div>
@@ -173,6 +175,7 @@ import { reactive, ref } from "vue"
                     
                 ],
                 url:ref(''),
+                tagColor:{},
             };
         },
         created(){
@@ -238,7 +241,9 @@ import { reactive, ref } from "vue"
                     std.style.visibility='hidden';
                 }
             },
+
             delete_label(name){
+                let that = this
                 const data = {"label_name": name};
                 return fetch("/api/deletelabel",{
                     method: 'POST',
@@ -247,10 +252,9 @@ import { reactive, ref } from "vue"
                     },
                     body: JSON.stringify(data)
                 })
-                .then((res)=>res.json()
                 .then(()=>{
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
-                }))
+                    that.get_labels()
+                })
             },
 
             get_pics(){
@@ -284,6 +288,7 @@ import { reactive, ref } from "vue"
 
            
             add_label(){
+                let that = this;
                 const data = {"name": this.labelname};
                 console.log("abd");
                 console.log(data);
@@ -294,10 +299,8 @@ import { reactive, ref } from "vue"
                     },
                     body: JSON.stringify(data)
                 })
-                .then(res=>res.json())
-                .then((j)=>{
-                    console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                .then(()=>{
+                    that.get_labels();
                 })
             },
            
@@ -306,9 +309,9 @@ import { reactive, ref } from "vue"
                 return fetch("/api/getlabels").then((res) => res.json().then((j)=>{
                     that.label_num = j.label_num;
                     that.Label_info = j.labels;
-                    console.log(that.label_num);
                 }))
             },
+
             create_label(){
                 this.show_btn = true;
             },
@@ -385,6 +388,25 @@ import { reactive, ref } from "vue"
                     this.marking_date=null
                 }
             },
+
+            //written by syz
+            randomRgb(){
+                let R = Math.floor(Math.random() * 100 + 100);
+                let B = Math.floor(Math.random() * 100 + 100);
+                let G = Math.floor(Math.random() * 100 + 100);
+                if(R+G+B > 500){
+                    R = 500 - G - B
+                }
+                return {
+                    color: 'rgb(' + R + ',' + G + ',' + B + ')'
+                };
+            },
+
+            taglabel(item,index){
+                var p = document.getElementsByClassName("label"+index)[0]
+                var color = p.style.color
+                this.$refs.video.mark(item,color);
+            }
         }
     }
 
@@ -493,12 +515,14 @@ import { reactive, ref } from "vue"
         border:thin solid rgb(234, 229, 229);
         width:350px;
         height:80px;
+        border-bottom: 0px;
     }
     #middle_footer
     {
         border:thin solid rgb(234, 229, 229);
         width:350px;
-        height:350px;
+        height:550px;
+        padding:0px;
     }
     #middle_asider
     {
@@ -518,7 +542,7 @@ import { reactive, ref } from "vue"
         height:170px;
         width:167px;
         margin:auto;
-        margin-top: -200px;
+        margin-top: -400px;
     }
     #empty_text_left
     {
@@ -561,5 +585,25 @@ import { reactive, ref } from "vue"
     {
         position: absolute;
         right:50px; 
+    }
+    .card_info{
+        display: flex;
+        margin-top: -15px;
+    }
+    .card_name{
+        margin-top: 8px;
+        margin-left: 5px;
+        font-weight: bold;
+        width:300px;
+        Text-align:left;
+    }
+    .card_edit{
+        margin-left: -20px;
+    }
+    .card_delete{
+        margin-left: -5px;
+    }
+    .el-card{
+        width: 360px;
     }
 </style>
