@@ -56,6 +56,13 @@ export default{
         }
     },
     mounted(){
+        let that = this
+        document.onkeydown = function() {            
+            let key = window.event.keyCode;            
+            if (key== 46) {
+                that.del()
+            }
+        };
 
     },
     methods:{
@@ -111,7 +118,6 @@ export default{
                 this.end = e.x
                 this.state = 1 // 表示进入选择状态
                 this.sliceConflict = -1
-                console.log(e.x)
             }
 
             if(this.state == 3){
@@ -195,7 +201,6 @@ export default{
             else if(this.state == 4 || this.state == 5){
                 this.resizeEnd(e)
             }
-            console.log(this.start,this.end)
         },
 
         mouseleave(e){
@@ -359,7 +364,6 @@ export default{
 
         del(){
             if(this.state != 3) return
-            console.log(1111111)
             this.slices.splice(this.chosenIndex,1)
             var chosenSl = document.getElementById('sl'+this.chosenIndex)
             chosenSl.style.opacity = '50%'

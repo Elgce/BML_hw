@@ -384,7 +384,7 @@ import { reactive, ref } from "vue"
                 {
                     this.marking_date=null
                 }
-            }
+            },
         }
     }
 
