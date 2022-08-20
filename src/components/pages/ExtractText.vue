@@ -63,7 +63,7 @@
                                 <p>下一篇（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
-                        <p class="written" @click="checkChoice">
+                        <p id="written" @click="checkChoice">
                             {{show_context}}
                         </p>
                         <div id="empty_right" v-if="all_num===0">
@@ -109,7 +109,7 @@
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p class="card_name" style="visibility:visible">{{item}}</p>
                                         <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input>
-                                        <el-button type="success" text @click="taglabel(item)">选择</el-button>
+                                        <el-button type="success" text @click="mark_text(item)">选择</el-button>
                                     </div>
                                 </el-card>
                             </div>
@@ -179,6 +179,7 @@ import { reactive, ref } from "vue"
                 this_tag: ref('请在右侧选择标签'),
                 input_text:ref(''),
                 start_end: reactive([]),
+                context_tag: reactive([]),
 
                 labelname: ref(''),
                 new_labelname: ref(''),
@@ -203,7 +204,7 @@ import { reactive, ref } from "vue"
                 options:[
                     
                 ],
-                markColor:ref('#409EFF'),
+                markColor:ref('#FFCC22'),
             };
         },
         created(){
@@ -227,22 +228,7 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/txt/extracted/blank");
                 })
             },
-            taglabel(item){
-                console.log(item);
-                this.this_tag = item;
-                const data = {"tag": item};
-                return fetch("/api/taglabel",{
-                    method: 'POST',
-                    headers:{
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then((res)=>res.json())
-                .then((j)=>{
-                    console.log(j);
-                })
-            },
+            
             latter_txt(){
                 return fetch("/api/nextpage").then((res)=>res.json().then((j)=>{
                     let passa = j.page;
@@ -270,13 +256,22 @@ import { reactive, ref } from "vue"
                 return fetch("/api/txtgetpage").then((res)=>res.json().then((j)=>{
                     that.page = j.page;
                     let page = parseInt(that.page) - 1;
-                    that.show_context = that.context[page];
+                    if(that.context_tag[page]==""){
+                        that.show_context = that.context[page];
+                    }
+                    else{
+                        console.log(that.context_tag[page])
+                        let writter = document.getElementById("written");
+                        writter.innerHTML = that.context_tag[page];
+                    }
+                    
                 }))
             },
             calltxt(){
                 let that = this;
                 return fetch("/api/gettxtextracted").then((res) => res.json().then((j) => {
                     that.context = j.context;
+                    that.context_tag = j.context_tag;
                     that.all_num = j.all_num;
                     that.name = j.name;
                     that.to_num = j.to_num;
@@ -470,25 +465,50 @@ import { reactive, ref } from "vue"
                     this.marking_date=null
                 }
             },
+            //written by bqw
             mark_text(item)
             {
                 console.log(item)
                 var selection=window.getSelection();
                 var range = selection.getRangeAt(0);
-                // console.log(range["startOffset"]);
-                // console.log(range["endOffset"]);
+
                 var selectionContents = range.extractContents();
-                console.log(range["anchorNode"]);
                 var span = document.createElement("span");
+                span.style="text-decoration:underline";
                 span.style.color = this.markColor;
                 span.appendChild(selectionContents);
+                let tag = document.createElement("span");
+                tag.style.backgroundColor = this.markColor;
+                tag.style.color = "black";
+                tag.innerHTML = item;
+                span.appendChild(tag); 
 
                 range.insertNode(span);
+
+                let written = document.getElementById("written");
                 var choose_label=document.getElementById("choose_label");
                 choose_label.style.visibility='hidden';
-            }
+                let intxt = written.innerHTML;
+                console.log(intxt);
+                const data = {"intxt": intxt};
+                return fetch("/api/sendstyle",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res)=>res.json())
+                .then(()=>{
+                    this.$router.push("/index/manage/dataset/txt/extracted/blank");
+                })
+
+            },
+
+            //written over
         }
     }
+
 
 </script>
 

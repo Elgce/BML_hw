@@ -261,6 +261,28 @@ def copyfile():
             shutil.copy(full_file_name, dstpath)
     return {"name":name}
 
+# 用于储存文本抽取的样式
+@app.route("/api/sendstyle",methods=["GET","POST"])
+def send_style():
+    page = int(session["page"]) - 1
+    data = request.get_json()
+    intxt = data.get("intxt")
+    name = session["name"]
+    global context
+    global context_tag
+    global context_txt
+    context_tag[page] = intxt
+    basepath = os.path.dirname(__file__)
+    path = basepath + "\src\\" + name + "\\" + context_txt[page]
+    length = len(context)
+    new_context = []
+    for i in range(length):
+        if(context_txt[i]==context_txt[page]):
+            new_context.append(context[i]+" "+context_tag[i]+"\n")
+    with open(path,"w",encoding='utf-8') as f:
+        for item in new_context:
+            f.write(item)
+    return {"intxt": intxt}
 
 # 用于调用前端需要的文件并返回
 @app.route("/api/passfile/<file_name>",methods=['GET','POST'])
@@ -554,7 +576,11 @@ def get_txtextracted():
                 if len(datas)>1:
                     ed_num = ed_num + 1
                     if t_type=="ed" or t_type=="all":
-                        context_tag.append("")
+                        d_data = ""
+                        for i in range(len(datas)):
+                            if(i!=0):
+                                d_data = d_data + datas[i] + " "
+                        context_tag.append(d_data)
                         context.append(datas[0])
                         context_txt.append(item)
                 else:
@@ -563,7 +589,7 @@ def get_txtextracted():
                         context.append(datas[0])
                         context_txt.append(item)
                     to_num = to_num + 1
-                   
+    print(context_tag)               
     return {"context_tag":context_tag,"context":context,"t_type":t_type,"all_num":all_num,"name":name,"to_num":to_num,"ed_num":ed_num}
 
 # 用于文本实体数据页面获取文本信息
