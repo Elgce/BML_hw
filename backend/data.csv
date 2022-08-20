@@ -1,1 +1,3 @@
 group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source,direction,label_type,label_model,data_single,labels
+220820,213,V1,1,101623,finished,txt,0,-,['ge.txt'],,txt_extr,txt_extr,dir_auto,"['123', '5']"
+220820,432,V1,1,102021,finished,txt,0,-,['ge.txt'],,txt_extr,txt_extr,dir_auto,[]

@@ -170,7 +170,7 @@ import Breadcrumb from '../BreadCrumb.vue'
         },
         calltxt(){
             let that = this;
-            return fetch("/api/gettxt").then((res) => res.json().then((j) => {
+            return fetch("/api/gettxtextracted").then((res) => res.json().then((j) => {
                 that.context = j.context;
                 that.all_num = j.all_num;
                 that.to_num = j.to_num;
