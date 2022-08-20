@@ -32,10 +32,8 @@
                 <el-aside id="middle_asider">
                     <el-scrollbar height="500px">
                         <el-row id="text_top">
-                            <!-- <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
-                            <p id="_mark_strong">{{this_tag}}</p> -->
                             <div id="content_search">
-                            <el-input type="text" v-model="input_text" class="w-50 m-2" placeholder="定位文本内容">
+                            <el-input type="text" v-model="input_text" class="w-50 m-2" placeholder="定位文本内容" @change="search_words">
                             <template #prefix>
                                 <el-icon class="el-input__icon"><search /></el-icon>
                             </template>
@@ -180,6 +178,7 @@ import { reactive, ref } from "vue"
                 input_text:ref(''),
                 start_end: reactive([]),
                 context_tag: reactive([]),
+                previous_search:ref(''),
 
                 labelname: ref(''),
                 new_labelname: ref(''),
@@ -381,6 +380,31 @@ import { reactive, ref } from "vue"
             //written over
 
 
+
+            search_words()
+            {
+                // location.reload();
+                var text=document.getElementById("written").innerHTML;
+                var reg = new RegExp("(" + this.input_text + ")", "g");
+                var reg2 = new RegExp("(<font color=\"#FF6633\">)", "g");
+                var reg3 = new RegExp("(</font>)", "g");
+                text = text.replace(reg2, "");
+                text = text.replace(reg3, "");
+                text = text.replace(reg, "<font color=#FF6633>"+this.input_text+"</font>");
+                document.getElementById("written").innerHTML=text;
+                
+                    
+                //var text=document.getElementById("written").innerHTML;
+                //text = text.replace(reg2, this.previous_search);
+                // alert("(<font color=#FF6633>" + this.previous_search + "</font>)")
+                // document.getElementById("written").innerHTML=text;
+                // var text2=document.getElementById("written").innerHTML;
+                // text2 = text2.replace(reg, "<font color=#FF6633>"+this.input_text+"</font>");
+                //this.$router.push("/index/manage/dataset/txt/extracted/blank");
+                // document.getElementById("written").innerHTML=text2;
+                // this.previous_search=this.input_text;
+                
+            },
             checkChoice()
             {
                 var selection=window.getSelection();
