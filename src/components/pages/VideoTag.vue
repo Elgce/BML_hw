@@ -18,9 +18,10 @@
             @mouseleave="leave($event)"
             >
             <div v-for="(slice,index) in slices" :key="index" 
-                :class="'sl sl'+slice.type"
+                class="sl"
                 :id="'sl'+index"
-                :style="{position:fixed,left:slice.ts - 2+'px',width:slice.te-slice.ts -2 +'px'}"
+                :style="{position:fixed,left:slice.ts - 2+'px',width:slice.te-slice.ts -2 +'px',backgroundColor:getcolor(slice.type)}"
+
                 @mousedown="chooseSlice(index,$event)"
                 @mousemove="resize(index,$event)"
                 @mouseenter="addConf(index,$event)">
@@ -28,11 +29,8 @@
             <div v-if="state==1 || state==2" id="chosen" 
                 :style="{left:Math.min(start,end) + 'px',width:Math.abs(end - start) + 'px'}">
             </div>
-        </div>
 
-        <el-button color="#F56C6C" @click="classify(1)" :disabled="state!=2">第一类</el-button>
-        <el-button color="#409EFF" @click="classify(2)" :disabled="state!=2">第二类</el-button>
-        <el-button @click="del()" :disabled="state!=3">删除该片段</el-button>
+        </div>
     </el-col>
     
 </template>
@@ -40,9 +38,11 @@
 
 <script>
 
+
+
 export default{
     name: "AddTag",
-    props:["url"],
+    props:["url","colorlist"],
     data(){
         return{
             slices:[],
@@ -62,7 +62,7 @@ export default{
                 that.del()
             }
         };
-
+        this.getSlices()
     },
     methods:{
         changeCurrentTime(){
@@ -274,12 +274,18 @@ export default{
         },
 
         classify(type){
+            if(this.state != 2) return
             var ts = Math.min(this.start,this.end)
             var te = Math.max(this.start,this.end)
             this.slices.push({ts:ts,te:te,type:type})
             this.state = 0
             this.start = 0
             this.end = 0
+        },
+
+        changeTag(type){
+            if(this.state != 3) return
+            this.slices[this.chosenIndex].type = type
         },
 
         mouseBoundary(index,e){
@@ -368,6 +374,7 @@ export default{
             chosenSl.style.opacity = '50%'
             this.chosenIndex = -1
             this.state = 0
+            this.setSlices()
         },
 
         resize(index,e){
@@ -390,10 +397,55 @@ export default{
 
         },
 
-        mark(item,color){
-            console.log(item)
-            console.log(color)
-        }
+        mark(item){
+            if(this.state == 2){
+                this.classify(item)
+            }
+            else if(this.state == 3){
+                this.changeTag(item)
+            }
+            this.setSlices()
+        },
+
+        getcolor(item){
+            return this.colorlist[item]
+        },
+
+        // 获取数据
+        getSlices(){
+            let that = this;
+            return fetch("/api/getvideospl").then((res)=>res.json().then((j)=>{
+                that.slices = j.slices;
+            }))
+        },
+
+        setSlices(){
+            const data = {"slices": this.slices};
+            return fetch("/api/setvideospl",{
+                method: 'POST',
+                headers:{
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+        },
+
+        // 删除所有类型为type的视频片段
+        delLabel(item){
+            for(var i=0;i < this.slices.length;i++){
+                if(this.slices[i].type == item){
+                    if(i == this.chosenIndex){
+                        this.state = 0
+                        this.chosenIndex = -1
+                    }
+                    this.slices.splice(i,1)
+                    i--
+                    console.log("remove")
+                }
+            }
+
+            this.setSlices()
+        },
 
     },
 }
@@ -428,14 +480,6 @@ export default{
     opacity: 50%;
     height: 70px;
     border:2px solid;
-
 }
 
-.sl1{
-    background-color: #F56C6C;
-}
-
-.sl2{
-    background-color: #409EFF;
-}
 </style>

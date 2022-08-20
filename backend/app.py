@@ -16,6 +16,7 @@ from flask import Flask, jsonify, request, abort, send_file,g, session,make_resp
 import os
 import csv
 import shutil
+import random
 
 app = Flask(__name__,static_folder="../dist/",static_url_path="/")
 
@@ -25,6 +26,9 @@ LabelInfo = {}
 context = []
 context_txt = []
 context_tag = []
+
+slices = []
+colorlist = {}
 
 label_num = 0
 data_num = 0
@@ -317,16 +321,31 @@ def add_label():
     data = request.get_json()
     label_name = data.get("name")
     name = session["name"]
-    MessageInfo[name]["labels"].append(label_name);
+    MessageInfo[name]["labels"].append(label_name)
     reset_csv()
     print(MessageInfo[name]["labels"])
+
+    #----syz添加标签配色----------
+    global colorlist
+    r = random.randint(100,200)
+    g = random.randint(100,200)
+    b = random.randint(100,200)
+    if(r+g+b > 500):
+        r = 500 - g - b
+    color = 'rgb(' + str(r) + ',' + str(g) + ',' + str(b) + ')'
+    colorlist[label_name] = color
+    print(colorlist)
+    #--------end-----------------
+
     return {"labels":MessageInfo[name]["labels"]}
 
 @app.route("/api/getlabels",methods=['GET',"POST"])
 def get_labels():
     name = session["name"]
     num = len(MessageInfo[name]["labels"])
-    return {"labels":MessageInfo[name]["labels"],"label_num": num}
+    # return {"labels":MessageInfo[name]["labels"],"label_num": num}
+    # 此处额外返回了colorlist
+    return {"labels":MessageInfo[name]["labels"],"label_num": num,"colorlist":colorlist}
 
 @app.route("/api/searchtagname",methods=['GET','POST'])
 def search_tagname():
@@ -357,7 +376,12 @@ def delete_label():
     index = MessageInfo[name]["labels"].index(label_name)
     MessageInfo[name]["labels"].pop(index)
     reset_csv()
-    return {"lebel_name":label_name}
+
+    #-------删除颜色----------
+    global colorlist
+    colorlist.pop(label_name)
+    #------------------------
+    return {"lebel_name":label_name ,"colorlist":colorlist}
 
 @app.route("/api/gettxt")
 def get_txt():
@@ -670,7 +694,20 @@ def get_txtsim():
                    
     return {"context_tag":context_tag,"context":context,"t_type":t_type,"all_num":all_num,"name":name,"to_num":to_num,"ed_num":ed_num}
 
+# 保存视频的切片信息
+@app.route("/api/setvideospl",methods=["GET","POST"])
+def setVideoSpl():
+    global slices
+    slices = request.get_json().get("slices")
+    return {"slices":slices}
+
+# 获取视频的切片信息
+@app.route("/api/getvideospl",methods=["GET","POST"])
+def getVideoSpl():
+    return {"slices":slices}
+
+
 if __name__=="__main__":
-    # renew()
+    renew()
     readcsv()
     app.run(debug=True, port=5000, host= "0.0.0.0")
