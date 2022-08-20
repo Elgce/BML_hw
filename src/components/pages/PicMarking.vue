@@ -1,85 +1,71 @@
-<!-- 图片展示页 -->
 <template>
     <el-container>
         <el-header>
             <Breadcrumb></Breadcrumb>
-            <el-link id="example" type="primary" @click="dialogVisible = true">批量标注示例</el-link>
-            <el-link id="submit" type="primary">提交工单</el-link>
+            <el-row id="top_btns">
+            <el-select v-model="value" class="m-2" placeholder="Select" id="select_data">
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                />
+            </el-select>
+            <el-button id="ai_marking" type="success" plain>开启智能标注</el-button>
+            </el-row>
         </el-header>
         <el-divider id="top_divider"/>
         <el-main>
             <el-row id="middle_btns">
-                <el-radio-group v-model="radio1" size="large">
-                    <el-radio-button label="全部(0)" />
-                    <el-radio-button label="有标注信息(0)" />
-                    <el-radio-button label="无标注信息(0)" />
+                <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
+                                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                 </el-radio-group>
-                <div id="four_btns">
-                    <el-button @click="insert_pic">导入图片</el-button>
-                    <el-button>质检报告</el-button>
-                    <el-button @click="start_marking">开始标注</el-button>
-                    <el-button>批量批注</el-button>
+                <div id="link">
+                    <el-link type="primary" @click="dialogVisible = true">辅助设置</el-link>
                 </div>
             </el-row>
             <el-divider/>
-            <el-row>
-                <el-popover
-                    :visible="visible"
-                    placement="bottom-start"
-                    :width="750"
-                >
-                <div>
-                    <b>数据来源&nbsp;&nbsp;&nbsp;</b>
-                    <el-checkbox v-model="unlimited1" label="不限" size="large" @change="cleanSource"/>
-                    <el-checkbox v-model="source1" name="source" label="本地上传" size="large" @change="checkSource"/>
-                    <el-checkbox v-model="source2" name="source" label="摄像头采集" size="large" @change="checkSource"/>
-                    <el-checkbox v-model="source3" name="source" label="云服务调用数据采集" size="large" @change="checkSource"/>
-                    <el-checkbox v-model="source4" name="source" label="数据清洗" size="large" @change="checkSource"/>
-                    <el-checkbox v-model="source5" name="source" label="数据增强" size="large" @change="checkSource"/>
-                </div>
-                <div>
-                    <b>导入日期&nbsp;&nbsp;&nbsp;</b>
-                    <el-checkbox v-model="unlimited2" label="不限" size="large" @change="cleanIntrDate"/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <el-date-picker
-                        v-model="intr_date"
-                        type="daterange"
-                        range-separator="To"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        id="intr_date"
-                        @change="checkIntrDate"
-                    />
-                </div>
-                <div>
-                    <b>标注日期&nbsp;&nbsp;&nbsp;</b>
-                    <el-checkbox v-model="unlimited3" label="不限" size="large" @change="cleanMarkingDate"/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <el-date-picker
-                        v-model="marking_date"
-                        type="daterange"
-                        range-separator="To"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        @change="checkMarkingDate"
-                    />
-                </div>
-                <div>
-                    <b>标签&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
-                    <el-checkbox v-model="unlimited4" label="不限" size="large" @change="cleanMark" />
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <el-select placeholder="请选择" size="large" @change="checkMark"></el-select>
-                </div>
-                    <template #reference>
-                        <el-button @click="visible = !visible">筛选&nbsp;<el-icon><ArrowDownBold /></el-icon></el-button>
-                    </template>
-                </el-popover>
-                <div id="two_btns">
-                    <el-checkbox label="本页全选" size="large"/>
-                    <el-button id="delete_btn" disabled><el-icon><Delete/></el-icon>&nbsp;删除</el-button>
-                </div>
-            </el-row>
+            
             <el-container id="middle_data">
+                <el-aside id="middle_asider">
+                    <el-scrollbar height="500px">
+                        <el-row id="text_top">
+                            <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
+                            <p id="_mark_strong">{{this_tag}}</p>
+                            <el-popover
+                                placement="bottom"
+                                :width="200"
+                                trigger="hover"
+                            >
+                                <template #reference>
+                                    <el-button text id="previous" @click="previous_txt">上一个图片</el-button>
+                                </template>
+                                <p>上一个图片（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
+                            </el-popover>
+                            &nbsp;&nbsp;&nbsp;
+                            <el-popover
+                                placement="bottom"
+                                :width="200"
+                                trigger="hover"
+                            >
+                                <template #reference>
+                                    <el-button text id="latter" @click="latter_txt">下一个图片</el-button>
+                                </template>
+                                <p>下一个图片（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
+                            </el-popover>
+                        </el-row>
+                        <!-- <el-image
+                            :src="item"
+                            class="image"
+                            :fit="cover"
+                        /> -->
+                        <div id="empty_right" v-if="num===0">
+                            暂无可用数据
+                        </div>
+                    </el-scrollbar>
+                </el-aside>
                 <el-container>
                     <el-header id="middle_header">
                         <b v-if="show_btn===false" id="tag_column_text">标签栏</b>
@@ -107,19 +93,18 @@
                                 <el-icon class="el-input__icon"><search /></el-icon>
                             </template>
                         </el-input>
-                        <span id="tag_search_text">根据图片内容，选择标签</span>
+                        <span id="tag_search_text">根据文本内容，选择唯一标签</span>
                     </el-header>
                     <el-footer id="middle_footer">
                         <el-scrollbar height="400px">
                             <div v-for="item in Label_info" :key="item" class="scrollbar-demo-item">
                                 <el-card shadow="hover" class="card">
                                     <div class="card_info">
-                                        <el-color-picker v-model="markColor" id="mark_color"/>
-                                        &nbsp;&nbsp;
                                         <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button>
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p class="card_name" style="visibility:visible">{{item}}</p>
                                         <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input>
+                                        <el-button type="success" text @click="taglabel(item)">选择</el-button>
                                     </div>
                                 </el-card>
                             </div>
@@ -130,56 +115,17 @@
                         <span id="empty_text_left" v-if="label_num===0">暂无可用标签 ，请点击上方按钮添加</span>
                     </el-footer>
                 </el-container>
-                <el-aside id="middle_asider">
-                    <el-scrollbar height="390px">
-                    <div id="empty_right" v-if="src_list.length===0">
-                        暂无可用数据
-                    </div>
-                    <el-row :gutter="20"  class="el-row" type="flex" >
-                    <el-col :span="4" v-for="item in src_list" :key="item" class="pic_show" >
-                            <el-card class="show_pic_card">
-                                <el-image
-                                :src="item"
-                                class="image"
-                                :fit="cover"
-                                />
-                                <div style="padding: 14px">
-                                <div class="bottom">
-                                </div>
-                                </div>
-                            </el-card>
-                    </el-col>
-                    </el-row>
-                    </el-scrollbar>
-                </el-aside>
+                
             </el-container>
         </el-main>
-        <el-footer>
-            <div id="pages">
-                <el-row>
-                    <p id="fotter_text">每页显示&nbsp;&nbsp;&nbsp;</p>
-                    <el-select v-model="value" placeholder="30" id="fotter_select">
-                        <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                            :disabled="item.disabled"
-                        />
-                    </el-select>
-                    <el-pagination id="fotter_pages" background layout="prev, pager, next" :total="1" />
-                </el-row>
-            </div>
-        </el-footer>
     </el-container>
     <el-dialog
         v-model="dialogVisible"
-        title="EasyData图像分类模板支持批量标注数据了"
-        width="40%"
+        title="辅助设置"
+        width="10%"
         :before-close="handleClose"
     >
-        <el-divider id="dialog_divider"/>
-        <img src="../../assets/marking_example.png" width="400" height="445">
+        <el-checkbox label="急速预览" size="large" />
     </el-dialog>
 </template>
 
@@ -196,14 +142,22 @@ import { reactive, ref } from "vue"
         data()
         {
             return{
-                label_num: -1,
+                context: reactive([]),
+                all_num: -1,
+                ed_num: -1,
+                to_num: -1,
+                t_type: ref("all"),
+                name : ref(''),
+                page : -1,
+                show_context: ref(''),
+                this_tag: ref('请在右侧选择标签'),
+
                 labelname: ref(''),
                 new_labelname: ref(''),
                 Label_info:reactive([]),
-                src_list:reactive([]),
                 sources: reactive([]),
                 show_btn: false,
-                dialogVisible: false,
+                dialogVisible:false,
                 radio1:'全部',
                 visible:false,
                 unlimited1:true,
@@ -219,28 +173,99 @@ import { reactive, ref } from "vue"
                 intr_date:ref(''),
                 marking_date:ref(''),
                 options:[
-                    {
-                        value: '15',
-                        label: '15',
-                    },
-                    {
-                        value: '30',
-                        label: '30',
-                    },
-                    {
-                        value: '45',
-                        label: '45',
-                    },
+                    
                 ],
-                markColor:ref('#409EFF'),
             };
         },
         created(){
-            this.get_labels();
-            this.get_pics().then(this.show_pics);
+            this.calltxt().then(this.get_labels()).then(this.callpage()).then(this.calltag());
+            
         },
         methods:{
         //  written by bqw
+            handleradiochange(){
+                console.log(this.t_type);
+                const data = {"t_type": this.t_type};
+                return fetch("/api/sessiontype",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res)=>res.json())
+                .then(()=>{
+                    this.$router.push("/index/manage/dataset/txt/blank");
+                })
+            },
+            taglabel(item){
+                console.log(item);
+                this.this_tag = item;
+                const data = {"tag": item};
+                return fetch("/api/taglabel",{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res)=>res.json())
+                .then((j)=>{
+                    console.log(j);
+                })
+            },
+            calltag(){
+                let that = this;
+                return fetch("/api/calltag").then((res)=>res.json().then((j)=>{
+                    if(j.tag===""){
+                        that.this_tag = '请在右侧选择标签';
+                    }
+                    else{
+                        that.this_tag = j.tag;
+                    }
+                }))
+            },
+            latter_txt(){
+                return fetch("/api/nextpage").then((res)=>res.json().then((j)=>{
+                    let passa = j.page;
+                    if(passa==="fail"){
+                        alert("已是最后一页!");
+                    }
+                    else{
+                        this.$router.push("/index/manage/dataset/txt/blank");
+                    }
+                }))
+            },
+            previous_txt(){
+                return fetch("/api/prepage").then((res)=>res.json().then((j)=>{
+                    let passa = j.page;
+                    if(passa==="fail"){
+                        alert("已是第一页!");
+                    }
+                    else{
+                        this.$router.push("/index/manage/dataset/txt/blank");
+                    }
+                }))
+            },
+            // callpage(){
+            //     let that = this;
+            //     return fetch("/api/txtgetpage").then((res)=>res.json().then((j)=>{
+            //         that.page = j.page;
+            //         let page = parseInt(that.page) - 1;
+            //         that.show_context = that.context[page];
+            //     }))
+            // },
+            // calltxt(){
+            //     let that = this;
+            //     return fetch("/api/gettxt").then((res) => res.json().then((j) => {
+            //         that.context = j.context;
+            //         that.all_num = j.all_num;
+            //         that.name = j.name;
+            //         that.to_num = j.to_num;
+            //         that.ed_num = j.ed_num;
+            //         that.t_type = j.t_type;
+            //     }))
+            // },
             searchlabel(){
                 let data = {"tagname":this.input_tagName};
                 let that = this;
@@ -255,8 +280,6 @@ import { reactive, ref } from "vue"
                 .then((j)=>{
                     // that.Label_info = j.labels;
                     that.Label_info = reactive([]);
-                    console.log("!!");
-                    console.log(j.labels);
                     if(j.label_num!=0){
                         for(let item in j.labels){
                             that.Label_info.push(j.labels[item]);
@@ -283,7 +306,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    this.$router.push("/index/manage/dataset/txt/blank");
                 })
             },
             edit_label(name){
@@ -308,41 +331,13 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json()
                 .then(()=>{
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    this.$router.push("/index/manage/dataset/txt/blank");
                 }))
-            },
-            get_pics(){
-                let that = this;
-                return fetch("/api/getresources").then((res)=>res.json().then((j)=>{
-                    that.sources = j.sources;
-                }))
-            },
-            show_pics(){
-                for(let item=0; item<this.sources.length;item++){
-                    console.log(this.sources[item]);
-                    const data = {"file_name":this.sources[item]};
-                    let that = this;
-                    let url = "/api/passfile/" + data["file_name"];
-                    fetch(url,{
-                        method: 'POST',
-                        responseType: 'blob',
-                        headers:{
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(data)
-                    }).then(()=>{
-                        let u_url = "http://localhost:5000/api/passfile/" + data["file_name"];
-                        that.src_list.push(u_url);
-                    });
-                    console.log(that.src_list);
-                }
             },
 
            
             add_label(){
                 const data = {"name": this.labelname};
-                console.log("abd");
-                console.log(data);
                 return fetch("/api/addlabel",{
                     method: 'POST',
                     headers: {
@@ -353,7 +348,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    this.$router.push("/index/manage/dataset/txt/blank");
                 })
             },
            
@@ -362,7 +357,6 @@ import { reactive, ref } from "vue"
                 return fetch("/api/getlabels").then((res) => res.json().then((j)=>{
                     that.label_num = j.label_num;
                     that.Label_info = j.labels;
-                    console.log(that.label_num);
                 }))
             },
             create_label(){
@@ -371,16 +365,8 @@ import { reactive, ref } from "vue"
             cancel_label(){
                 this.show_btn = false;
             },
-            insert_pic(){
-                this.$router.push("/index/manage/dataset/insert");
-            },
             //written over
 
-
-            start_marking()
-            {
-                this.$router.push("/index/manage/dataset/picmarking");
-            },
             cleanSource()
             {
                 if(this.unlimited1==true)
@@ -462,17 +448,15 @@ import { reactive, ref } from "vue"
         top:92px;
         left:200px;
     }
-    #example
+    #ai_marking
     {
-        position: absolute;
-        top:80px;
-        right:120px;
+        margin-left:20px;
     }
-    #submit
+    #top_btns
     {
         position: absolute;
-        top:80px;
-        right:40px;
+        right:30px;
+        margin-top: -20px;
     }
     #dialog_divider
     {
@@ -480,20 +464,45 @@ import { reactive, ref } from "vue"
         top:50px;
         left:0px;
     }
-    #four_btns
+    #link
     {
         position: absolute;
-        left:900px;
+        left:1200px;
+        margin-top: 20px;
     }
     #two_btns
     {
         position: absolute;
         right:0px;
     }
+    #text_top
+    {
+        background-color: rgb(243, 244, 243);
+    }
+    #_mark
+    {
+        font-size:13px;
+    }
+    #_mark_strong
+    {
+        font-weight:700;
+        font-size:13px;
+    }
     #delete_btn
     {
         border: none;
-        margin-top:-5px;
+        background-color: rgb(243, 244, 243);
+        margin-top: 5px;
+        margin-left:500px;
+    }
+    #latter{
+        margin-left: -10px;
+        margin-top: 5px;
+    }
+    #previous
+    {
+        margin-left:520px;
+        margin-top:5px;
     }
     #middle_btns
     {
@@ -503,7 +512,7 @@ import { reactive, ref } from "vue"
     {
         margin-top:20px;
         width:1300px;
-        height:390px;
+        height:500px;
     }
     #middle_header
     {
@@ -541,13 +550,13 @@ import { reactive, ref } from "vue"
     {
         border:thin solid rgb(234, 229, 229);
         width:350px;
-        height:240px;
+        height:350px;
     }
     #middle_asider
     {
         border:thin solid rgb(234, 229, 229);
         width:950px;
-        height:390px;
+        height:500px;
     }
     #tag_search_text
     {
@@ -605,13 +614,9 @@ import { reactive, ref } from "vue"
         position: absolute;
         right:50px; 
     }
-    /* written by bqw */
     .card_info{
         display: flex;
         margin-top: -15px;
-    }
-    .el-card{
-        width: 360px;
     }
     .card_name{
         margin-top: 6px;
@@ -623,25 +628,12 @@ import { reactive, ref } from "vue"
     .card_delete{
         margin-left: -5px;
     }
-    .image{
-        height: 80px;
-        width: 80px;
+    .el-card{
+        width: 360px;
     }
-    .show_area{
-        display: flex;
-        width: 180px;
+    .written{
+        font-size: 20px;
+        vertical-align: center;
+        text-align: center;
     }
-    .pic_show{
-        width: 180px;
-    }
-    .show_pic_card{
-        width: 160px;
-        margin-right: 240px;
-    }
-    .edit_txt{
-        margin-left: 10px;
-        margin-top: -10px;
-        border-radius: 10%;
-    }
-    /* written over */
 </style>

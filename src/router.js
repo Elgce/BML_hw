@@ -148,6 +148,12 @@ const routes = [
                 name: '平台说明',
                 meta: {title:'平台说明'}
             },
+            {
+                path: '/index/manage/dataset/picmarking',
+                component: () => import("./components/pages/PicMarking.vue"),
+                name: '图片标注',
+                meta: {title:'图片标注'}
+            },
         ]
     }
 ]
