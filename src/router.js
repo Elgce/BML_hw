@@ -136,11 +136,17 @@ const routes = [
                 name: '文本实体抽取数据',
                 meta: {title:'文本实体抽取数据'}
             },
+            // {
+            //     path: '/index/manage/dataset/4-2',
+            //     component: () => import("./components/pages/Export.vue"),
+            //     name: '导出',
+            //     meta: {title:'导出'}
+            // },
             {
                 path: '/index/manage/dataset/4-2',
-                component: () => import("./components/pages/Export.vue"),
-                name: '导出',
-                meta: {title:'导出'}
+                component: () => import("./components/pages/PlatformIntroduction.vue"),
+                name: '平台说明',
+                meta: {title:'平台说明'}
             },
         ]
     }
