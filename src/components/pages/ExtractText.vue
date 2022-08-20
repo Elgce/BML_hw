@@ -393,16 +393,6 @@ import { reactive, ref } from "vue"
                 text = text.replace(reg, "<font color=#FF6633>"+this.input_text+"</font>");
                 document.getElementById("written").innerHTML=text;
                 
-                    
-                //var text=document.getElementById("written").innerHTML;
-                //text = text.replace(reg2, this.previous_search);
-                // alert("(<font color=#FF6633>" + this.previous_search + "</font>)")
-                // document.getElementById("written").innerHTML=text;
-                // var text2=document.getElementById("written").innerHTML;
-                // text2 = text2.replace(reg, "<font color=#FF6633>"+this.input_text+"</font>");
-                //this.$router.push("/index/manage/dataset/txt/extracted/blank");
-                // document.getElementById("written").innerHTML=text2;
-                // this.previous_search=this.input_text;
                 
             },
             checkChoice()
