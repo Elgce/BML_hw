@@ -57,7 +57,7 @@
         <option value="" disabled selected hidden>请选择</option>
         <option id="excel" hidden>上传Excel文件</option>
         <option value="pic" id="txt">上传TXT文本</option>
-        <option>上传压缩包</option>
+        <option value="zip">上传压缩包</option>
         <option>API导入</option>
     </select>
     <!-- written by bqw -->
@@ -150,6 +150,11 @@ import Breadcrumb from "../BreadCrumb.vue"
                     else if(that.MessageInfo["specy"]==="table"){
                         label_type.innerHTML = "表格分类";
                     }
+                    else if(that.MessageInfo["specy"]==="video"){
+                        label_type.innerHTML = "视频分类"
+                        upload_pic.innerHTML = "上传视频文件";
+                        uploader.innerHTML = "上传视频文件";
+                    }
                     let label_module = document.getElementById("label_module");
                     if(that.MessageInfo["label_model"]==="ss"){
                         label_module.innerHTML = "单图单标签";
@@ -192,6 +197,12 @@ import Breadcrumb from "../BreadCrumb.vue"
                     }
                     else if(that.MessageInfo["label_model"]==="txt_extr"){
                         label_module.innerHTML = "文本实体抽取";
+                    }
+                    else if(that.MessageInfo["direction"]==="vid_ass"){
+                        label_module.innerHTML = "视频分类";
+                    }
+                    else if(that.MessageInfo["direction"]==="vid_spl"){
+                        label_module.innerHTML = "视频分割";
                     }
                 })
             },
@@ -240,13 +251,12 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var upPic=document.getElementById("upload_pic");
                 var submit_btn=document.getElementById("submit_button");
                 var up_loader = document.getElementById("uploader");
-                if(select_fashion.value=="local")
-                {
+                if(select_fashion.value=="local"){
                     select_local.style.visibility='visible';
                     this.local_select_change();
+
                 }
-                else
-                {
+                else{
                     select_local.style.visibility='hidden';
                     upPic.style.visibility='hidden';
                     submit_btn.style.top='830px';
@@ -259,8 +269,17 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var select_local=document.getElementById("local_choice");
                 var submit_btn=document.getElementById("submit_button");
                 var up_loader = document.getElementById("uploader");
-                if(select_local.value=="pic")
+                var upload_txt = document.getElementById("txt");
+                if(this.MessageInfo["specy"]=="video"){
+                    upload_txt.style.visibility = "hidden";
+                }
+                if((select_local.value=="pic" || select_local.value=='zip') && this.MessageInfo["specy"]!="video")
                 {
+                    upPic.style.visibility='visible';
+                    up_loader.style.visibility='visible';
+                    submit_btn.style.top='870px';
+                }
+                else if(select_local.value=="zip" && this.MessageInfo["specy"]=="video"){
                     upPic.style.visibility='visible';
                     up_loader.style.visibility='visible';
                     submit_btn.style.top='870px';

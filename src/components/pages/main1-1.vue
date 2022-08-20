@@ -257,6 +257,14 @@ import Breadcrumb from "../BreadCrumb.vue"
                                 that.MessageInfo[item]["specy"] = "文本实体抽取";
                             }
                         }
+                        else if(that.MessageInfo[item]["specy"]==="video"){
+                            if(that.MessageInfo[item]["direction"]==="vid_ass"){
+                                that.MessageInfo[item]["specy"] = "视频分类";
+                            }
+                            else if(that.MessageInfo[item]["direction"]==="vid_spl"){
+                                that.MessageInfo[item]["specy"] = "视频分割";
+                            }
+                        }
                         else{
                             that.MessageInfo[item]["specy"] = "表格标注";
                         }
@@ -398,6 +406,14 @@ import Breadcrumb from "../BreadCrumb.vue"
                                 that.MessageInfo[item]["specy"] = "文本实体抽取";
                             }
                         }
+                        else if(that.MessageInfo[item]["specy"]==="video"){
+                            if(that.MessageInfo[item]["direction"]==="vid_ass"){
+                                that.MessageInfo[item]["specy"] = "视频分类";
+                            }
+                            else if(that.MessageInfo[item]["direction"]==="vid_spl"){
+                                that.MessageInfo[item]["specy"] = "视频分割";
+                            }
+                        }
                         else{
                             that.MessageInfo[item]["specy"] = "表格标注";
                         }
@@ -457,6 +473,14 @@ import Breadcrumb from "../BreadCrumb.vue"
                             }
                             else if(that.MessageInfo[item]["label_type"]==="txt_extr"){
                                 that.MessageInfo[item]["specy"] = "文本实体抽取";
+                            }
+                        }
+                        else if(that.MessageInfo[item]["specy"]==="video"){
+                            if(that.MessageInfo[item]["direction"]==="vid_ass"){
+                                that.MessageInfo[item]["specy"] = "视频分类";
+                            }
+                            else if(that.MessageInfo[item]["direction"]==="vid_spl"){
+                                that.MessageInfo[item]["specy"] = "视频分割";
                             }
                         }
                         else{
