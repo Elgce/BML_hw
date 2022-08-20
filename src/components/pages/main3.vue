@@ -14,9 +14,10 @@
                     <el-radio-button label="有标注信息(0)" />
                     <el-radio-button label="无标注信息(0)" />
                 </el-radio-group>
-                <div id="three_btns">
+                <div id="four_btns">
                     <el-button @click="insert_pic">导入图片</el-button>
                     <el-button>质检报告</el-button>
+                    <el-button @click="start_marking">开始标注</el-button>
                     <el-button>批量批注</el-button>
                 </div>
             </el-row>
@@ -375,6 +376,11 @@ import { reactive, ref } from "vue"
             },
             //written over
 
+
+            start_marking()
+            {
+                this.$router.push("/index/manage/dataset/picmarking");
+            },
             cleanSource()
             {
                 if(this.unlimited1==true)
@@ -474,10 +480,10 @@ import { reactive, ref } from "vue"
         top:50px;
         left:0px;
     }
-    #three_btns
+    #four_btns
     {
         position: absolute;
-        left:1010px;
+        left:900px;
     }
     #two_btns
     {

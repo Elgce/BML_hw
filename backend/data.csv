@@ -1,3 +1,2 @@
 group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source,direction,label_type,label_model,data_single,labels
-220820,23,V1,0,201841,finished,video,0,-,[],vid_ass,,,,[]
-220820,132,V1,0,204224,finished,txt,0,-,[],,txt_cla,txt_slabel,dir_auto,[]
+220821,123,V1,1,1030,finished,pic,0,-,['1a7a00a717ed5a4335ce79ba4d89351c.jpeg'],,pic_cla,ss,,[]
