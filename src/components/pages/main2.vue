@@ -96,8 +96,8 @@
         </el-upload>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogVisible=false">取消</el-button>
-                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+                <el-button @click="picUpVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="picUpVisible=false">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -131,8 +131,8 @@
         </el-upload>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogVisible=false">取消</el-button>
-                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+                <el-button @click="picUpZipVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="picUpZipVisible=false">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -166,8 +166,8 @@
         </el-upload>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogVisible=false">取消</el-button>
-                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+                <el-button @click="textUpZipVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="textUpZipVisible=false">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -201,8 +201,8 @@
         </el-upload>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogVisible=false">取消</el-button>
-                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+                <el-button @click="textUpTxtVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="textUpTxtVisible=false">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -236,8 +236,8 @@
         </el-upload>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogVisible=false">取消</el-button>
-                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+                <el-button @click="textUpExcelVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="textUpExcelVisible=false">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -265,8 +265,8 @@
         </el-upload>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogVisible=false">取消</el-button>
-                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+                <el-button @click="videoUpVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="videoUpVisible=false">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -294,8 +294,8 @@
         </el-upload>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogVisible=false">取消</el-button>
-                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+                <el-button @click="videoUpZipVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="videoUpZipVisible=false">确定</el-button>
             </span>
         </template>
     </el-dialog>
