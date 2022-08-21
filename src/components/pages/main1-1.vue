@@ -265,6 +265,14 @@ import Breadcrumb from "../BreadCrumb.vue"
                                 that.MessageInfo[item]["specy"] = "视频分割";
                             }
                         }
+                        else if(that.MessageInfo[item]["specy"]==="audio"){
+                            if(that.MessageInfo[item]["direction"]==="aud_ass"){
+                                that.MessageInfo[item]["specy"] = "音频分类";
+                            }
+                            else if(that.MessageInfo[item]["direction"]==="aud_spl"){
+                                that.MessageInfo[item]["specy"] = "音频分割";
+                            }
+                        }
                         else{
                             that.MessageInfo[item]["specy"] = "表格标注";
                         }
@@ -367,6 +375,36 @@ import Breadcrumb from "../BreadCrumb.vue"
                         .then((res)=>res.json())
                         .then(()=>{
                             this.$router.push("/index/manage/dataset/video/split");
+                        })
+                        
+                    }
+                    else if(specy==="音频分类"){
+                        const data = {"t_type": "all"};
+                        fetch("/api/sessiontype",{
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then((res)=>res.json())
+                        .then(()=>{
+                            this.$router.push("/index/manage/dataset/audio/mark");
+                        })
+                        
+                    }
+                    else if(specy==="音频分割"){
+                        const data = {"t_type": "all"};
+                        fetch("/api/sessiontype",{
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then((res)=>res.json())
+                        .then(()=>{
+                            this.$router.push("/index/manage/dataset/audio/split");
                         })
                         
                     }
