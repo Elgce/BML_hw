@@ -16,7 +16,7 @@
         </el-header>
         <el-divider id="top_divider"/>
         <el-main style="overflow:hidden;">
-            <el-row id="middle_btns">
+            <!-- <el-row id="middle_btns">
                 <el-radio-group v-model="radio1" size="large">
                     <el-radio-button label="全部(0)" />
                     <el-radio-button label="有标注信息(0)" />
@@ -26,14 +26,14 @@
                     <el-link type="primary" @click="dialogVisible = true">批注示例</el-link>
                 </div>
             </el-row>
-            <el-divider/>
+            <el-divider/> -->
             <el-container id="middle_data">
                 <el-aside id="middle_asider">
                     <el-main height="500px" style="padding:0px;">
                         <el-row id="text_top">
-                            <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
-                            <p id="_mark_strong">请在右侧选择标签</p>
-                            <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除视频</el-button>
+                            <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;视频：</p>
+                            <p id="_mark_strong">{{sources[0]}}</p>
+                            <!-- <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除视频</el-button>
                             <el-popover
                                 placement="bottom"
                                 :width="200"
@@ -54,11 +54,12 @@
                                     <el-link>下一个视频</el-link>
                                 </template>
                                 <p>下一个视频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
-                            </el-popover>
+                            </el-popover> -->
                         </el-row>
                         
                         <Videotag ref="video"
-                            :url = "url"></Videotag>
+                            :url = "url"
+                            :colorlist = "colorlist"></Videotag>
                         <div id="empty_right" v-if="src_list.length===0">
                             暂无可用数据
                         </div>
@@ -99,11 +100,11 @@
                             <div v-for="(item,index) in Label_info" :key="item" class="scrollbar-demo-item">
                                 <el-card shadow="hover" class="card">
                                     <div class="card_info">
-                                        <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button>
+                                        <!-- <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button> -->
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
-                                        <p :class="'card_name label'+index" :style="randomRgb()">{{item}}</p>
-                                        <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input>
-                                        <el-button type="defult" text @click="taglabel(item,index)">选择</el-button>
+                                        <p :class="'card_name label'+index" :style="getcolor(item)">{{item}}</p>
+                                        <!-- <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input> -->
+                                        <el-button type="defult" text @click="videoLabel(item)">选择</el-button>
                                     </div>
                                 </el-card>
                             </div>
@@ -159,15 +160,7 @@ import { reactive, ref } from "vue"
                 dialogVisible:false,
                 radio1:'全部',
                 visible:false,
-                unlimited1:true,
-                unlimited2:true,
-                unlimited3:true,
-                unlimited4:true,
-                source1:false,
-                source2:false,
-                source3:false,
-                source4:false,
-                source5:false,
+
                 input_tagName:ref(''),
                 intr_date:ref(''),
                 marking_date:ref(''),
@@ -175,7 +168,7 @@ import { reactive, ref } from "vue"
                     
                 ],
                 url:ref(''),
-                tagColor:{},
+                colorlist:{},
             };
         },
         created(){
@@ -216,7 +209,7 @@ import { reactive, ref } from "vue"
             change_name(name){
                 let new_name= this.new_labelname;
                 this.delete_label(name);
-                const data = {"name": new_name};
+                const data = {"newname": new_name};
                 return fetch("/api/addlabel",{
                     method: 'POST',
                     headers: {
@@ -227,7 +220,6 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
                 })
             },
             edit_label(name){
@@ -251,10 +243,11 @@ import { reactive, ref } from "vue"
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(data)
-                })
-                .then(()=>{
+                }).then((res) => res.json().then((j)=>{
+                    this.$refs.video.delLabel(name);
+                    that.colorlist = j.colorlist;
                     that.get_labels()
-                })
+                }))
             },
 
             get_pics(){
@@ -309,6 +302,7 @@ import { reactive, ref } from "vue"
                 return fetch("/api/getlabels").then((res) => res.json().then((j)=>{
                     that.label_num = j.label_num;
                     that.Label_info = j.labels;
+                    that.colorlist = j.colorlist;
                 }))
             },
 
@@ -323,89 +317,17 @@ import { reactive, ref } from "vue"
             },
             //written over
 
-            cleanSource()
-            {
-                if(this.unlimited1==true)
-                {
-                    this.source1=false;
-                    this.source2=false;
-                    this.source3=false;
-                    this.source4=false;
-                    this.source5=false;
-                }
-            },
-            checkSource()
-            {
-                var source=document.getElementsByName("source");
-                if(this.unlimited1==true)
-                {
-                    if(source[0].checked||source[1].checked||source[2].checked||source[3].checked||source[4].checked)
-                    {
-                        this.unlimited1=false;
-                    }
-                }
-                else
-                {
-                    if(!(source[0].checked||source[1].checked||source[2].checked||source[3].checked||source[4].checked))
-                    {
-                        this.unlimited1=true;
-                    }
-                }
-            },
-            checkIntrDate()
-            {
-                if(this.intr_date==null)
-                {
-                    this.unlimited2=true;
-                }
-                else
-                {
-                    this.unlimited2=false;
-                }
-            },
-            cleanIntrDate()
-            {
-                if(this.unlimited2!=false)
-                {
-                    this.intr_date=null
-                }
-            },
-            checkMarkingDate()
-            {
-                if(this.marking_date==null)
-                {
-                    this.unlimited3=true;
-                }
-                else
-                {
-                    this.unlimited3=false;
-                }
-            },
-            cleanMarkingDate()
-            {
-                if(this.unlimited3!=false)
-                {
-                    this.marking_date=null
-                }
-            },
+            
 
             //written by syz
-            randomRgb(){
-                let R = Math.floor(Math.random() * 100 + 100);
-                let B = Math.floor(Math.random() * 100 + 100);
-                let G = Math.floor(Math.random() * 100 + 100);
-                if(R+G+B > 500){
-                    R = 500 - G - B
-                }
+            getcolor(item){
                 return {
-                    color: 'rgb(' + R + ',' + G + ',' + B + ')'
+                    color: this.colorlist[item]
                 };
             },
 
-            taglabel(item,index){
-                var p = document.getElementsByClassName("label"+index)[0]
-                var color = p.style.color
-                this.$refs.video.mark(item,color);
+            videoLabel(item){
+                this.$refs.video.mark(item);
             }
         }
     }
