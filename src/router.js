@@ -125,6 +125,18 @@ const routes = [
                 meta: {title:'视频分割'}
             },
             {
+                path: '/index/manage/dataset/audio/mark',
+                component: () => import("./components/pages/AudioMarking.vue"),
+                name: '音频分类',
+                meta: {title:'音频分类'}
+            },
+            {
+                path: '/index/manage/dataset/audio/split',
+                component: () => import("./components/pages/AudioSplitting.vue"),
+                name: '音频分割',
+                meta: {title:'音频分割'}
+            },
+            {
                 path: '/index/4-1',
                 component: () => import("./components/pages/PlatformIntroduction.vue"),
                 name: '平台说明',
