@@ -113,6 +113,18 @@ const routes = [
                 meta: {title:'文本相似度空白页'}
             },
             {
+                path: '/index/manage/dataset/blank/pic',
+                component: () => import("./components/pages/BlankPic.vue"),
+                name: '图片展示空白页',
+                meta: {title:'图片展示空白页'}
+            },
+            {
+                path: '/index/manage/dataset/blank/piced',
+                component: () => import("./components/pages/BlankPiced.vue"),
+                name: '图片标注空白页',
+                meta: {title:'图片标注空白页'}
+            },
+            {
                 path: '/index/manage/dataset/video/mark',
                 component: () => import("./components/pages/VideoMarking.vue"),
                 name: '视频分类',

@@ -318,7 +318,19 @@ import Breadcrumb from "../BreadCrumb.vue"
                 .then(()=>{
                     console.log(specy);
                     if(specy==="图片标注"){
-                        this.$router.push("/index/menu3");
+                        const data = {"t_type": "all"};
+                        fetch("/api/sessiontype",{
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then((res)=>res.json())
+                        .then(()=>{
+                            this.$router.push("/index/menu3");
+                        })
+                        
                     }
                     else if(specy==="文本标注"){
                         const data = {"t_type": "all"};

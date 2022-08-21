@@ -9,10 +9,10 @@
         <el-divider id="top_divider"/>
         <el-main>
             <el-row id="middle_btns">
-                <el-radio-group v-model="radio1" size="large">
-                    <el-radio-button label="全部(0)" />
-                    <el-radio-button label="有标注信息(0)" />
-                    <el-radio-button label="无标注信息(0)" />
+                <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
+                    <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                    <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                    <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                 </el-radio-group>
                 <div id="four_btns">
                     <el-button @click="insert_pic">导入图片</el-button>
@@ -136,7 +136,7 @@
                         暂无可用数据
                     </div>
                     <el-row :gutter="20"  class="el-row" type="flex" >
-                    <el-col :span="4" v-for="item in src_list" :key="item" class="pic_show" >
+                    <el-col :span="4" v-for="(item,index) in src_list" :key="item" class="pic_show" >
                             <el-card class="show_pic_card">
                                 <el-image
                                 :src="item"
@@ -145,6 +145,7 @@
                                 />
                                 <div style="padding: 14px">
                                 <div class="bottom">
+                                    {{context_tag[index]}}
                                 </div>
                                 </div>
                             </el-card>
@@ -202,6 +203,11 @@ import { reactive, ref } from "vue"
                 Label_info:reactive([]),
                 src_list:reactive([]),
                 sources: reactive([]),
+                context_tag: reactive([]),
+                all_num: -1,
+                to_num: -1,
+                ed_num: -1,
+                t_type:ref(''),
                 show_btn: false,
                 dialogVisible: false,
                 radio1:'全部',
@@ -313,8 +319,19 @@ import { reactive, ref } from "vue"
             },
             get_pics(){
                 let that = this;
-                return fetch("/api/getresources").then((res)=>res.json().then((j)=>{
+                return fetch("/api/getpicsources").then((res)=>res.json().then((j)=>{
                     that.sources = j.sources;
+                    that.context_tag = j.context_tag;
+                    that.to_num = j.to_num;
+                    that.all_num = j.all_num;
+                    that.ed_num = j.ed_num;
+                    that.t_type = j.t_type;
+                    console.log(that.sources);
+                    for(let item in that.context_tag){
+                        if(that.context_tag[item]===""){
+                            that.context_tag[item]="未标注";
+                        }
+                    }
                 }))
             },
             show_pics(){
@@ -374,12 +391,39 @@ import { reactive, ref } from "vue"
             insert_pic(){
                 this.$router.push("/index/manage/dataset/insert");
             },
+            handleradiochange(){
+                console.log("!");
+                console.log(this.t_type);
+                const data = {"t_type": this.t_type};
+                return fetch("/api/sessiontype",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res)=>res.json())
+                .then(()=>{
+                    this.$router.push("/index/manage/dataset/blank/pic");
+                })
+            },
             //written over
 
 
-            start_marking()
-            {
-                this.$router.push("/index/manage/dataset/picmarking");
+            start_marking(){
+                const data = {"page":1};
+                return fetch("/api/txtpagesession",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res) => res.json)
+                .then(()=>{
+                    this.$router.push("/index/manage/dataset/picmarking");
+                })
+                
             },
             cleanSource()
             {
@@ -421,6 +465,7 @@ import { reactive, ref } from "vue"
                     this.unlimited2=false;
                 }
             },
+            
             cleanIntrDate()
             {
                 if(this.unlimited2!=false)

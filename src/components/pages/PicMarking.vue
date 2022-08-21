@@ -56,11 +56,11 @@
                                 <p>下一个图片（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
-                        <!-- <el-image
-                            :src="item"
-                            class="image"
-                            :fit="cover"
-                        /> -->
+                            <el-image
+                                :src="src"
+                                class="image"
+                                :fit="cover"
+                                />
                         <div id="empty_right" v-if="num===0">
                             暂无可用数据
                         </div>
@@ -93,7 +93,7 @@
                                 <el-icon class="el-input__icon"><search /></el-icon>
                             </template>
                         </el-input>
-                        <span id="tag_search_text">根据文本内容，选择唯一标签</span>
+                        <span id="tag_search_text">根据图片内容，选择唯一标签</span>
                     </el-header>
                     <el-footer id="middle_footer">
                         <el-scrollbar height="400px">
@@ -142,20 +142,19 @@ import { reactive, ref } from "vue"
         data()
         {
             return{
-                context: reactive([]),
+                sources: reactive([]),
                 all_num: -1,
                 ed_num: -1,
                 to_num: -1,
                 t_type: ref("all"),
                 name : ref(''),
                 page : -1,
-                show_context: ref(''),
+                src: ref(''),
                 this_tag: ref('请在右侧选择标签'),
-
+                src_list: reactive([]),
                 labelname: ref(''),
                 new_labelname: ref(''),
                 Label_info:reactive([]),
-                sources: reactive([]),
                 show_btn: false,
                 dialogVisible:false,
                 radio1:'全部',
@@ -178,7 +177,7 @@ import { reactive, ref } from "vue"
             };
         },
         created(){
-            this.calltxt().then(this.get_labels()).then(this.callpage()).then(this.calltag());
+            this.calltxt().then(this.get_labels()).then(this.calltag())
             
         },
         methods:{
@@ -195,14 +194,14 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json())
                 .then(()=>{
-                    this.$router.push("/index/manage/dataset/txt/blank");
+                    this.$router.push("/index/manage/dataset/blank/piced");
                 })
             },
             taglabel(item){
                 console.log(item);
                 this.this_tag = item;
                 const data = {"tag": item};
-                return fetch("/api/taglabel",{
+                return fetch("/api/tagpiclabel",{
                     method: 'POST',
                     headers:{
                         "Content-Type": "application/json",
@@ -232,7 +231,7 @@ import { reactive, ref } from "vue"
                         alert("已是最后一页!");
                     }
                     else{
-                        this.$router.push("/index/manage/dataset/txt/blank");
+                        this.$router.push("/index/manage/dataset/blank/piced");
                     }
                 }))
             },
@@ -243,29 +242,56 @@ import { reactive, ref } from "vue"
                         alert("已是第一页!");
                     }
                     else{
-                        this.$router.push("/index/manage/dataset/txt/blank");
+                        this.$router.push("/index/manage/dataset/blank/piced");
                     }
                 }))
             },
-            // callpage(){
-            //     let that = this;
-            //     return fetch("/api/txtgetpage").then((res)=>res.json().then((j)=>{
-            //         that.page = j.page;
-            //         let page = parseInt(that.page) - 1;
-            //         that.show_context = that.context[page];
-            //     }))
-            // },
-            // calltxt(){
-            //     let that = this;
-            //     return fetch("/api/gettxt").then((res) => res.json().then((j) => {
-            //         that.context = j.context;
-            //         that.all_num = j.all_num;
-            //         that.name = j.name;
-            //         that.to_num = j.to_num;
-            //         that.ed_num = j.ed_num;
-            //         that.t_type = j.t_type;
-            //     }))
-            // },
+            show_pics(){
+                console.log("??");
+                console.log(this.sources);
+                for(let item=0; item<this.sources.length;item++){
+                    console.log(this.sources[item]);
+                    const data = {"file_name":this.sources[item]};
+                    let that = this;
+                    let url = "/api/passfile/" + data["file_name"];
+                    fetch(url,{
+                        method: 'POST',
+                        responseType: 'blob',
+                        headers:{
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    }).then(()=>{
+                        let u_url = "http://localhost:5000/api/passfile/" + data["file_name"];
+                        that.src_list.push(u_url);
+                    });
+                    console.log(that.src_list);
+                }
+                this.callpage();
+            },
+            callpage(){
+                let that = this;
+                return fetch("/api/txtgetpage").then((res)=>res.json().then((j)=>{
+                    that.page = j.page;
+                    let page = parseInt(that.page) - 1;
+                    that.src = that.src_list[page];
+                    console.log(that.src);
+                }))
+            },
+            calltxt(){
+                let that = this;
+                return fetch("/api/getpicsources").then((res) => res.json().then((j) => {
+                    console.log("call");
+                    console.log(j.sources);
+                    that.sources = j.sources;
+                    that.all_num = j.all_num;
+                    that.name = j.name;
+                    that.to_num = j.to_num;
+                    that.ed_num = j.ed_num;
+                    that.t_type = j.t_type;
+                    that.show_pics();
+                }))
+            },
             searchlabel(){
                 let data = {"tagname":this.input_tagName};
                 let that = this;
@@ -306,7 +332,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/txt/blank");
+                    this.$router.push("/index/manage/dataset/blank/piced");
                 })
             },
             edit_label(name){
@@ -331,7 +357,7 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json()
                 .then(()=>{
-                    this.$router.push("/index/manage/dataset/txt/blank");
+                    this.$router.push("/index/manage/dataset/blank/piced");
                 }))
             },
 
@@ -348,7 +374,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/txt/blank");
+                    this.$router.push("/index/manage/dataset/blank/piced");
                 })
             },
            

@@ -529,6 +529,29 @@ def tag_label():
             f.write(item)
     return {"tag":tag}
       
+# 用于图片打标
+@app.route("/api/tagpiclabel",methods=["GET","POST"])
+def tag_piclabel():
+    data = request.get_json()
+    tag = data.get("tag")
+    global context
+    global context_tag
+    global context_txt
+    ind = int(session["page"]) - 1
+    context_tag[ind] = tag
+    name = session["name"]
+    basepath = os.path.dirname(__file__)
+    path = basepath + "\src\\" + name + "\\" + "source.txt"
+    length = len(context)
+    new_context = []
+    for i in range(length):
+        new_context.append(context[i]+" "+context_tag[i]+"\n")
+    print(new_context)
+    with open(path, 'w', encoding='utf-8') as f:
+        for item in new_context:
+            f.write(item)
+    return {"tag":tag}  
+
 # 用于文本相似度打标签并保存
 @app.route("/api/taglabelsim",methods=["GET","POST"])
 def tag_labelsim():
@@ -562,6 +585,8 @@ def tag_labelsim():
 def call_tag():
     global context_tag
     ind = int(session["page"]) - 1
+    print(ind)
+    print(context_tag)
     return {"tag":context_tag[ind]}
 
 # 用于设置文本视图需要的种类
@@ -646,12 +671,14 @@ def get_txtextract():
                         context_tag.append("")
                         context.append(datas[0])
                         context_txt.append(item)
-                else:
+                elif len(datas)==2:
                     if t_type=="to" or t_type=="all":
                         context_tag.append("")
                         context.append(datas[0])
                         context_txt.append(item)
                     to_num = to_num + 1
+                else:
+                    print("datas")
                    
     return {"context_tag":context_tag,"context":context,"t_type":t_type,"all_num":all_num,"name":name,"to_num":to_num,"ed_num":ed_num}
 
@@ -706,6 +733,48 @@ def setVideoSpl():
 def getVideoSpl():
     return {"slices":slices}
 
+@app.route("/api/getpicsources")
+def get_picsources():
+    global context
+    global context_tag
+    global context_txt
+    t_type = session["t_type"]
+    context = []
+    context_tag = []
+    context_txt = []
+    name = session["name"]
+    basepath = os.path.dirname(__file__)
+    path = basepath + "\src\\" + name + "\\" + "source.txt"
+    all_num = 0
+    to_num = 0
+    ed_num = 0
+    if not os.path.exists(path):
+        with open(path,"w",encoding="utf-8") as f:
+            for item in MessageInfo[name]["source"]:
+                f.write(item+"\n")
+                all_num = all_num + 1
+                to_num = to_num + 1
+                context.append(item)
+                context_tag.append("")
+    else:
+        with open(path,"r",encoding="utf-8") as f:
+            data_list = f.readlines()
+            for line in data_list:
+                all_num = all_num + 1
+                line = line.strip()
+                datas = line.split()
+                if len(datas)==1:
+                    to_num = to_num + 1
+                    if t_type=="to" or t_type=="all":
+                        context_tag.append("")
+                        context.append(datas[0])
+                else:
+                    ed_num = ed_num + 1
+                    if t_type=="ed" or t_type=="all":
+                        print(datas)
+                        context_tag.append(datas[1])
+                        context.append(datas[0])
+    return {"t_type":t_type,"sources":context,"context_tag":context_tag,"all_num":all_num,"to_num":to_num,"ed_num":ed_num}
 
 if __name__=="__main__":
     renew()
