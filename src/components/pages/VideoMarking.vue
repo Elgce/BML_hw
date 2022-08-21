@@ -15,34 +15,34 @@
             </el-row>
         </el-header>
         <el-divider id="top_divider"/>
-        <el-main style="overflow:hidden;">
+        <el-main>
             <el-row id="middle_btns">
-                <el-radio-group v-model="radio1" size="large">
-                    <el-radio-button label="全部(0)" />
-                    <el-radio-button label="有标注信息(0)" />
-                    <el-radio-button label="无标注信息(0)" />
+                <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
+                                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                 </el-radio-group>
                 <div id="link">
-                    <el-link type="primary" @click="dialogVisible = true">批注示例</el-link>
+                    <el-link type="primary" @click="dialogVisible = true">辅助设置</el-link>
                 </div>
             </el-row>
             <el-divider/>
+            
             <el-container id="middle_data">
                 <el-aside id="middle_asider">
-                    <el-main height="500px" style="padding:0px;">
+                    <el-scrollbar height="500px">
                         <el-row id="text_top">
                             <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
-                            <p id="_mark_strong">请在右侧选择标签</p>
-                            <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除视频</el-button>
+                            <p id="_mark_strong">{{this_tag}}</p>
                             <el-popover
                                 placement="bottom"
                                 :width="200"
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-link id="previous">上一个视频</el-link>
+                                    <el-button text id="previous" @click="previous_txt">上一个图片</el-button>
                                 </template>
-                                <p>上一个视频（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
+                                <p>上一个图片（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
                             </el-popover>
                             &nbsp;&nbsp;&nbsp;
                             <el-popover
@@ -51,16 +51,20 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-link>下一个视频</el-link>
+                                    <el-button text id="latter" @click="latter_txt">下一个图片</el-button>
                                 </template>
-                                <p>下一个视频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
+                                <p>下一个图片（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
-                        
-
-                    </el-main>
+                            <video width="1000" height="450" controls
+                                :src="src">
+                            </video>
+                        <div id="empty_right" v-if="num===0">
+                            暂无可用数据
+                        </div>
+                    </el-scrollbar>
                 </el-aside>
-                <el-container >
+                <el-container>
                     <el-header id="middle_header">
                         <b v-if="show_btn===false" id="tag_column_text">标签栏</b>
                         <el-button v-if="show_btn===false" id="add_tag" @click="create_label">添加标签</el-button>
@@ -87,7 +91,7 @@
                                 <el-icon class="el-input__icon"><search /></el-icon>
                             </template>
                         </el-input>
-                        <span id="tag_search_text">根据文本内容，选择唯一标签</span>
+                        <span id="tag_search_text">根据图片内容，选择唯一标签</span>
                     </el-header>
                     <el-footer id="middle_footer">
                         <el-scrollbar height="400px">
@@ -98,6 +102,7 @@
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p class="card_name" style="visibility:visible">{{item}}</p>
                                         <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input>
+                                        <el-button type="success" text @click="taglabel(item)">选择</el-button>
                                     </div>
                                 </el-card>
                             </div>
@@ -114,39 +119,40 @@
     </el-container>
     <el-dialog
         v-model="dialogVisible"
-        title="文本分类-单标签"
-        width="40%"
+        title="辅助设置"
+        width="10%"
         :before-close="handleClose"
     >
-        <el-divider id="dialog_divider"/>
-        <p>1. 如何标注: 在左侧选择唯一标签即可完成标注，切换文件可完成保存。</p>
-        <p>2. 标注技巧: 对于批量文本需要标注为同一个标签的情况，可以在右侧标签区域将标签置顶。</p>
-        <br>
-        <img src="../../assets/text_marking_description.png" width="500" height="202">
+        <el-checkbox label="急速预览" size="large" />
     </el-dialog>
 </template>
 
 <script>
 import Breadcrumb from "../BreadCrumb.vue"
-
 import { reactive, ref } from "vue"
-
     export default
     {
         name: "MainThree",
         components: 
         {
-    Breadcrumb,
-},
+            Breadcrumb,
+        },
         data()
         {
             return{
-                label_num: -1,
+                sources: reactive([]),
+                all_num: -1,
+                ed_num: -1,
+                to_num: -1,
+                t_type: ref("all"),
+                name : ref(''),
+                page : -1,
+                src: ref(''),
+                this_tag: ref('请在右侧选择标签'),
+                src_list: reactive([]),
                 labelname: ref(''),
                 new_labelname: ref(''),
                 Label_info:reactive([]),
-                src_list:reactive([]),
-                sources: reactive([]),
                 show_btn: false,
                 dialogVisible:false,
                 radio1:'全部',
@@ -166,16 +172,127 @@ import { reactive, ref } from "vue"
                 options:[
                     
                 ],
-                url:ref(''),
             };
         },
         created(){
-            this.get_labels();
-            this.get_pics().then(this.show_pics);
-            console.log(this.url)
+            this.calltxt().then(this.get_labels()).then(this.calltag())
+            
         },
         methods:{
         //  written by bqw
+            handleradiochange(){
+                console.log(this.t_type);
+                const data = {"t_type": this.t_type};
+                return fetch("/api/sessiontype",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res)=>res.json())
+                .then(()=>{
+                    // this.$router.push("/index/manage/dataset/blank/piced");
+                    this.calltxt().then(this.get_labels()).then(this.calltag())
+                })
+            },
+            taglabel(item){
+                console.log(item);
+                this.this_tag = item;
+                const data = {"tag": item};
+                return fetch("/api/tagpiclabel",{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((res)=>res.json())
+                .then((j)=>{
+                    console.log(j);
+                })
+            },
+            calltag(){
+                let that = this;
+                return fetch("/api/calltag").then((res)=>res.json().then((j)=>{
+                    if(j.tag===""){
+                        that.this_tag = '请在右侧选择标签';
+                    }
+                    else{
+                        that.this_tag = j.tag;
+                    }
+                }))
+            },
+            latter_txt(){
+                return fetch("/api/nextpage").then((res)=>res.json().then((j)=>{
+                    let passa = j.page;
+                    if(passa==="fail"){
+                        alert("已是最后一页!");
+                    }
+                    else{
+                        // this.$router.push("/index/manage/dataset/blank/piced");
+                        this.calltxt().then(this.get_labels()).then(this.calltag())
+                    }
+                }))
+            },
+            previous_txt(){
+                return fetch("/api/prepage").then((res)=>res.json().then((j)=>{
+                    let passa = j.page;
+                    if(passa==="fail"){
+                        alert("已是第一页!");
+                    }
+                    else{
+                        // this.$router.push("/index/manage/dataset/blank/piced");
+                        this.calltxt().then(this.get_labels()).then(this.calltag())
+                    }
+                }))
+            },
+            show_pics(){
+                console.log("??");
+                console.log(this.sources);
+                for(let item=0; item<this.sources.length;item++){
+                    console.log(this.sources[item]);
+                    const data = {"file_name":this.sources[item]};
+                    let that = this;
+                    let url = "/api/passfile/" + data["file_name"];
+                    fetch(url,{
+                        method: 'POST',
+                        responseType: 'blob',
+                        headers:{
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    }).then(()=>{
+                        let u_url = "http://localhost:5000/api/passfile/" + data["file_name"];
+                        that.src_list.push(u_url);
+                    });
+                    console.log(that.src_list);
+                }
+                this.callpage();
+            },
+            callpage(){
+                let that = this;
+                return fetch("/api/txtgetpage").then((res)=>res.json().then((j)=>{
+                    that.page = j.page;
+                    let page = parseInt(that.page) - 1;
+                    that.src = that.src_list[page];
+                    console.log(that.src);
+                }))
+            },
+            calltxt(){
+                let that = this;
+                return fetch("/api/getpicsources").then((res) => res.json().then((j) => {
+                    console.log("call");
+                    console.log(j.sources);
+                    that.sources = j.sources;
+                    that.all_num = j.all_num;
+                    that.name = j.name;
+                    that.to_num = j.to_num;
+                    that.ed_num = j.ed_num;
+                    that.t_type = j.t_type;
+                    that.show_pics();
+                }))
+            },
             searchlabel(){
                 let data = {"tagname":this.input_tagName};
                 let that = this;
@@ -190,8 +307,6 @@ import { reactive, ref } from "vue"
                 .then((j)=>{
                     // that.Label_info = j.labels;
                     that.Label_info = reactive([]);
-                    console.log("!!");
-                    console.log(j.labels);
                     if(j.label_num!=0){
                         for(let item in j.labels){
                             that.Label_info.push(j.labels[item]);
@@ -218,7 +333,8 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    // this.$router.push("/index/manage/dataset/blank/piced");
+                    this.calltxt().then(this.get_labels()).then(this.calltag())
                 })
             },
             edit_label(name){
@@ -243,44 +359,14 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json()
                 .then(()=>{
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    // this.$router.push("/index/manage/dataset/blank/piced");
+                    this.calltxt().then(this.get_labels()).then(this.calltag())
                 }))
-            },
-
-            get_pics(){
-                let that = this;
-                return fetch("/api/getresources").then((res)=>res.json().then((j)=>{
-                    that.sources = j.sources;
-                }))
-            },
-
-            show_pics(){
-                for(let item=0; item<this.sources.length;item++){
-                    console.log(this.sources[item]);
-                    const data = {"file_name":this.sources[item]};
-                    let that = this;
-                    let url = "/api/passfile/" + data["file_name"];
-                    fetch(url,{
-                        method: 'POST',
-                        responseType: 'blob',
-                        headers:{
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(data)
-                    }).then(()=>{
-                        let u_url = "http://localhost:5000/api/passfile/" + data["file_name"];
-                        that.src_list.push(u_url);
-                        this.url = u_url
-                        console.log(this.url)
-                    });
-                }
             },
 
            
             add_label(){
                 const data = {"name": this.labelname};
-                console.log("abd");
-                console.log(data);
                 return fetch("/api/addlabel",{
                     method: 'POST',
                     headers: {
@@ -291,7 +377,8 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    // this.$router.push("/index/manage/dataset/blank/piced");
+                    this.calltxt().then(this.get_labels()).then(this.calltag())
                 })
             },
            
@@ -300,7 +387,6 @@ import { reactive, ref } from "vue"
                 return fetch("/api/getlabels").then((res) => res.json().then((j)=>{
                     that.label_num = j.label_num;
                     that.Label_info = j.labels;
-                    console.log(that.label_num);
                 }))
             },
             create_label(){
@@ -308,9 +394,6 @@ import { reactive, ref } from "vue"
             },
             cancel_label(){
                 this.show_btn = false;
-            },
-            insert_pic(){
-                this.$router.push("/index/manage/dataset/insert");
             },
             //written over
 
@@ -378,7 +461,7 @@ import { reactive, ref } from "vue"
                 {
                     this.marking_date=null
                 }
-            },
+            }
         }
     }
 
@@ -440,11 +523,16 @@ import { reactive, ref } from "vue"
         border: none;
         background-color: rgb(243, 244, 243);
         margin-top: 5px;
-        margin-left:400px;
+        margin-left:500px;
+    }
+    #latter{
+        margin-left: -10px;
+        margin-top: 5px;
     }
     #previous
     {
-        margin-left:50px;
+        margin-left:520px;
+        margin-top:5px;
     }
     #middle_btns
     {
@@ -454,7 +542,7 @@ import { reactive, ref } from "vue"
     {
         margin-top:20px;
         width:1300px;
-        height:700px;
+        height:500px;
     }
     #middle_header
     {
@@ -498,7 +586,7 @@ import { reactive, ref } from "vue"
     {
         border:thin solid rgb(234, 229, 229);
         width:950px;
-        height:700px;
+        height:500px;
     }
     #tag_search_text
     {
@@ -555,5 +643,27 @@ import { reactive, ref } from "vue"
     {
         position: absolute;
         right:50px; 
+    }
+    .card_info{
+        display: flex;
+        margin-top: -15px;
+    }
+    .card_name{
+        margin-top: 6px;
+        margin-left: 5px;
+    }
+    .card_edit{
+        margin-left: -20px;
+    }
+    .card_delete{
+        margin-left: -5px;
+    }
+    .el-card{
+        width: 360px;
+    }
+    .written{
+        font-size: 20px;
+        vertical-align: center;
+        text-align: center;
     }
 </style>

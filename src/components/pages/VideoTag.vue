@@ -51,7 +51,8 @@ export default{
             state:0,
             chosenIndex:-1,
             sliceConflict:-1,
-            sliderTime:0
+            sliderTime:0,
+            slices_time:[]
         }
     },
     mounted(){
@@ -83,9 +84,20 @@ export default{
             var video = document.getElementById("myVideo")
             var progress = document.getElementById("progress")
             var w_str = progress.style.width
-            var w = w_str.substring(0,w_str.length-2)
+            var w = parseInt(w_str.substring(0,w_str.length-2))
             var l = progress.getBoundingClientRect().left
             return (x-l)/w * video.duration
+        },
+
+        convertTtoX(t){
+            var video = document.getElementById("myVideo")
+            var progress = document.getElementById("progress")
+            var w_str = progress.style.width
+            var w = parseInt(w_str.substring(0,w_str.length-2))
+            var l = progress.getBoundingClientRect().left
+            var x = l + t * w / video.duration
+            console.log("ready:"+video.duration)
+            return x
         },
 
         nearEdge(index,x){
@@ -413,20 +425,39 @@ export default{
 
         // 获取数据
         getSlices(){
-            let that = this;
-            return fetch("/api/getvideospl").then((res)=>res.json().then((j)=>{
+            setTimeout(()=>{   //设置延迟执行
+                let that = this;
+                return fetch("/api/getvideospl").then((res)=>res.json().then((j)=>{
+                for(var i in j.slices){
+                    console.log(i)
+                    j.slices[i]['ts'] = that.convertTtoX(j.slices[i]['ts'])
+                    j.slices[i]['te'] = that.convertTtoX(j.slices[i]['te'])
+                }
                 that.slices = j.slices;
-            }))
+                console.log(j.slices)
+                }))
+            },5000);
+            
         },
 
         setSlices(){
-            const data = {"slices": this.slices};
+            this.slices_time = JSON.parse(JSON.stringify(this.slices))
+            for(var i in this.slices){
+                var xs = this.slices[i]['ts']
+                var xe = this.slices[i]['te']
+                this.slices_time[i]['ts'] = this.convertXtoT(xs)
+                this.slices_time[i]['te'] = this.convertXtoT(xe)
+            }
+            const data = {"slices": this.slices_time};
             return fetch("/api/setvideospl",{
                 method: 'POST',
                 headers:{
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data)
+            }).then((res)=>res.json())
+            .then((j)=>{
+                console.log(j);
             })
         },
 
