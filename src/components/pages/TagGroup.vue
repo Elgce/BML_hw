@@ -7,7 +7,7 @@
         <el-divider id="top_divider"/>
         <el-main>
             <el-row>
-                <el-button type="primary">添加标签</el-button>
+                <el-button type="primary" @click="newVisible = true">添加标签</el-button>
                 <el-button>批量添加</el-button>
                 <el-button disabled>批量修改</el-button>
                 <el-button disabled>批量删除</el-button>
@@ -19,8 +19,15 @@
                     </el-input>
                 </div>
             </el-row>
-            <br>
-            <el-descriptions
+            <el-divider/>
+            <el-table :data="labelsData" style="width: 100%">
+                <el-table-column prop="name" label="标签名称" />
+                <el-table-column prop="description" label="操作">
+                    <el-button type="primary" link key="label">编辑</el-button>
+                    <el-button type="primary" link key="delete">删除</el-button>
+                </el-table-column>
+            </el-table>
+            <!-- <el-descriptions
                 direction="vertical"
                 :column="2"
                 size="large"
@@ -28,7 +35,6 @@
             >
                 <el-descriptions-item label="标签名称">
                     <el-checkbox label="" size="large" id="item_checkbox"/>
-                    <!-- <div id="color_box">1</div> -->
                     &nbsp;&nbsp;
                     <el-color-picker v-model="markColor" id="mark_color"/>
                     &nbsp;&nbsp;
@@ -46,7 +52,7 @@
                     <el-button id="change_btn" type="primary" link key="label" @click="change_mark">编辑</el-button>
                     <el-button id="delete_btn" type="primary" link key="delete" @click="delete_mark">删除</el-button>
                 </el-descriptions-item>
-            </el-descriptions>
+            </el-descriptions> -->
             <div id="pages">
                 <el-row>
                     <p id="fotter_text">每页显示&nbsp;&nbsp;&nbsp;</p>
@@ -64,6 +70,25 @@
             </div>
         </el-main>
     </el-container>
+    <el-dialog
+        v-model="newVisible"
+        title="添加标签"
+        width="30%"
+        :before-close="handleClose"
+    >
+        <el-divider class="dialog_divider"/>
+        <el-row class="name">
+            <p>标签名称</p>
+            <p class="highlight">✳</p>
+            <el-input v-model="newTagName" placeholder="请输入名称" @input="if_diableBtn"></el-input>
+        </el-row>
+        <el-divider/>
+        <div>
+            <el-button id="complete" :disabled="disabled" type="primary" @click="add_tag">确认</el-button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <el-button @click="newVisible = false">取消</el-button>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
@@ -76,9 +101,16 @@ import { ref } from "vue"
         {
             Breadcrumb,
         },
+        created(){
+            this.calldata();
+        },
         data()
         {
             return{
+                labelsData:[],
+                newVisible:false,
+                newTagName:ref(''),
+                disabled:true,
                 options:[
                     {
                         value: '10',
@@ -99,6 +131,17 @@ import { ref } from "vue"
             };
         },
         methods:{
+            if_diableBtn()
+            {
+                if(this.newTagName!="")
+                {
+                    this.disabled=false;
+                }
+                else
+                {
+                    this.disabled=true;
+                }
+            },
             change_mark()
             {
                 var change_btn=document.getElementById("change_btn");
@@ -148,7 +191,45 @@ import { ref } from "vue"
                     change_btn.innerText="编辑";
                     delete_btn.innerText="删除";
                 }
-            }
+            },
+
+            //增加标签
+            add_tag()
+            {
+                this.newVisible=false;
+                const data = {
+                    "name": this.newTagName,
+                };
+                return fetch("/api/add_group_tag",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then((j)=>{
+                    if(j.isok === "repeat")
+                    {
+                        alert("标签名称重复!");
+                    }
+                    else
+                    {
+                        this.$router.push("/index/manage/dataset/text/taggroup");
+                        location.reload();
+                    }
+                })
+            },
+
+            //获取标签数据
+            calldata(){
+                return fetch("/api/call_group_labels").then((res)=>res.json().then((j)=>{
+                    for(var i=0;i<j.names.length;i++)
+                    {
+                        this.labelsData.push({"name":j.names[i],});
+                    }
+                }))
+            },
         }
     }
 </script>
@@ -219,5 +300,14 @@ import { ref } from "vue"
         width:400px;
         display: inline-block;
         visibility: hidden;
+    }
+    .highlight
+    {
+        color:red;
+        font-weight:900;
+    }
+    .dialog_divider
+    {
+        margin-top:-30px;
     }
 </style>
