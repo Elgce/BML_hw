@@ -15,6 +15,7 @@
                         <el-radio-button name="data_type" value="txt" label="txt" @click="set_qx_value(2)">文本</el-radio-button>
                         <el-radio-button name="data_type" value="table" label="table" @click="set_qx_value(3)">表格</el-radio-button>
                         <el-radio-button name="data_type" value="video" label="video" @click="set_qx_value(4)">视频</el-radio-button>
+                        <el-radio-button name="data_type" value="audio" label="audio" @click="set_qx_value(5)">音频</el-radio-button>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="数据集版本">
@@ -138,6 +139,15 @@
                 </el-form-item>
             </el-form>
 
+            <el-form id="test" v-if="qx.quanxian===5" :model="form" label-width="120px" style="max-width: 1550px" :key="1">
+                <el-form-item label="技术方向">
+                    <el-radio-group v-model="form.direction">
+                        <el-radio name="marking_type_audio" id="audio_assortment" label="aud_ass" border>音频分类</el-radio>
+                        <el-radio name="marking_type_audio" id="audio_splitting" label="aud_spl" border>音频分割</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-form>
+
             <el-row class="mb-4">
                 <el-button type="primary" @click="createdata">创建并导入</el-button>
                 <el-button type="success">完成创建</el-button>
@@ -192,6 +202,7 @@ export default{
             let markingTypeText=document.getElementsByName("marking_type_text");
             let markingTypeTable=document.getElementsByName("marking_type_table");
             let markingTypeVideo=document.getElementsByName("marking_type_video");
+            let markingTypeAudio=document.getElementsByName("marking_type_audio");
             let module=document.getElementsByName("module");
             let dataPara=document.getElementsByName("dataPara");
             return (
@@ -202,8 +213,12 @@ export default{
                 ((dataType[1].checked&&(dataPara[0].checked||dataPara[1].checked)) && ((inputName.value!=""&&markingTypeText[0].checked&&(module[0].checked||module[1].checked))||
                 (inputName.value!=""&&markingTypeText[1].checked&&(module[0].checked))||(inputName.value!=""&&markingTypeText[2].checked&&(module[0].checked||module[1].checked||module[2].checked||module[3].checked))||
                 (inputName.value!=""&&markingTypeText[3].checked&&(module[0].checked))))
-                || (dataType[2].checked && inputName.value!=""&&(markingTypeTable[0].checked))
-                || (dataType[3].checked && inputName.value!=""&&(markingTypeVideo[0].checked||markingTypeVideo[1].checked))
+                || 
+                (dataType[2].checked && inputName.value!=""&&(markingTypeTable[0].checked))
+                || 
+                (dataType[3].checked && inputName.value!=""&&(markingTypeVideo[0].checked||markingTypeVideo[1].checked))
+                || 
+                (dataType[4].checked && inputName.value!=""&&(markingTypeAudio[0].checked||markingTypeAudio[1].checked))
                 )
         },
         createdata() {
@@ -375,6 +390,20 @@ export default{
     #video_splitting
     {
         background: url("../../assets/video_splitting.png") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #audio_assortment
+    {
+        background: url("../../assets/audio_marking.jpg") no-repeat;
+        width:312px;
+        height:160px;
+        background-position-x:100px;
+    }
+    #audio_splitting
+    {
+        background: url("../../assets/audio_splitting.jpg") no-repeat;
         width:312px;
         height:160px;
         background-position-x:100px;
