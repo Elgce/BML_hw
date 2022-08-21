@@ -340,7 +340,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                             this.$router.push("/index/manage/dataset/text/similarity");
                         })
                     }
-                    else if(specy==="表格标注"){
+                    else if(specy==="视频分类"){
                         const data = {"t_type": "all"};
                         fetch("/api/sessiontype",{
                             method: 'POST',
@@ -351,7 +351,22 @@ import Breadcrumb from "../BreadCrumb.vue"
                         })
                         .then((res)=>res.json())
                         .then(()=>{
-                            this.$router.push("/index/manage/dataset/videomarking");
+                            this.$router.push("/index/manage/dataset/video/mark");
+                        })
+                        
+                    }
+                    else if(specy==="视频分割"){
+                        const data = {"t_type": "all"};
+                        fetch("/api/sessiontype",{
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then((res)=>res.json())
+                        .then(()=>{
+                            this.$router.push("/index/manage/dataset/video/split");
                         })
                         
                     }

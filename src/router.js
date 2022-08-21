@@ -113,10 +113,16 @@ const routes = [
                 meta: {title:'文本相似度空白页'}
             },
             {
-                path: '/index/manage/dataset/videomarking',
+                path: '/index/manage/dataset/video/mark',
                 component: () => import("./components/pages/VideoMarking.vue"),
-                name: '视频标注',
-                meta: {title:'视频标注'}
+                name: '视频分类',
+                meta: {title:'视频分类'}
+            },
+            {
+                path: '/index/manage/dataset/video/split',
+                component: () => import("./components/pages/VideoSplitting.vue"),
+                name: '视频分割',
+                meta: {title:'视频分割'}
             },
             {
                 path: '/index/4-1',
