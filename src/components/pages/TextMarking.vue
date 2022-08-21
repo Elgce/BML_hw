@@ -18,9 +18,9 @@
         <el-main>
             <el-row id="middle_btns">
                 <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
-                                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
-                                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
-                                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
+                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                 </el-radio-group>
                 <div id="link">
                     <el-link type="primary" @click="dialogVisible = true">批注示例</el-link>
@@ -96,6 +96,8 @@
                             <div v-for="item in Label_info" :key="item" class="scrollbar-demo-item">
                                 <el-card shadow="hover" class="card">
                                     <div class="card_info">
+                                        <el-color-picker v-model="markColor" id="mark_color"/>
+                                        &nbsp;&nbsp;
                                         <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button>
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p class="card_name" style="visibility:visible">{{item}}</p>
@@ -175,6 +177,7 @@ import { reactive, ref } from "vue"
                 options:[
                     
                 ],
+                markColor:ref('#409EFF'),
             };
         },
         created(){

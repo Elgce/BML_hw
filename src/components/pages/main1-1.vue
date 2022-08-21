@@ -197,8 +197,33 @@ import Breadcrumb from "../BreadCrumb.vue"
                                 value: 'table_pre',
                                 label: '表格预测',
                             },
+                        ]
+                    },
+                    {
+                        value: 'video',
+                        label: '视频',
+                        children: [
                             {
-
+                                value: 'vid_ass',
+                                label: '视频分类',
+                            },
+                            {
+                                value: 'vid_spl',
+                                label: '视频分割',
+                            }
+                        ]
+                    },
+                    {
+                        value: 'audio',
+                        label: '音频',
+                        children: [
+                            {
+                                value: 'aud_ass',
+                                label: '音频分类',
+                            },
+                            {
+                                value: 'aud_spl',
+                                label: '音频分割',
                             }
                         ]
                     }

@@ -1,5 +1,5 @@
 <template>
-    <el-container>
+    <el-container @click="checkClean">
         <el-header>
             <Breadcrumb></Breadcrumb>
             <el-row id="top_btns">
@@ -18,9 +18,9 @@
         <el-main>
             <el-row id="middle_btns">
                 <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
-                                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
-                                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
-                                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
+                    <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                    <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                    <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                 </el-radio-group>
                 <div id="link">
                     <el-link type="primary" @click="dialogVisible = true">批注示例</el-link>
@@ -103,6 +103,8 @@
                             <div v-for="item in Label_info" :key="item" class="scrollbar-demo-item">
                                 <el-card shadow="hover" class="card">
                                     <div class="card_info">
+                                        <el-color-picker v-model="markColor" id="mark_color"/>
+                                        &nbsp;&nbsp;
                                         <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button>
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p class="card_name" style="visibility:visible">{{item}}</p>
@@ -140,13 +142,10 @@
         <p id="choose_label_text">
             请选择文本实体分类标签：
         </p>
-        <el-divider id="choose_label_divider"/>
-        <!-- <el-card shadow="hover" class="card">
-            <el-button class="labels_choice" style="visibility:visible">{{item}}</el-button>
-        </el-card> -->
+        <!-- <el-divider id="choose_label_divider"/> -->
         <el-color-picker v-model="markColor" id="mark_color"/>
         <div v-for="item in Label_info" :key="item" >
-            <el-button class="labels_choice" @click="mark_text(item)">
+            <el-button class="labels_choice" @click="mark_text(item)" type="primary">
             {{item}}
             </el-button>
         </div>
@@ -412,6 +411,16 @@ import { reactive, ref } from "vue"
                     y+=20;
                     choose_label.style.top=String(y)+'px';
                     choose_label.style.left=String(x)+'px';
+                }
+            },
+            checkClean()
+            {
+                var selection=window.getSelection();
+                var selectionStr=selection.toString();
+                if(selectionStr=="")
+                {
+                    var choose_label=document.getElementById("choose_label");
+                    choose_label.style.visibility='hidden';
                 }
             },
             cleanSource()
@@ -743,9 +752,9 @@ import { reactive, ref } from "vue"
     }
     .labels_choice
     {
-        font-size: 13px;
+        margin-top:5px;
+        font-size:13px;
         width:120px;
-        border: none;
     }
     #content_search
     {

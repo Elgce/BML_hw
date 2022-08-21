@@ -55,21 +55,226 @@
     </select>
     <select id="local_choice" @change="local_select_change">
         <option value="" disabled selected hidden>请选择</option>
-        <option id="excel" hidden>上传Excel文件</option>
+        <option value="excel" id="excel" hidden>上传Excel文件</option>
         <option value="pic" id="txt">上传TXT文本</option>
-        <option value="zip">上传压缩包</option>
+        <option value="zip" id="zip">上传压缩包</option>
         <option>API导入</option>
     </select>
     <!-- written by bqw -->
-    <el-button id="uploader" type="primary" @click="call_diagram"><el-icon><Upload /></el-icon>上传图片</el-button>
+    <el-button id="uploader_pic" type="primary" @click="call_diagram_pic"><el-icon><Upload /></el-icon>上传图片</el-button>
+    <el-button id="uploader_zip" type="primary" @click="call_diagram_zip"><el-icon><Upload /></el-icon>上传压缩包</el-button>
+    <el-button id="uploader_txt" type="primary" @click="call_diagram_txt"><el-icon><Upload /></el-icon>上传TXT文本</el-button>
+    <el-button id="uploader_excel" type="primary" @click="call_diagram_excel"><el-icon><Upload /></el-icon>上传Excel文件</el-button>
+    <el-button id="uploader_video" type="primary" @click="call_diagram_video"><el-icon><Upload /></el-icon>上传视频文件</el-button>
     <el-dialog
         title="上传图片"
-        v-model="dialogVisible"
+        v-model="picUpVisible"
     >
         <el-divider id="divider_dialog"/>
-        <el-alert id="explanation_p" title="对同一数据集存在多个内容完全一致的图片，将会做去重处
-        理。<br>为保证模型训练效果，所上传的图片应与实际业务场景的图片（光线、角度、采集设备）尽可能
-        一致。" type="warning" :closable="false"></el-alert>
+        <el-alert 
+            id="explanation_p" 
+            title="对同一数据集存在多个内容完全一致的图片，将会做去重处理。为保证模型训练效果，所上传的图片应与实际业务场景的图片（光线、角度、采集设备）尽可能一致。" 
+            type="warning" 
+            :closable="false">
+        </el-alert>
+        <el-upload
+            class="upload-demo"
+            drag
+            action="/api/call"
+            multiple
+        >
+         
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+            Drop file here or <em>click to upload</em>
+            </div>
+            <template #tip>
+            <div class="el-upload__tip">
+                files with a size less than 500kb
+            </div>
+            </template>
+        </el-upload>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+    <el-dialog
+        title="上传压缩包"
+        v-model="picUpZipVisible"
+    >
+        <el-divider id="divider_dialog"/>
+        <el-alert 
+            id="explanation_p" 
+            title="对压缩包内存在多个内容完全一致的图片，将会做去重处理。为保证模型训练效果，所上传的图片应与实际业务场景的图片（光线、角度、采集设备）尽可能一致。" 
+            type="warning" 
+            :closable="false">
+        </el-alert>
+        <el-upload
+            class="upload-demo"
+            drag
+            action="/api/call"
+            multiple
+        >
+         
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+            Drop file here or <em>click to upload</em>
+            </div>
+            <template #tip>
+            <div class="el-upload__tip">
+                files with a size less than 500kb
+            </div>
+            </template>
+        </el-upload>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+    <el-dialog
+        title="上传压缩包"
+        v-model="textUpZipVisible"
+    >
+        <el-divider id="divider_dialog"/>
+        <el-alert 
+            id="explanation_p" 
+            title="1. 压缩包内的一个文本文件将作为一个样本上传，详见示例压缩包。2. 压缩包格式为zip,tar.gz格式，压缩包内文件类型支持txt，编码仅支持UTF-8" 
+            type="warning" 
+            :closable="false">
+        </el-alert>
+        <el-upload
+            class="upload-demo"
+            drag
+            action="/api/call"
+            multiple
+        >
+         
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+            Drop file here or <em>click to upload</em>
+            </div>
+            <template #tip>
+            <div class="el-upload__tip">
+                files with a size less than 500kb
+            </div>
+            </template>
+        </el-upload>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+    <el-dialog
+        title="上传TXT文本"
+        v-model="textUpTxtVisible"
+    >
+        <el-divider id="divider_dialog"/>
+        <el-alert 
+            id="explanation_p" 
+            title="1. 文本将会按照您定义的分隔符拆分成多组数据，每组数据的字符数建议不超过512个字符（包括中英文、数字、符号等），超出的字符可正常保存，但可能无法参与训练。详见数据样例。2. 请确保您的数据格式准确，如果上传一个文本文件作为一个样本，请返回到导入方式上选择“上传压缩包”的方式上传数据。3. 文本文件类型支持txt，编码仅支持UTF-8，单次上传限制100个文本文件" 
+            type="warning" 
+            :closable="false">
+        </el-alert>
+        <el-upload
+            class="upload-demo"
+            drag
+            action="/api/call"
+            multiple
+        >
+         
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+            Drop file here or <em>click to upload</em>
+            </div>
+            <template #tip>
+            <div class="el-upload__tip">
+                files with a size less than 500kb
+            </div>
+            </template>
+        </el-upload>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+    <el-dialog
+        title="上传Excel文件"
+        v-model="textUpExcelVisible"
+    >
+        <el-divider id="divider_dialog"/>
+        <el-alert 
+            id="explanation_p" 
+            title="1. 使用第一列作为待标注文本，每行是一组样本，首行为表头默认将被忽略，每组数据文本内容的字符数不超过512个字符（包括中英文、数字、符号等），超出的字符可正常保存，但可能无法参与训练。详见数据样例。2. 文件类型支持xlsx格式，单次上传限制100个文件；文件格式示意图如下：" 
+            type="warning" 
+            :closable="false">
+        </el-alert>
+        <el-upload
+            class="upload-demo"
+            drag
+            action="/api/call"
+            multiple
+        >
+         
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+            Drop file here or <em>click to upload</em>
+            </div>
+            <template #tip>
+            <div class="el-upload__tip">
+                files with a size less than 500kb
+            </div>
+            </template>
+        </el-upload>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+    <el-dialog
+        title="上传视频文件"
+        v-model="videoUpVisible"
+    >
+        <el-divider id="divider_dialog"/>
+        <el-upload
+            class="upload-demo"
+            drag
+            action="/api/call"
+            multiple
+        >
+         
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+            Drop file here or <em>click to upload</em>
+            </div>
+            <template #tip>
+            <div class="el-upload__tip">
+                files with a size less than 500kb
+            </div>
+            </template>
+        </el-upload>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="dialogVisible=false">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+    <el-dialog
+        title="上传压缩包"
+        v-model="videoUpZipVisible"
+    >
+        <el-divider id="divider_dialog"/>
         <el-upload
             class="upload-demo"
             drag
@@ -109,7 +314,13 @@ import Breadcrumb from "../BreadCrumb.vue"
         },
         data(){
             return{
-                dialogVisible: false,
+                picUpVisible: false,
+                picUpZipVisible:false,
+                textUpZipVisible:false,
+                textUpTxtVisible:false,
+                textUpExcelVisible:false,
+                videoUpVisible:false,
+                videoUpZipVisible:false,
                 fileList: [],
                 file: {},
                 MessageInfo: reactive({}),
@@ -152,8 +363,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     }
                     else if(that.MessageInfo["specy"]==="video"){
                         label_type.innerHTML = "视频分类"
-                        upload_pic.innerHTML = "上传视频文件";
-                        uploader.innerHTML = "上传视频文件";
+                        txt.innerHTML = "上传视频文件";
                     }
                     let label_module = document.getElementById("label_module");
                     if(that.MessageInfo["label_model"]==="ss"){
@@ -211,8 +421,35 @@ import Breadcrumb from "../BreadCrumb.vue"
                     this.$router.push("/index/manage/dataset");
                 })
             },
-            call_diagram(){
-                this.dialogVisible = true;
+            call_diagram_pic(){
+                this.picUpVisible = true;
+            },
+            call_diagram_zip()
+            {
+                if(this.MessageInfo["specy"]=="pic")
+                {
+                    this.picUpZipVisible=true;
+                }
+                else if(this.MessageInfo["specy"]=="txt")
+                {
+                    this.textUpZipVisible=true;
+                }
+                else if(this.MessageInfo["specy"]=="video")
+                {
+                    this.videoUpZipVisible=true;
+                }
+            },
+            call_diagram_txt()
+            {
+                this.textUpTxtVisible=true;
+            },
+            call_diagram_excel()
+            {
+                this.textUpExcelVisible=true;
+            },
+            call_diagram_video()
+            {
+                this.videoUpVisible=true;
             },
             //written over
 
@@ -250,17 +487,24 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var select_local=document.getElementById("local_choice");
                 var upPic=document.getElementById("upload_pic");
                 var submit_btn=document.getElementById("submit_button");
-                var up_loader = document.getElementById("uploader");
+                var up_loader_pic = document.getElementById("uploader_pic");
+                var up_loader_zip = document.getElementById("uploader_zip");
+                var up_loader_txt = document.getElementById("uploader_txt");
+                var up_loader_excel = document.getElementById("uploader_excel");
+                var up_loader_video = document.getElementById("uploader_video");
                 if(select_fashion.value=="local"){
                     select_local.style.visibility='visible';
                     this.local_select_change();
-
                 }
                 else{
                     select_local.style.visibility='hidden';
                     upPic.style.visibility='hidden';
                     submit_btn.style.top='830px';
-                    up_loader.style.visibility='hidden';
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
                 }
             },
             local_select_change()
@@ -268,26 +512,112 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var upPic=document.getElementById("upload_pic");
                 var select_local=document.getElementById("local_choice");
                 var submit_btn=document.getElementById("submit_button");
-                var up_loader = document.getElementById("uploader");
-                var upload_txt = document.getElementById("txt");
-                if(this.MessageInfo["specy"]=="video"){
-                    upload_txt.style.visibility = "hidden";
-                }
-                if((select_local.value=="pic" || select_local.value=='zip') && this.MessageInfo["specy"]!="video")
+                var up_loader_pic = document.getElementById("uploader_pic");
+                var up_loader_zip = document.getElementById("uploader_zip");
+                var up_loader_txt = document.getElementById("uploader_txt");
+                var up_loader_excel = document.getElementById("uploader_excel");
+                var up_loader_video = document.getElementById("uploader_video");
+                // var upload_txt = document.getElementById("txt");
+                // if(this.MessageInfo["specy"]=="video"){
+                //     upload_txt.style.visibility = "hidden";
+                // }
+                if(select_local.value=="pic" && this.MessageInfo["specy"]=="pic")
                 {
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
                     upPic.style.visibility='visible';
-                    up_loader.style.visibility='visible';
+                    up_loader_pic.style.visibility='visible';
                     submit_btn.style.top='870px';
                 }
-                else if(select_local.value=="zip" && this.MessageInfo["specy"]=="video"){
+                else if(select_local.value=="zip" && this.MessageInfo["specy"]=="pic")
+                {
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
                     upPic.style.visibility='visible';
-                    up_loader.style.visibility='visible';
+                    upPic.innerText="上传压缩包";
+                    up_loader_zip.style.visibility='visible';
                     submit_btn.style.top='870px';
                 }
+                else if(select_local.value=="zip" && this.MessageInfo["specy"]=="txt")
+                {
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
+                    upPic.style.visibility='visible';
+                    upPic.innerText="上传压缩包";
+                    up_loader_zip.style.visibility='visible';
+                    submit_btn.style.top='870px';
+                }
+                else if(select_local.value=="pic" && this.MessageInfo["specy"]=="txt")
+                {
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
+                    upPic.style.visibility='visible';
+                    upPic.innerText="上传TXT文本";
+                    up_loader_txt.style.visibility='visible';
+                    submit_btn.style.top='870px';
+                }
+                else if(select_local.value=="excel" && this.MessageInfo["specy"]=="txt")
+                {
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
+                    upPic.style.visibility='visible';
+                    upPic.innerText="上传Excel文件";
+                    up_loader_excel.style.visibility='visible';
+                    submit_btn.style.top='870px';
+                }
+                else if(select_local.value=="pic" && this.MessageInfo["specy"]=="video")
+                {
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
+                    upPic.style.visibility='visible';
+                    upPic.innerText="上传视频文件";
+                    up_loader_video.style.visibility='visible';
+                    submit_btn.style.top='870px';
+                }
+                else if(select_local.value=="zip" && this.MessageInfo["specy"]=="video")
+                {
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
+                    upPic.style.visibility='visible';
+                    upPic.innerText="上传压缩包";
+                    up_loader_zip.style.visibility='visible';
+                    submit_btn.style.top='870px';
+                }
+                
+                // else if(select_local.value=="zip" && this.MessageInfo["specy"]=="video"){
+                //     upPic.style.visibility='visible';
+                //     up_loader.style.visibility='visible';
+                //     submit_btn.style.top='870px';
+                // }
                 else
                 {
                     upPic.style.visibility='hidden';
-                    up_loader.style.visibility='hidden';
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
                     submit_btn.style.top='830px';
                 }
             }
@@ -386,9 +716,42 @@ import Breadcrumb from "../BreadCrumb.vue"
         top:787px;
         visibility: hidden;
     }
-    #uploader{
+    #uploader_pic
+    {
         position: absolute;
         left: 420px;
+        font-size: 15px;
+        top:820px;
+        visibility: hidden;
+    }
+    #uploader_zip
+    {
+        position: absolute;
+        left: 409px;
+        font-size: 15px;
+        top:820px;
+        visibility: hidden;
+    }
+    #uploader_txt
+    {
+        position: absolute;
+        left: 409px;
+        font-size: 15px;
+        top:820px;
+        visibility: hidden;
+    }
+    #uploader_excel
+    {
+        position: absolute;
+        left: 409px;
+        font-size: 15px;
+        top:820px;
+        visibility: hidden;
+    }
+    #uploader_video
+    {
+        position: absolute;
+        left: 409px;
         font-size: 15px;
         top:820px;
         visibility: hidden;
