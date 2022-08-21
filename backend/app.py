@@ -1,10 +1,11 @@
 import datetime
 import base64
+from email.headerregistry import Group
 from genericpath import isfile
 from glob import glob
 from hashlib import new
 from operator import length_hint
-from pydoc import pager
+from pydoc import describe, pager
 import re
 import zipfile
 import shutil
@@ -37,6 +38,16 @@ names = []
 
 app.secret_key = "bighw"
 
+#定义标签组类
+class labelGroup():
+    name=""
+    description=""
+    labels=[]
+
+groups=[]
+
+manage_group_name=""
+
 def readcsv():
     global names
     names = []
@@ -55,8 +66,6 @@ def writecsv(data):
         writer.writerow(data)
         global data_num
         data_num = data_num + 1
-            
-
 
 # 用于将表头重新写入用于保存数据的csv文件
 def writecsvtitle():
@@ -167,7 +176,78 @@ def add_data():
         MessageInfo.update({name:sing_one})
         writecsv(sing_one)
     return {"isok":isok}
-    
+
+#给数据库增加标签组
+@app.route("/api/addgroup",methods=['GET','POST'])
+def add_group_data():
+    data = request.get_json()
+    name = data.get("name")
+    isok = "no-repeat"
+    global groups
+    for i in range(len(groups)):
+        if groups[i].name==name:
+            isok = "repeat"
+    if isok=="no-repeat":
+        newGroup=labelGroup()
+        newGroup.name=name
+        newGroup.description=data.get("description")
+        groups.append(newGroup)
+    return {"isok":isok}
+
+#向后端发送管理标签组
+@app.route("/api/managegroup",methods=['GET','POST'])
+def manage_group_data():
+    data = request.get_json()
+    name = data.get("name")
+    isok = "not-exist"
+    global groups
+    global manage_group_name
+    for i in range(len(groups)):
+        if groups[i].name==name:
+            isok = "exist"
+            manage_group_name=name
+    print(manage_group_name)
+    return {"isok":isok}
+
+# 用于获取标签组信息
+@app.route("/api/callGroup")
+def call_group():
+    tempName=[]
+    tempDescription=[]
+    for i in range(len(groups)):
+        tempName.append(groups[i].name)
+        tempDescription.append(groups[i].description)
+    return {"names":tempName,"descriptions":tempDescription}
+
+# 用于获取标签组标签信息
+@app.route("/api/call_group_labels")
+def call_group_labels():
+    tempName=[]
+    for i in range(len(groups)):
+        if groups[i].name==manage_group_name:
+            for j in range(len(groups[i].labels)):
+                tempName.append(groups[i].labels[j])
+    return {"names":tempName}
+
+#给数据库增加标签组中标签
+@app.route("/api/add_group_tag",methods=['GET','POST'])
+def add_group_tag():
+    data = request.get_json()
+    name = data.get("name")
+    isok = "no-repeat"
+    global groups
+    global manage_group_name
+    for i in range(len(groups)):
+        if groups[i].name==manage_group_name:
+            for j in range(len(groups[i].labels)):
+                if groups[i].labels[j]==name:
+                    isok = "repeat"
+    if isok=="no-repeat":
+        for i in range(len(groups)):
+            if groups[i].name==manage_group_name:
+                groups[i].labels.append(name)
+    return {"isok":isok}
+
 # 用于前端调用直接返回所有储存的信息
 @app.route("/api/getdata")
 def get_data():
