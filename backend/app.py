@@ -7,6 +7,7 @@ from hashlib import new
 from operator import length_hint
 from pydoc import describe, pager
 import re
+from unittest import result
 import zipfile
 import shutil
 from tkinter import Label
@@ -53,7 +54,11 @@ class labelGroup():
 
 groups=[]
 
+global tags
+
 manage_group_name=""
+
+global model
 
 def readcsv():
     global names
@@ -195,6 +200,53 @@ def test():
             with open(path,"a+",encoding="utf-8") as file_to:
                 file_to.write(f.filename+"\n")
     return ""
+
+# 用于上传图像识别图片
+@app.route("/api/upload_img",methods=['GET','POST'])
+def upload_img():
+    file = request.files.to_dict()
+    f = file["file"]
+    f_type = f.filename.split('.')
+    ff_type = f_type[1]
+    basepath = os.path.dirname(__file__)
+    name = session["name"]
+    topath = "\src" + "\\" + name + "_predict"
+    if not os.path.exists(basepath + topath):
+        os.makedirs(basepath+topath)
+    
+    if(ff_type=='zip'):
+        zip_file = zipfile.ZipFile(f,'r')
+        zip_file.extractall(basepath+topath)
+        
+    else:
+        upload_path = basepath + topath + "\\" +f.filename
+        f.save(upload_path)
+    return ""
+
+#向后端发送图片识别结果
+@app.route("/api/predict",methods=['GET','POST'])
+def predict():
+    global model
+    global tags
+    folder = os.listdir('./backend/src/'+session["name"]+'_predict')
+    for Path in folder:
+        imgPath=os.path.join('./backend/src/'+session["name"]+'_predict',Path)
+    print(imgPath)
+    image = cv2.imread(imgPath)
+    cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = cv2.resize(image, (100, 100), interpolation = cv2.INTER_AREA)
+    image = image_utils.img_to_array(image)
+    image=np.array(image)
+    pre=model.predict(image.reshape(1,100,100,3))
+    result_index=0
+    max_pro=0
+    for i in range(len(pre[0])):
+        if max_pro<pre[0][i]:
+            max_pro=pre[0][i]
+            result_index=i
+    result=tags[result_index]
+    
+    return {"result":result}
 
 @app.route("/")
 def index():
