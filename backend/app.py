@@ -191,6 +191,7 @@ def add_group_data():
         newGroup=labelGroup()
         newGroup.name=name
         newGroup.description=data.get("description")
+        newGroup.labels=[]
         groups.append(newGroup)
     return {"isok":isok}
 
@@ -206,7 +207,6 @@ def manage_group_data():
         if groups[i].name==name:
             isok = "exist"
             manage_group_name=name
-    print(manage_group_name)
     return {"isok":isok}
 
 # 用于获取标签组信息
@@ -214,6 +214,7 @@ def manage_group_data():
 def call_group():
     tempName=[]
     tempDescription=[]
+    global groups
     for i in range(len(groups)):
         tempName.append(groups[i].name)
         tempDescription.append(groups[i].description)
@@ -223,9 +224,12 @@ def call_group():
 @app.route("/api/call_group_labels")
 def call_group_labels():
     tempName=[]
+    global groups
+    global manage_group_name
     for i in range(len(groups)):
         if groups[i].name==manage_group_name:
             for j in range(len(groups[i].labels)):
+                #print(groups[i].labels)
                 tempName.append(groups[i].labels[j])
     return {"names":tempName}
 
@@ -245,7 +249,9 @@ def add_group_tag():
     if isok=="no-repeat":
         for i in range(len(groups)):
             if groups[i].name==manage_group_name:
+                #print(i)
                 groups[i].labels.append(name)
+    #print(groups[1].labels)
     return {"isok":isok}
 
 # 用于前端调用直接返回所有储存的信息
@@ -391,6 +397,21 @@ def search_name():
             Message_Show.update({MessageInfo[item]["name"]:MessageInfo[item]})
             num = num + 1
     return {"MessageShow":Message_Show,"data_num":num}   
+
+#添加标签组
+@app.route("/api/addlabels",methods=['GET','POST'])
+def add_labels():
+    data = request.get_json()
+    group_name = data.get("name")
+    name = session["name"]
+    for i in range(len(groups)):
+        if group_name==groups[i].name:
+            MessageInfo[name]["labels"]=groups[i].labels
+    reset_csv()
+    print(MessageInfo[name]["labels"])
+
+
+    return {"labels":MessageInfo[name]["labels"]}
     
 # ---------------------------------------------------------
 # Below are something about lables

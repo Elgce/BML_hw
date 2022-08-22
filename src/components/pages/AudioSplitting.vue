@@ -74,7 +74,7 @@
                             v-if="show_btn===false"
                         >
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <el-button id="add_tagGroup">添加标签组</el-button>
+                            <el-button id="add_tagGroup" @click="addMarkGroup">添加标签组</el-button>
                             <template #reference>
                                 <el-button id="more_settings">···</el-button>
                             </template>
@@ -379,6 +379,13 @@ import { reactive, ref } from "vue"
                     this.marking_date=null
                 }
             },
+
+            
+            //添加标签组
+            addMarkGroup()
+            {
+                this.$router.push("/index/manage/dataset/pic/addtag");
+            }
         }
     }
 

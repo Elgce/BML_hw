@@ -83,9 +83,9 @@
                             v-if="show_btn===false"
                         >
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <el-button id="add_tagGroup">添加标签组</el-button>
+                            <el-button id="add_tagGroup" @click="addMarkGroup">添加标签组</el-button>
                             <div v-for="item in hasLabel_info" :key="item" >
-                                <el-button class="labels_choice" @click="has_add_label(item)" style="width:150px;">
+                                <el-button class="labels_choice" @click="has_add_labels(item)" style="width:150px;">
                                 {{item}}
                                 </el-button>
                             </div>
@@ -368,9 +368,9 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/txt/extracted/blank");
                 })
             },
-            has_add_label(item){
+            has_add_labels(item){
                 const data = {"name": item};
-                return fetch("/api/addlabel",{
+                return fetch("/api/addlabels",{
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",
@@ -557,6 +557,12 @@ import { reactive, ref } from "vue"
             },
 
             //written over
+            
+            //添加标签组
+            addMarkGroup()
+            {
+                this.$router.push("/index/manage/dataset/pic/addtag");
+            }
         }
     }
 

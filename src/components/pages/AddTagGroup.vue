@@ -265,7 +265,7 @@ import { ref } from "vue"
                     }
                     else
                     {
-                        this.$router.push("/index/manage/dataset/text/taggroupblank");
+                        this.$router.push("/index/manage/dataset/text/taggroup");
                     }   
                 })
             }
