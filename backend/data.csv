@@ -1,2 +1,1 @@
 group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source,direction,label_type,label_model,data_single,labels
-220822,321,V1,2,224119,finished,pic,0,-,"['marking.png', 'marking.png']",,pic_cla,ss,,[]
