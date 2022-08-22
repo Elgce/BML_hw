@@ -22,7 +22,8 @@
                                 <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
                                 <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                 </el-radio-group>
-                <div id="link">
+                <div id="links">
+                    <el-link type="primary" @click="start_learning" id="machine_learning">机器学习</el-link>
                     <el-link type="primary" @click="dialogVisible = true">辅助设置</el-link>
                 </div>
             </el-row>
@@ -532,6 +533,12 @@ import { reactive, ref } from "vue"
             addMarkGroup()
             {
                 this.$router.push("/index/manage/dataset/pic/addtag");
+            },
+
+            //开始机器学习
+            start_learning()
+            {
+                this.$router.push("/index/manage/dataset/pic/machinelearning");
             }
         }
     }
@@ -565,10 +572,10 @@ import { reactive, ref } from "vue"
         top:50px;
         left:0px;
     }
-    #link
+    #links
     {
         position: absolute;
-        left:1200px;
+        left:1100px;
         margin-top: 20px;
     }
     #two_btns
@@ -640,6 +647,10 @@ import { reactive, ref } from "vue"
     #add_tagGroup
     {
         border: none;
+    }
+    #machine_learning
+    {
+        margin-right:30px;
     }
     #middle_main
     {

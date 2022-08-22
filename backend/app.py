@@ -18,6 +18,13 @@ import os
 import csv
 import shutil
 import random
+import cv2
+import numpy as np
+from tensorflow import keras
+from keras.utils import to_categorical
+from keras.utils import image_utils
+# from image_utils import img_to_array
+from sklearn.model_selection import train_test_split
 
 app = Flask(__name__,static_folder="../dist/",static_url_path="/")
 
@@ -77,6 +84,65 @@ def writecsvtitle():
 # 用于直接重置整个数据库，删除所有数据内容
 def renew():
     writecsvtitle()
+
+#进行机器学习
+@app.route("/api/start_training",methods=['GET','POST'])
+def start_training():
+    data = request.get_json()
+    num = data.get("num")
+    train_ratio = data.get("train_ratio")
+    source_txt = open('./backend/src/'+session["name"]+'/source.txt',encoding="utf-8")
+    folder = os.listdir('./backend/src/'+session["name"])
+    picCount=-1
+    for filePath in folder:
+        picCount+=1
+    picName=""
+    tagName=""
+    tags=[]
+    labels=[]
+    images=[]
+    turnToTag=0
+    label_index=0
+    for i in range(picCount):
+        txt=source_txt.readline()
+        turnToTag=0
+        for j in range(len(txt)):
+            if turnToTag==0:
+                if txt[j]!=' ':
+                    picName+=txt[j]
+                else:
+                    turnToTag=1
+            else:
+                if txt[j]!='\n':
+                    tagName+=txt[j]
+        isNew=1
+        for i in range(len(tags)):
+            if tags[i]==tagName:
+                isNew=0
+                label_index=i
+        if isNew==1:
+            tags.append(tagName)
+            label_index=len(tags)
+        labels.append(label_index)
+        imgPath=os.path.join('./backend/src/'+session["name"],picName)
+        image = cv2.imread(imgPath)
+        cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.resize(image, (100, 100), interpolation = cv2.INTER_AREA)
+        image = image_utils.img_to_array(image)
+        images.append(image)
+        picName=""
+        tagName=""
+    images=np.array(images)
+    labels=np.array(labels)
+    images_train,images_test, labels_train, labels_test =train_test_split(images,labels,test_size=1-(train_ratio/100))
+    images_train=keras.utils.normalize(images_train,axis=1)
+    images_test=keras.utils.normalize(images_test,axis=1)
+    model=keras.Sequential([keras.layers.Flatten(input_shape=(100,100,3)),keras.layers.Dense(num,activation='relu'),keras.layers.Dense(10,activation='softmax')])
+    model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+    model.fit(images_train,labels_train,epochs=10)
+    _,accuracy=model.evaluate(images_test,labels_test)
+    print(accuracy)
+    return {"accuracy":accuracy}
 
 # 用于前端搜索时获取新的Message内容返回前端
 @app.route("/api/searchdata",methods=['GET','POST'])

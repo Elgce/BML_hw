@@ -154,12 +154,12 @@ const routes = [
                 name: '音频分割',
                 meta: {title:'音频分割'}
             },
-            // {
-            //     path: '/index/introduction',
-            //     component: () => import("./components/pages/PlatformIntroduction.vue"),
-            //     name: '平台说明',
-            //     meta: {title:'平台说明'}
-            // },
+            {
+                path: '/index/manage/dataset/4-2',
+                component: () => import("./components/pages/Export.vue"),
+                name: '导出',
+                meta: {title:'导出'}
+            },
             {
                 path: '/index/manage/dataset/wholetxt',
                 component: () => import("./components/pages/ExtractText.vue"),
@@ -195,6 +195,12 @@ const routes = [
                 component: () => import("./components/pages/BlankManageGroup.vue"),
                 name: '标签管理空白页',
                 meta: {title:'标签管理空白页'}
+            },
+            {
+                path: '/index/manage/dataset/pic/machinelearning',
+                component: () => import("./components/pages/MachineLearning.vue"),
+                name: '机器学习',
+                meta: {title:'机器学习'}
             },
             
         ]
