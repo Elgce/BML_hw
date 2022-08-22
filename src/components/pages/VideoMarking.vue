@@ -40,9 +40,9 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-button text id="previous" @click="previous_txt">上一个图片</el-button>
+                                    <el-button text id="previous" @click="previous_txt">上一个视频</el-button>
                                 </template>
-                                <p>上一个图片（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
+                                <p>上一个视频（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
                             </el-popover>
                             &nbsp;&nbsp;&nbsp;
                             <el-popover
@@ -51,9 +51,9 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-button text id="latter" @click="latter_txt">下一个图片</el-button>
+                                    <el-button text id="latter" @click="latter_txt">下一个视频</el-button>
                                 </template>
-                                <p>下一个图片（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
+                                <p>下一个视频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
                             <video width="1000" height="450" controls
@@ -96,7 +96,7 @@
                                 <el-icon class="el-input__icon"><search /></el-icon>
                             </template>
                         </el-input>
-                        <span id="tag_search_text">根据图片内容，选择唯一标签</span>
+                        <span id="tag_search_text">根据视频内容，选择唯一标签</span>
                     </el-header>
                     <el-footer id="middle_footer">
                         <el-scrollbar height="400px">
@@ -680,6 +680,7 @@ import { reactive, ref } from "vue"
     .card_name{
         margin-top: 6px;
         margin-left: 5px;
+        width: 50px;
     }
     .card_edit{
         margin-left: -20px;
