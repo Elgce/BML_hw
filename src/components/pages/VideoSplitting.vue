@@ -342,9 +342,7 @@ import { reactive, ref } from "vue"
             cancel_label(){
                 this.show_btn = false;
             },
-            insert_pic(){
-                this.$router.push("/index/manage/dataset/insert");
-            },
+
             //written over
 
             

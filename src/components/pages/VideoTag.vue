@@ -37,9 +37,6 @@
 
 
 <script>
-
-
-
 export default{
     name: "AddTag",
     props:["url","colorlist"],
@@ -51,7 +48,8 @@ export default{
             state:0,
             chosenIndex:-1,
             sliceConflict:-1,
-            sliderTime:0
+            sliderTime:0,
+            slices_time:[]
         }
     },
     mounted(){
@@ -68,26 +66,32 @@ export default{
         changeCurrentTime(){
             this.$refs.video.currentTime =  this.$refs.video.duration/100 * this.sliderTime
         },
-
         timeupdate(){
             this.sliderTime = this.$refs.video.currentTime/this.$refs.video.duration * 100
         },
-
         setVideoTime(t){
             var video = document.getElementById("myVideo")
             video.currentTime = t
             this.sliderTime = t/video.duration * 100
         },
-
         convertXtoT(x){
             var video = document.getElementById("myVideo")
             var progress = document.getElementById("progress")
             var w_str = progress.style.width
-            var w = w_str.substring(0,w_str.length-2)
+            var w = parseInt(w_str.substring(0,w_str.length-2))
             var l = progress.getBoundingClientRect().left
             return (x-l)/w * video.duration
         },
-
+        convertTtoX(t){
+            var video = document.getElementById("myVideo")
+            var progress = document.getElementById("progress")
+            var w_str = progress.style.width
+            var w = parseInt(w_str.substring(0,w_str.length-2))
+            var l = progress.getBoundingClientRect().left
+            var x = l + t * w / video.duration
+            console.log("ready:"+video.duration)
+            return x
+        },
         nearEdge(index,x){
             var l = this.slices[index].ts
             var r = this.slices[index].te
@@ -95,7 +99,6 @@ export default{
             var dr = Math.abs(r-x)
             return dl>dr ? r : l
         },
-
         addConf(index,e){
             var x = this.nearEdge(index,e.x)
             if(this.state == 1){
@@ -110,7 +113,6 @@ export default{
                 }
             }
         },
-
         down(e){
             if(this.state == 0 || this.state == 2){
                 this.start = e.x
@@ -118,7 +120,6 @@ export default{
                 this.state = 1 // 表示进入选择状态
                 this.sliceConflict = -1
             }
-
             if(this.state == 3){
                 var sl = document.getElementById('sl'+this.chosenIndex)
                 sl.style.opacity = '50%'
@@ -129,17 +130,14 @@ export default{
             var t = this.convertXtoT(e.x)
             this.setVideoTime(t)
         },
-
         leave(e){
             if(this.state == 1){
                 this.chooseEnd(e)
             }
-
             else if(this.state == 4 || this.state == 5){
                 this.resizeEnd(e)
             }
         },
-
         checkConflict(){
             if(this.sliceConflict != -1){
                 if(this.start < this.sliceConflict && this.sliceConflict < this.end){
@@ -151,7 +149,6 @@ export default{
             }
             this.sliceConflict = -1
         },
-
         checkNear(x){
             // 遍历所有区间，分别找最近的一条边
             for(var i = 0;i<this.slices.length;i++){
@@ -160,10 +157,8 @@ export default{
                     return nearE
                 }
             }
-
             return x
         },
-
         checkSE(){
             var pr = document.getElementById('progress')
             var l = pr.getBoundingClientRect().left
@@ -175,7 +170,6 @@ export default{
                 this.end = l
             }
         },
-
         chooseEnd(e){
             this.end = e.x
             // 1如果跨过其他区间，则只取最近一个区间
@@ -184,7 +178,6 @@ export default{
             this.end = this.checkNear(this.end)
             // 3如果超过了开头和结尾，则固定到结尾
             this.checkSE()
-
             if(Math.abs(this.start - this.end) > 30){
                 this.state = 2 // 表示选择完毕
             }
@@ -192,7 +185,6 @@ export default{
                 this.state = 0 // 微小位移视作单机一下
             }
         },
-
         up(e){
             if(this.state == 1){
                 this.chooseEnd(e)
@@ -201,7 +193,6 @@ export default{
                 this.resizeEnd(e)
             }
         },
-
         mouseleave(e){
             var pr = document.getElementById('progress')
             var l = pr.getBoundingClientRect().left
@@ -211,7 +202,6 @@ export default{
             }
             return false 
         },
-
         checkConflictRe(e){
             // 检测e.x位置是否已有slice,是则返回最近一条边坐标，否则返回-1
             for(var i = 0;i<this.slices.length;i++){
@@ -224,36 +214,28 @@ export default{
             }
             return false
         },
-
         move(e){
             if(this.state == 1){
                 this.end = e.x
-
                 if(this.mouseleave(e)){
                     this.chooseEnd(e)
                 }
-
                 if(this.checkConflictRe(e)){
                     this.chooseEnd(e)
                 }
-
                 var t = this.convertXtoT(e.x)
                 this.setVideoTime(t)
             }
-
             
-
             if(this.state == 4 || this.state == 5){
                 // 出圈即停止
                 if(this.mouseleave(e)){
                     this.resizeEnd(e)
                 }
-
                 // 冲突即停止
                 if(this.checkConflictRe(e)){
                     this.resizeEnd(e)
                 }
-
                 if(this.state == 4){
                     if(e.x <= this.slices[this.chosenIndex].te - 30){
                         this.slices[this.chosenIndex].ts = e.x
@@ -261,7 +243,6 @@ export default{
                         this.setVideoTime(t)
                     }
                 }
-
                 if(this.state == 5){
                     if(e.x >= this.slices[this.chosenIndex].ts + 30){
                         this.slices[this.chosenIndex].te = e.x
@@ -269,10 +250,8 @@ export default{
                         this.setVideoTime(t)
                     }
                 }
-
             }
         },
-
         classify(type){
             if(this.state != 2) return
             var ts = Math.min(this.start,this.end)
@@ -282,12 +261,10 @@ export default{
             this.start = 0
             this.end = 0
         },
-
         changeTag(type){
             if(this.state != 3) return
             this.slices[this.chosenIndex].type = type
         },
-
         mouseBoundary(index,e){
             var sl = document.getElementById('sl'+index)
             var left = parseInt(sl.style.left)
@@ -302,10 +279,8 @@ export default{
                 return 0 // 表示不在边界
             }
         },
-
         chooseSlice(index,e){
             var sl = document.getElementById('sl'+index)
-
             if(this.state == 0 || this.state == 2 ){
                 this.state = 3
                 sl.style.opacity = '100%'
@@ -313,14 +288,11 @@ export default{
                 e.stopPropagation()
                 e.preventDefault()
             }
-
             if(this.state == 3){
                 e.stopPropagation()
                 e.preventDefault()
-
                 var t = this.convertXtoT(e.x)
                 this.setVideoTime(t)
-
                 // 切换片段
                 if(index != this.chosenIndex){
                     var chosenSl = document.getElementById('sl'+this.chosenIndex)
@@ -328,7 +300,6 @@ export default{
                     sl.style.opacity = '100%'
                     this.chosenIndex = index
                 }
-
                 var mb = this.mouseBoundary(index,e)
                 if(mb == 0) return
                 if(this.mouseleave(e)) return
@@ -337,13 +308,11 @@ export default{
             }
             
         },
-
         resizeEnd(e){
             if(this.state == 4 || this.state == 5){
                 var pr = document.getElementById('progress')
                 var l = pr.getBoundingClientRect().left
                 var r = pr.getBoundingClientRect().right
-
                 if(this.slices[this.chosenIndex].ts <= l){
                     this.slices[this.chosenIndex].ts = l
                 }
@@ -351,7 +320,6 @@ export default{
                     this.slices[this.chosenIndex].te = r
                 }
             }
-
             if(this.state == 4){
                 this.slices[this.chosenIndex].ts = e.x
                 if(this.slices[this.chosenIndex].te - this.slices[this.chosenIndex].ts < 30){
@@ -366,7 +334,6 @@ export default{
             } 
             this.state = 3
         },
-
         del(){
             if(this.state != 3) return
             this.slices.splice(this.chosenIndex,1)
@@ -376,7 +343,6 @@ export default{
             this.state = 0
             this.setSlices()
         },
-
         resize(index,e){
             var sl = document.getElementById('sl'+index)
             // 首先判断当前段落被选中
@@ -385,7 +351,6 @@ export default{
                 return
             }
             
-
             // 接着判断是否移动到了边界上
             
             if(this.mouseBoundary(index,e)){
@@ -394,9 +359,7 @@ export default{
             else{
                 sl.style.cursor = 'default'
             }
-
         },
-
         mark(item){
             if(this.state == 2){
                 this.classify(item)
@@ -406,30 +369,45 @@ export default{
             }
             this.setSlices()
         },
-
         getcolor(item){
             return this.colorlist[item]
         },
-
         // 获取数据
         getSlices(){
-            let that = this;
-            return fetch("/api/getvideospl").then((res)=>res.json().then((j)=>{
+            setTimeout(()=>{   //设置延迟执行
+                let that = this;
+                return fetch("/api/getvideospl").then((res)=>res.json().then((j)=>{
+                for(var i in j.slices){
+                    console.log(i)
+                    j.slices[i]['ts'] = that.convertTtoX(j.slices[i]['ts'])
+                    j.slices[i]['te'] = that.convertTtoX(j.slices[i]['te'])
+                }
                 that.slices = j.slices;
-            }))
+                console.log(j.slices)
+                }))
+            },5000);
+            
         },
-
         setSlices(){
-            const data = {"slices": this.slices};
+            this.slices_time = JSON.parse(JSON.stringify(this.slices))
+            for(var i in this.slices){
+                var xs = this.slices[i]['ts']
+                var xe = this.slices[i]['te']
+                this.slices_time[i]['ts'] = this.convertXtoT(xs)
+                this.slices_time[i]['te'] = this.convertXtoT(xe)
+            }
+            const data = {"slices": this.slices_time};
             return fetch("/api/setvideospl",{
                 method: 'POST',
                 headers:{
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data)
+            }).then((res)=>res.json())
+            .then((j)=>{
+                console.log(j);
             })
         },
-
         // 删除所有类型为type的视频片段
         delLabel(item){
             for(var i=0;i < this.slices.length;i++){
@@ -443,10 +421,8 @@ export default{
                     console.log("remove")
                 }
             }
-
             this.setSlices()
         },
-
     },
 }
 </script>
@@ -462,24 +438,20 @@ export default{
     border:2px solid lightgray
     
 }
-
 #progress{
     background-color: gray;
     border:2px solid lightgray
 }
-
 #chosen{
     position: absolute;
     opacity: 80%;
     height: 74px;
     background-color:darkgrey
 }
-
 .sl{
     position: absolute;
     opacity: 50%;
     height: 70px;
     border:2px solid;
 }
-
 </style>

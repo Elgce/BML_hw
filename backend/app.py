@@ -405,17 +405,6 @@ def add_label():
     reset_csv()
     print(MessageInfo[name]["labels"])
 
-    #----syz添加标签配色----------
-    global colorlist
-    r = random.randint(100,200)
-    g = random.randint(100,200)
-    b = random.randint(100,200)
-    if(r+g+b > 500):
-        r = 500 - g - b
-    color = 'rgb(' + str(r) + ',' + str(g) + ',' + str(b) + ')'
-    colorlist[label_name] = color
-    print(colorlist)
-    #--------end-----------------
 
     return {"labels":MessageInfo[name]["labels"]}
 
@@ -424,6 +413,21 @@ def get_labels():
     name = session["name"]
     num = len(MessageInfo[name]["labels"])
     # return {"labels":MessageInfo[name]["labels"],"label_num": num}
+
+
+    #----syz添加标签配色----------
+    global colorlist
+    colorlist = {}
+    for label in MessageInfo[name]["labels"]:
+        r = random.randint(100,200)
+        g = random.randint(100,200)
+        b = random.randint(100,200)
+        if(r+g+b > 500):
+            r = 500 - g - b
+        color = 'rgb(' + str(r) + ',' + str(g) + ',' + str(b) + ')'
+        colorlist[label] = color
+    print(colorlist)
+    #--------end-----------------
     # 此处额外返回了colorlist
     return {"labels":MessageInfo[name]["labels"],"label_num": num,"colorlist":colorlist}
 
@@ -805,12 +809,37 @@ def get_txtsim():
 @app.route("/api/setvideospl",methods=["GET","POST"])
 def setVideoSpl():
     global slices
+    slices = []
     slices = request.get_json().get("slices")
+    # 将slices中的信息写进txt中
+    basepath = os.path.dirname(__file__)
+    name = session["name"]
+    path = basepath + "\src\\" + name + "\\" + 'source.txt'
+    with open(path,"w",encoding='utf-8') as f:
+        for item in slices:
+            f.write(str(item['ts'])+' '+str(item['te'])+' '+str(item['type'])+"\n")
     return {"slices":slices}
 
 # 获取视频的切片信息
 @app.route("/api/getvideospl",methods=["GET","POST"])
 def getVideoSpl():
+    global slices
+    slices = []
+    basepath = os.path.dirname(__file__)
+    name = session["name"]
+    path = basepath + "\src\\" + name + "\\" + "source.txt"
+    if os.path.exists(path):
+        with open(path,"r",encoding="utf-8") as f:
+            data_list = f.readlines()
+            for line in data_list:
+                line = line.strip()
+                line_list = line.split(" ")
+                ts = eval(line_list[0])
+                te = eval(line_list[1])
+                type = line_list[2]
+                slices.append({"ts":ts,"te":te,"type":type})
+    else:
+        open(path,'w')
     return {"slices":slices}
 
 @app.route("/api/getpicsources")
