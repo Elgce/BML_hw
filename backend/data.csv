@@ -1,1 +1,3 @@
 group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source,direction,label_type,label_model,data_single,labels
+220822,1,V1,0,155938,finished,txt,0,-,[],,txt_cla,txt_slabel,dir_auto,"['123456', '123456789']"
+220822,1,V1,0,155938,finished,txt,0,-,[],,txt_cla,txt_slabel,dir_auto,"['123456', '123456789']"

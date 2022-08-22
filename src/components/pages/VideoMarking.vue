@@ -130,6 +130,27 @@
     >
         <el-checkbox label="急速预览" size="large" />
     </el-dialog>
+    
+    <!-- 编辑标签对话框 -->
+    <el-dialog
+        v-model="editVisible"
+        title="编辑标签"
+        width="30%"
+        :before-close="handleClose"
+    >
+        <el-divider class="dialog_divider"/>
+        <el-row class="name">
+            <p>标签名称</p>
+            <p class="highlight">✳</p>
+            <el-input v-model="editName" placeholder="请输入名称" @input="if_diableBtn"></el-input>
+        </el-row>
+        <el-divider/>
+        <div>
+            <el-button :disabled="disabled" type="primary" @click="change_name()">确认</el-button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <el-button @click="editVisible = false">取消</el-button>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
@@ -178,6 +199,10 @@ import { reactive, ref } from "vue"
                 options:[
                     
                 ],
+                editVisible:false,
+                disabled:true,
+                editName:ref(''),
+                to_be_delete:ref('')
             };
         },
         created(){
@@ -325,9 +350,9 @@ import { reactive, ref } from "vue"
                     that.label_num = j.label_num;
                 })
             },
-            change_name(name){
-                let new_name= this.new_labelname;
-                this.delete_label(name);
+            change_name(){
+                let new_name= this.editName;
+                this.delete_label(this.to_be_delete);
                 const data = {"name": new_name};
                 return fetch("/api/addlabel",{
                     method: 'POST',
@@ -339,19 +364,31 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    // this.$router.push("/index/manage/dataset/blank/piced");
-                    this.calltxt().then(this.get_labels()).then(this.calltag())
+                    this.$router.push("/index/manage/dataset/blank/piced");
                 })
             },
             edit_label(name){
                 console.log(name);
-                let std = document.getElementById("new_name_txt");
-                if(std.style.visibility==='hidden'){
-                    std.style.visibility='visible';
-                    std.style.backgroundColor="rgb(221, 218, 218)";
+                this.editVisible=true;
+                this.to_be_delete=name;
+                // let std = document.getElementById("new_name_txt");
+                // if(std.style.visibility==='hidden'){
+                //     std.style.visibility='visible';
+                //     std.style.backgroundColor="rgb(221, 218, 218)";
+                // }
+                // else{
+                //     std.style.visibility='hidden';
+                // }
+            },
+            if_diableBtn()
+            {
+                if(this.editName!="")
+                {
+                    this.disabled=false;
                 }
-                else{
-                    std.style.visibility='hidden';
+                else
+                {
+                    this.disabled=true;
                 }
             },
             delete_label(name){
@@ -702,5 +739,14 @@ import { reactive, ref } from "vue"
         font-size: 20px;
         vertical-align: center;
         text-align: center;
+    }
+    .highlight
+    {
+        color:red;
+        font-weight:900;
+    }
+    .dialog_divider
+    {
+        margin-top:-30px;
     }
 </style>
