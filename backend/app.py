@@ -177,9 +177,10 @@ def test():
         zip_file = zipfile.ZipFile(f,'r')
         zip_file.extractall(basepath+topath)
         for z in zip_file.namelist():
-            MessageInfo[name]["source"].append(z)
-            MessageInfo[name]["num"] = int(MessageInfo[name]["num"]) + 1
-            reset_csv()
+            if(z!="source.txt"):
+                MessageInfo[name]["source"].append(z)
+                MessageInfo[name]["num"] = int(MessageInfo[name]["num"]) + 1
+                reset_csv()
         
     else:
         upload_path = basepath + topath + "\\" +f.filename
