@@ -220,6 +220,39 @@ def call_group():
         tempDescription.append(groups[i].description)
     return {"names":tempName,"descriptions":tempDescription}
 
+# 用于搜索标签组信息
+@app.route("/api/searchGroup",methods=['GET','POST'])
+def search_group():
+    # print(1)
+    data = request.get_json()
+    tempName=[]
+    tempDescription=[]
+    name = data.get("name")
+    global groups
+    # print(name)
+    for i in range(len(groups)):
+        if groups[i].name==name:
+            tempName.append(groups[i].name)
+            tempDescription.append(groups[i].description)
+    return {"names":tempName,"descriptions":tempDescription}
+
+# 用于搜索标签组中标签信息
+@app.route("/api/searchTag",methods=['GET','POST'])
+def search_tag():
+    # print(1)
+    data = request.get_json()
+    tempName=[]
+    tempDescription=[]
+    name = data.get("name")
+    global groups
+    # print(name)
+    for i in range(len(groups)):
+        if groups[i].name==manage_group_name:
+            for j in range(len(groups[i].labels)):
+                if groups[i].labels[j]==name:
+                    tempName.append(groups[i].labels[j])
+    return {"names":tempName}
+
 # 用于获取标签组标签信息
 @app.route("/api/call_group_labels")
 def call_group_labels():
@@ -252,6 +285,91 @@ def add_group_tag():
                 #print(i)
                 groups[i].labels.append(name)
     #print(groups[1].labels)
+    return {"isok":isok}
+
+#编辑标签组
+@app.route("/api/editgroup",methods=['GET','POST'])
+def edit_group():
+    data = request.get_json()
+    form_name = data.get("form_name")
+    next_name = data.get("next_name")
+    description=data.get("description")
+    isok = "not-exist"
+    global groups
+    global manage_group_name
+    for i in range(len(groups)):
+        if groups[i].name==form_name:
+            isok="exist"
+    if isok=="exist":
+        for i in range(len(groups)):
+            if groups[i].name==next_name:
+                isok="repeat"
+    if isok=="exist":
+        for i in range(len(groups)):
+            if groups[i].name==form_name:
+                groups[i].name=next_name
+                groups[i].description=description
+    return {"isok":isok}
+
+#编辑标签组中标签
+@app.route("/api/editgrouptag",methods=['GET','POST'])
+def edit_group_tag():
+    data = request.get_json()
+    form_name = data.get("form_name")
+    next_name = data.get("next_name")
+    isok = "not-exist"
+    global groups
+    global manage_group_name
+    for i in range(len(groups)):
+        if groups[i].name==manage_group_name:
+            for j in range(len(groups[i].labels)):
+                if groups[i].labels[j]==form_name:
+                    isok="exist"
+            if isok=="exist":
+                for j in range(len(groups[i].labels)):
+                    if groups[i].labels[j]==next_name:
+                        isok="repeat"
+            if isok=="exist":
+                for j in range(len(groups[i].labels)):
+                    if groups[i].labels[j]==form_name:
+                        groups[i].labels[j]=next_name
+    return {"isok":isok}
+
+#向后端发送删除标签组
+@app.route("/api/deletegroup",methods=['GET','POST'])
+def delete_group_data():
+    data = request.get_json()
+    name = data.get("name")
+    isok = "not-exist"
+    global groups
+    global manage_group_name
+    global to_delete
+    for i in range(len(groups)):
+        if groups[i].name==name:
+            isok = "exist"
+            to_delete=i
+    if isok=="exist":
+        groups.pop(to_delete)
+    
+    return {"isok":isok}
+
+#向后端发送删除标签组中标签
+@app.route("/api/deletegrouptag",methods=['GET','POST'])
+def delete_group_tag_data():
+    data = request.get_json()
+    name = data.get("name")
+    isok = "not-exist"
+    global groups
+    global manage_group_name
+    global to_delete
+    for i in range(len(groups)):
+        if groups[i].name==manage_group_name:
+            for j in range(len(groups[i].labels)):
+                if groups[i].labels[j]==name:
+                    isok = "exist"
+                    to_delete=j
+            if isok=="exist":
+                groups[i].labels.pop(to_delete)
     return {"isok":isok}
 
 # 用于前端调用直接返回所有储存的信息

@@ -35,7 +35,7 @@
             <el-row>
                 <el-button type="primary" @click="dialogVisible = true">创建标签组</el-button>
                 <div id="search_tag_div">
-                    <el-input v-model="tagGroupName" placeholder="输入标签组名称">
+                    <el-input v-model="tagGroupName" placeholder="输入标签组名称" @input="search_group">
                         <template #prefix>
                             <el-icon class="el-input__icon"><search /></el-icon>
                         </template>
@@ -48,20 +48,9 @@
                 <el-table-column prop="description" label="标签组描述" />
                 <el-table-column prop="description" label="操作">
                     <el-button type="primary" link key="label" @click="manage">标签管理</el-button>
-                    <el-button type="primary" link key="label">编辑</el-button>
-                    <el-button type="primary" link key="delete">删除</el-button>
+                    <el-button type="primary" link key="label" @click="edit">编辑</el-button>
+                    <el-button type="primary" link key="delete" @click="delete_">删除</el-button>
                 </el-table-column>
-                <!-- <el-descriptions-item label="标签组名称">{{op["value"]}}</el-descriptions-item>
-                
-                <el-descriptions-item label="标签组描述">123</el-descriptions-item>
-                
-                <el-descriptions-item label="创建时间">2022-06-01 20:03:35</el-descriptions-item>
-                <el-descriptions-item label="更新时间">2022-06-01 20:03:35</el-descriptions-item>
-                <el-descriptions-item label="操作">
-                    <el-button type="primary" link key="label" @click="multilabel(item.name)">标签管理</el-button>
-                    <el-button type="primary" link key="label" @click="insert(item.name)">编辑</el-button>
-                    <el-button type="primary" link key="delete" @click="deletedata(item.name)">删除</el-button>
-                </el-descriptions-item> -->
             </el-table>
             <div id="pages">
                 <el-row>
@@ -80,6 +69,8 @@
             </div>
         </el-main> 
     </el-container>
+
+    <!-- 创建标签组对话框 -->
     <el-dialog
         v-model="dialogVisible"
         title="创建标签组"
@@ -112,6 +103,8 @@
             <el-button @click="dialogVisible = false">取消</el-button>
         </div>
     </el-dialog>
+
+    <!-- 标签管理对话框 -->
     <el-dialog
         v-model="manageVisible"
         title="标签管理"
@@ -129,6 +122,66 @@
             <el-button id="complete" :disabled="disabled2" type="primary" @click="manage_group">确认</el-button>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <el-button @click="manageVisible = false">取消</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 编辑标签组对话框 -->
+    <el-dialog
+        v-model="editVisible"
+        title="编辑标签组"
+        width="30%"
+        :before-close="handleClose"
+    >
+        <el-divider class="dialog_divider"/>
+        <el-row class="name">
+            <p>原标签组名称</p>
+            <p class="highlight">✳</p>
+            <el-input v-model="formTagName" placeholder="请输入原名称" @input="if_diableBtn3"></el-input>
+        </el-row>
+        <br>
+        <el-row class="name">
+            <p>新标签组名称</p>
+            <p class="highlight">✳</p>
+            <el-input v-model="nextTagName" placeholder="请输入新名称" @input="if_diableBtn3"></el-input>
+        </el-row>
+        <br>
+        <el-row>
+            <p>标签组描述</p>
+            <el-input
+                maxlength="100"
+                placeholder="请输入标签组描述"
+                show-word-limit
+                type="textarea"
+                :rows="6"
+                v-model="nextTagGroupDescription"
+            />
+        </el-row>
+        <el-divider/>
+        <div>
+            <el-button :disabled="disabled3" type="primary" @click="edit_group">确认</el-button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <el-button @click="editVisible = false">取消</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 删除标签组对话框 -->
+    <el-dialog
+        v-model="deleteVisible"
+        title="删除标签组"
+        width="30%"
+        :before-close="handleClose"
+    >
+        <el-divider class="dialog_divider"/>
+        <el-row class="name">
+            <p>标签组名称</p>
+            <p class="highlight">✳</p>
+            <el-input v-model="deleteName" placeholder="请输入名称" @input="if_diableBtn4"></el-input>
+        </el-row>
+        <el-divider/>
+        <div>
+            <el-button :disabled="disabled4" type="primary" @click="delete_group">确认</el-button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <el-button @click="deleteVisible = false">取消</el-button>
         </div>
     </el-dialog>
 </template>
@@ -168,9 +221,17 @@ import { ref } from "vue"
                 tagGroupDescription:ref(''),
                 disabled:true,
                 disabled2:true,
+                disabled3:true,
+                disabled4:true,
                 group_name:ref(''),
                 this_tag:ref(''),
-                manageVisible:false
+                manageVisible:false,
+                editVisible:false,
+                deleteVisible:false,
+                formTagName:ref(''),
+                nextTagName:ref(''),
+                nextTagGroupDescription:ref(''),
+                deleteName:ref('')
             };
         },
         created(){
@@ -198,6 +259,30 @@ import { ref } from "vue"
                 else
                 {
                     this.disabled2=true;
+                }
+            },
+
+            if_diableBtn3()
+            {
+                if(this.formTagName!=""&&this.nextTagName!="")
+                {
+                    this.disabled3=false;
+                }
+                else
+                {
+                    this.disabled3=true;
+                }
+            },
+
+            if_diableBtn4()
+            {
+                if(this.deleteName!="")
+                {
+                    this.disabled4=false;
+                }
+                else
+                {
+                    this.disabled4=true;
                 }
             },
 
@@ -268,7 +353,113 @@ import { ref } from "vue"
                         this.$router.push("/index/manage/dataset/text/taggroup");
                     }   
                 })
+            },
+
+            //编辑标签
+            edit()
+            {
+                this.editVisible=true;
+            },
+            edit_group()
+            {
+                this.editVisible=false;
+                const data = {
+                    "form_name": this.formTagName,
+                    "next_name": this.nextTagName,
+                    "description": this.nextTagGroupDescription
+                };
+                return fetch("/api/editgroup",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then((j)=>{
+                    if(j.isok === "not-exist")
+                    {
+                        alert("原标签组名称不存在!");
+                    }
+                    else if(j.isok === "repeat")
+                    {
+                        alert("新标签组名称重复!");
+                    }
+                    else
+                    {
+                        this.$router.push("/index/manage/dataset/pic/taggroupblank");
+                    }   
+                })
+            },
+
+            //删除标签组
+            delete_()
+            {
+                this.deleteVisible=true;
+            },
+            delete_group()
+            {
+                this.deleteVisible=false;
+                const data = {
+                    "name": this.deleteName,
+                };
+                return fetch("/api/deletegroup",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then((j)=>{
+                    if(j.isok === "not-exist")
+                    {
+                        alert("标签组名称不存在!");
+                    }
+                    else
+                    {
+                        this.$router.push("/index/manage/dataset/pic/taggroupblank");
+                    }   
+                })
+            },
+
+            //搜素标签组
+            search_group()
+            {
+                if(this.tagGroupName!="")
+                {
+                    const data = {
+                        "name": this.tagGroupName,
+                    };
+                    return fetch("/api/searchGroup",{
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then((j)=>{
+                        this.groupData=[];
+                        for(var i=0;i<j.names.length;i++)
+                        {
+                            this.groupData.push({"name":j.names[i],"description":j.descriptions[i]});
+                            //this.$router.push("/index/manage/dataset/pic/taggroupblank");
+                        }
+                    })
+                }
+                else
+                {
+                    return fetch("/api/callGroup").then((res)=>res.json().then((j)=>{
+                        for(var i=0;i<j.names.length;i++)
+                        {
+                            this.groupData.push({"name":j.names[i],"description":j.descriptions[i]});
+                            this.$router.push("/index/manage/dataset/pic/taggroupblank");
+                        }
+                    }))
+                }
             }
+
         }
     }
 </script>
