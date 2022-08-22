@@ -7,6 +7,11 @@
 * 输入yarn run serve
 * 当前尚未进行封装，无需build
 
+# 关于python环境
+* pip install opencv-python
+* pip install tensorflow
+* pip install sklearn
+
 # 关于前后端调试模式
 * 首先由于跨域问题，需要下载nginx（最新版应该是1.22.0）
 * 下载完成nginx后打开安装所在文件夹，在conf/nginx.conf文件中复制进本repo中backend/nginx.conf的内容
