@@ -73,8 +73,8 @@ const routes = [
             {
                 path: '/index/manage/dataset/pic/taggroupblank',
                 component: () => import('./components/pages/BlankTagGroup.vue'),
-                name: '标签管理空白页',
-                meta: {title:'标签管理空白页'}
+                name: '标签组管理空白页',
+                meta: {title:'标签组管理空白页'}
             },
             {
                 path: '/index/manage/dataset/pic/label/blank',
@@ -190,6 +190,13 @@ const routes = [
                 name: '图片标注',
                 meta: {title:'图片标注'}
             },
+            {
+                path: '/index/manage/dataset/pic/managegroupblank',
+                component: () => import("./components/pages/BlankManageGroup.vue"),
+                name: '标签管理空白页',
+                meta: {title:'标签管理空白页'}
+            },
+            
         ]
     }
 ]
