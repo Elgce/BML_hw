@@ -62,11 +62,11 @@
             <span class="submenu">数据标注</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/index/menu3">标签组管理</el-menu-item>
-            <el-menu-item index="/index/manage/dataset/pic/addtag">在线标注</el-menu-item>
-            <el-menu-item index="/index/manage/dataset/video/addtag">智能标注</el-menu-item>
-            <el-menu-item index="/index/manage/dataset/text/addtag">多人标注</el-menu-item>
-            <el-menu-item index="/index/manage/dataset/text/taggroup">寻求标注支持</el-menu-item>
+            <el-menu-item index="/index/manage/dataset/pic/addtag">标签组管理</el-menu-item>
+            <el-menu-item index="2-1">在线标注</el-menu-item>
+            <el-menu-item index="2-2">智能标注</el-menu-item>
+            <el-menu-item index="2-3">多人标注</el-menu-item>
+            <el-menu-item index="2-4">寻求标注支持</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
         <el-divider />
@@ -76,8 +76,8 @@
             <span class="submenu">数据采集</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/index/manage/dataset/textmarking">摄像头采集图片</el-menu-item>
-            <el-menu-item index="/index/manage/dataset/videomarking">云服务回流图片</el-menu-item>
+            <el-menu-item index="3-1">摄像头采集图片</el-menu-item>
+            <el-menu-item index="3-2">云服务回流图片</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
         <el-divider />
@@ -87,8 +87,8 @@
             <span class="submenu">数据处理</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/index/manage/dataset/wholetxt">清洗任务管理</el-menu-item>
-            <el-menu-item index="/index/manage/dataset/4-2">增强任务管理</el-menu-item>
+            <el-menu-item index="4-1">清洗任务管理</el-menu-item>
+            <el-menu-item index="4-2">增强任务管理</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
       </el-menu>

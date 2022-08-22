@@ -77,6 +77,11 @@
                         >
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <el-button id="add_tagGroup">添加标签组</el-button>
+                            <div v-for="item in hasLabel_info" :key="item" >
+                                <el-button class="labels_choice" @click="has_add_label(item)" style="width:150px;">
+                                {{item}}
+                                </el-button>
+                            </div>
                             <template #reference>
                                 <el-button id="more_settings">···</el-button>
                             </template>
@@ -145,6 +150,7 @@ import { reactive, ref } from "vue"
         {
             return{
                 context: reactive([]),
+                hasLabel_info: reactive([]),
                 all_num: -1,
                 ed_num: -1,
                 to_num: -1,
@@ -337,7 +343,21 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/txt/blank");
                 }))
             },
-
+            has_add_label(item){
+                const data = {"name": item};
+                return fetch("/api/addlabel",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res=>res.json())
+                .then((j)=>{
+                    console.log(j);
+                    this.$router.push("/index/manage/dataset/txt/blank");
+                })
+            },
            
             add_label(){
                 const data = {"name": this.labelname};
@@ -354,12 +374,19 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/txt/blank");
                 })
             },
-           
+            gethas_labels(){
+                let that = this;
+                return fetch("/api/callGroup").then((res)=>res.json().then((j)=>{
+                    that.hasLabel_info = j.names;
+                    console.log(that.hasLabel_info);
+                }))
+            },
             get_labels(){
                 let that = this;
                 return fetch("/api/getlabels").then((res) => res.json().then((j)=>{
                     that.label_num = j.label_num;
                     that.Label_info = j.labels;
+                    this.gethas_labels();
                 }))
             },
             create_label(){

@@ -223,8 +223,7 @@ import { ref } from "vue"
                     }
                     else
                     {
-                        this.$router.push("/index/manage/dataset/pic/addtag");
-                        location.reload();
+                        this.$router.push("/index/manage/dataset/pic/taggroupblank");
                     }
                     this.dialogVisible=false;   
                 })
@@ -266,7 +265,7 @@ import { ref } from "vue"
                     }
                     else
                     {
-                        this.$router.push("/index/manage/dataset/text/taggroup");
+                        this.$router.push("/index/manage/dataset/text/taggroupblank");
                     }   
                 })
             }

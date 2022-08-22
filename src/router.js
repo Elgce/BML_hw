@@ -71,6 +71,12 @@ const routes = [
                 meta: {title:'标签管理'}
             },
             {
+                path: '/index/manage/dataset/pic/taggroupblank',
+                component: () => import('./components/pages/BlankTagGroup.vue'),
+                name: '标签管理空白页',
+                meta: {title:'标签管理空白页'}
+            },
+            {
                 path: '/index/manage/dataset/pic/label/blank',
                 component: () => import("./components/pages/BlankLabel.vue"),
                 name: '图片标签空白页',
@@ -166,12 +172,12 @@ const routes = [
                 name: '文本实体抽取数据',
                 meta: {title:'文本实体抽取数据'}
             },
-            // {
-            //     path: '/index/manage/dataset/4-2',
-            //     component: () => import("./components/pages/Export.vue"),
-            //     name: '导出',
-            //     meta: {title:'导出'}
-            // },
+            {
+                path: '/index/manage/dataset/blank/video',
+                component: () => import("./components/pages/BlankVideo.vue"),
+                name: '视频分类空白页',
+                meta: {title:'视频分类空白页'}
+            },
             {
                 path: '/index/manage/dataset/4-2',
                 component: () => import("./components/pages/PlatformIntroduction.vue"),

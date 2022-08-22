@@ -75,6 +75,11 @@
                         >
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <el-button id="add_tagGroup">添加标签组</el-button>
+                            <div v-for="item in hasLabel_info" :key="item" >
+                                <el-button class="labels_choice" @click="has_add_label(item)" style="width:150px;">
+                                {{item}}
+                                </el-button>
+                            </div>
                             <template #reference>
                                 <el-button id="more_settings">···</el-button>
                             </template>
@@ -145,6 +150,7 @@ import { reactive, ref } from "vue"
                 labelname: ref(''),
                 new_labelname: ref(''),
                 Label_info:reactive([]),
+                hasLabel_info: reactive([]),
                 src_list:reactive([]),
                 sources: reactive([]),
                 show_btn: false,
@@ -218,7 +224,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    this.$router.push("/index/manage/dataset/blank/video");
                 })
             },
             edit_label(name){
@@ -243,7 +249,7 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json()
                 .then(()=>{
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    this.$router.push("/index/manage/dataset/blank/video");
                 }))
             },
 
@@ -291,16 +297,40 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/pic/label/blank");
+                    this.$router.push("/index/manage/dataset/blank/video");
                 })
             },
-           
+            has_add_label(item){
+                const data = {"name": item};
+                console.log("abd");
+                console.log(data);
+                return fetch("/api/addlabel",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res=>res.json())
+                .then((j)=>{
+                    console.log(j);
+                    this.$router.push("/index/manage/dataset/blank/video");
+                })
+            },
+            gethas_labels(){
+                let that = this;
+                return fetch("/api/callGroup").then((res)=>res.json().then((j)=>{
+                    that.hasLabel_info = j.names;
+                    console.log(that.hasLabel_info);
+                }))
+            },
             get_labels(){
                 let that = this;
                 return fetch("/api/getlabels").then((res) => res.json().then((j)=>{
                     that.label_num = j.label_num;
                     that.Label_info = j.labels;
                     console.log(that.label_num);
+                    this.gethas_labels();
                 }))
             },
             create_label(){
@@ -555,5 +585,27 @@ import { reactive, ref } from "vue"
     {
         position: absolute;
         right:50px; 
+    }
+    .card_info{
+        display: flex;
+        margin-top: -15px;
+    }
+    .card_name{
+        margin-top: 6px;
+        margin-left: 5px;
+    }
+    .card_edit{
+        margin-left: -20px;
+    }
+    .card_delete{
+        margin-left: -5px;
+    }
+    .el-card{
+        width: 360px;
+    }
+    .written{
+        font-size: 20px;
+        vertical-align: center;
+        text-align: center;
     }
 </style>

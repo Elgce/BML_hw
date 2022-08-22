@@ -81,6 +81,11 @@
                         >
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <el-button id="add_tagGroup">添加标签组</el-button>
+                            <div v-for="item in hasLabel_info" :key="item" >
+                                <el-button class="labels_choice" @click="has_add_label(item)" style="width:150px;">
+                                {{item}}
+                                </el-button>
+                            </div>
                             <template #reference>
                                 <el-button id="more_settings">···</el-button>
                             </template>
@@ -154,6 +159,7 @@ import { reactive, ref } from "vue"
                 labelname: ref(''),
                 new_labelname: ref(''),
                 Label_info:reactive([]),
+                hasLabel_info: reactive([]),
                 src_list:reactive([]),
                 sources: reactive([]),
                 show_btn: false,
@@ -279,7 +285,23 @@ import { reactive, ref } from "vue"
                 }
             },
 
-           
+            has_add_label(item){
+                let that = this;
+                const data = {"name": item};
+                console.log("abd");
+                console.log(data);
+                return fetch("/api/addlabel",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(()=>{
+                    that.get_labels();
+                    that.cancel_label();
+                })
+            },
             add_label(){
                 let that = this;
                 const data = {"name": this.labelname};
@@ -294,15 +316,23 @@ import { reactive, ref } from "vue"
                 })
                 .then(()=>{
                     that.get_labels();
+                    that.cancel_label();
                 })
             },
-           
+            gethas_labels(){
+                let that = this;
+                return fetch("/api/callGroup").then((res)=>res.json().then((j)=>{
+                    that.hasLabel_info = j.names;
+                    console.log(that.hasLabel_info);
+                }))
+            },
             get_labels(){
                 let that = this;
                 return fetch("/api/getlabels").then((res) => res.json().then((j)=>{
                     that.label_num = j.label_num;
                     that.Label_info = j.labels;
                     that.colorlist = j.colorlist;
+                    this.gethas_labels();
                 }))
             },
 
