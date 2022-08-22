@@ -177,7 +177,8 @@ def test():
         zip_file = zipfile.ZipFile(f,'r')
         zip_file.extractall(basepath+topath)
         for z in zip_file.namelist():
-            if(z!="source.txt"):
+            if(z!="source.txt" or MessageInfo[name]["specy"]=="txt"):
+                print(MessageInfo[name]["specy"])
                 MessageInfo[name]["source"].append(z)
                 MessageInfo[name]["num"] = int(MessageInfo[name]["num"]) + 1
                 reset_csv()
