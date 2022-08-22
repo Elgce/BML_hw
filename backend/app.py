@@ -187,6 +187,11 @@ def test():
         MessageInfo[name]["source"].append(f.filename)
         MessageInfo[name]["num"] = int(MessageInfo[name]["num"]) + 1
         reset_csv()
+        basepath = os.path.dirname(__file__)
+        path = basepath + "\src\\" + name + "\\" + "source.txt"
+        if os.path.exists(path):
+            with open(path,"a+",encoding="utf-8") as file_to:
+                file_to.write(f.filename+"\n")
     return ""
 
 @app.route("/")
