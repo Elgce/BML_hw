@@ -154,12 +154,12 @@ const routes = [
                 name: '音频分割',
                 meta: {title:'音频分割'}
             },
-            {
-                path: '/index/4-1',
-                component: () => import("./components/pages/PlatformIntroduction.vue"),
-                name: '平台说明',
-                meta: {title:'平台说明'}
-            },
+            // {
+            //     path: '/index/introduction',
+            //     component: () => import("./components/pages/PlatformIntroduction.vue"),
+            //     name: '平台说明',
+            //     meta: {title:'平台说明'}
+            // },
             {
                 path: '/index/manage/dataset/wholetxt',
                 component: () => import("./components/pages/ExtractText.vue"),
@@ -179,7 +179,7 @@ const routes = [
                 meta: {title:'视频分类空白页'}
             },
             {
-                path: '/index/manage/dataset/4-2',
+                path: '/index/manage/4-2',
                 component: () => import("./components/pages/PlatformIntroduction.vue"),
                 name: '平台说明',
                 meta: {title:'平台说明'}

@@ -13,7 +13,7 @@
         <li>
           <a href="">使用文档</a>
           <ul class="hide">
-            <li><a href="">平台介绍</a></li>
+            <li><a href="" @click="jump_to_introduction">平台介绍</a></li>
             <li><a href="">数据采集</a></li>
             <li><a href="">数据标注</a></li>
             <li><a href="">数据清洗</a></li>
@@ -97,6 +97,7 @@
   </div>
 </template>
 <script>
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -111,6 +112,12 @@ export default {
     toggleCollapse() {
       this.isCollapse = !this.isCollapse;
       document.getElementById("navlogo").style.display= this.isCollapse? "none" : "inline";
+    },
+
+    //跳转至说明文档
+    jump_to_introduction()
+    {
+      
     }
   }
 }
