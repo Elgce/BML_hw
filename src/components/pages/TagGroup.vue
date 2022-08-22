@@ -215,8 +215,8 @@ import { ref } from "vue"
                     }
                     else
                     {
-                        this.$router.push("/index/manage/dataset/text/taggroup");
-                        location.reload();
+                        this.$router.push("/index/manage/dataset/pic/managegroupblank");
+                        //location.reload();
                     }
                 })
             },
@@ -311,3 +311,4 @@ import { ref } from "vue"
         margin-top:-30px;
     }
 </style>
+
