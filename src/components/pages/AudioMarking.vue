@@ -243,21 +243,13 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/blank/piced");
+                    //this.$router.push("/index/manage/dataset/blank/piced");
                 })
             },
             edit_label(name){
                 console.log(name);
                 this.editVisible=true;
                 this.to_be_delete=name;
-                // let std = document.getElementById("new_name_txt");
-                // if(std.style.visibility==='hidden'){
-                //     std.style.visibility='visible';
-                //     std.style.backgroundColor="rgb(221, 218, 218)";
-                // }
-                // else{
-                //     std.style.visibility='hidden';
-                // }
             },
             if_diableBtn()
             {

@@ -320,7 +320,7 @@ import { reactive, ref } from "vue"
                 .then(res=>res.json())
                 .then((j)=>{
                     console.log(j);
-                    this.$router.push("/index/manage/dataset/blank/piced");
+                    this.$router.push("/index/manage/dataset/blank/pic");
                 })
             },
             edit_label(name){
