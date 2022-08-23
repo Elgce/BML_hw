@@ -428,7 +428,6 @@ import Breadcrumb from "../BreadCrumb.vue"
                     var excel=document.getElementById("excel");
                     var txt=document.getElementById("txt");
                     var upload_pic=document.getElementById("upload_pic");
-                    var uploader=document.getElementById("uploader");
                     if(that.MessageInfo["specy"]==="pic"){
                         label_type.innerHTML = "图像分类";
                         txt.innerHTML = "上传图片";
@@ -439,7 +438,6 @@ import Breadcrumb from "../BreadCrumb.vue"
                         camera_data.hidden=true;
                         excel.hidden=false;
                         upload_pic.innerHTML = "上传TXT文本";
-                        uploader.innerHTML = "上传TXT文本";
                     }
                     else if(that.MessageInfo["specy"]==="table"){
                         label_type.innerHTML = "表格分类";
@@ -570,7 +568,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 })
                 .then(res => res.json())
                 .then((j)=>{
-                    alert(j);
+                    console.log(j);
                 })
             },
 
