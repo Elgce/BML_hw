@@ -12,13 +12,13 @@ const routes = [
             },
             {
                 path: '/index/manage/dataset/insert',
-                component: () => import('./components/pages/main2.vue'),
+                component: () => import('./components/pages/Import.vue'),
                 mata: {title: '导入'},
                 name: '导入',
             },
             {
                 path: '/index/menu3',
-                component: () => import('./components/pages/main3.vue'),
+                component: () => import('./components/pages/PicOverview.vue'),
                 mata: {title: '查看与标注'},
                 name: '查看与标注',
             },

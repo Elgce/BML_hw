@@ -1,8 +1,11 @@
 <template>
+    <!-- 头部元素 -->
     <el-header>
         <Breadcrumb></Breadcrumb>
     </el-header>
     <el-divider />
+
+    <!-- 数据集信息 -->
     <div class="item_heading" id="new_info">创建信息</div>
     <p class="text_left1" style="left:240px;top:170px">数据集ID</p>
     <p class="text_left1" style="left:240px;top:210px">备注</p>
@@ -38,6 +41,8 @@
     <p class="text_left1" style="left:240px;top:640px">暂未做过数据增强任务</p>
     <p class="item_heading" id="data_intro">导入数据</p>
     <p class="text_left1" style="left:240px;top:810px" id="upload_pic">上传图片</p>
+
+    <!-- 导出部分 -->
     <p class="text_left1" style="left:240px;top:730px">导出数据</p>
     <form id="markingInfo_radio_group">
         <input type="radio" value="_marking_info" name="marking_info">导出标注文件
