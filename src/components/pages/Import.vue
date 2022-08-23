@@ -75,6 +75,17 @@
     <el-button id="uploader_video" type="primary" @click="call_diagram_video"><el-icon><Upload /></el-icon>上传视频文件</el-button>
     <el-button id="uploader_audio" type="primary" @click="call_diagram_audio"><el-icon><Upload /></el-icon>上传音频文件</el-button>
     
+    <!-- 分隔符选择问题 -->
+    <p class="text_left1" style="left:240px;top:810px" id="split_text">分隔符</p>
+    <el-radio-group v-model="split_word" id="split_group" @change="split_change">
+        <el-radio label="gn" size="large">换行符</el-radio>
+        <el-radio label="dh" size="large">半角逗号</el-radio>
+        <el-radio label="zbf" size="large">制表符</el-radio>
+        <el-radio label="kg" size="large">空格</el-radio>
+        <el-radio label="file" size="large">无</el-radio>
+    </el-radio-group>
+    
+
     <!-- 上传图片对话框 -->
     <el-dialog
         title="上传图片"
@@ -394,7 +405,8 @@ import Breadcrumb from "../BreadCrumb.vue"
                 fileList: [],
                 file: {},
                 MessageInfo: reactive({}),
-                memo_text:ref('')
+                memo_text:ref(''),
+                split_word:ref('')
             };
         },
         created(){
@@ -543,6 +555,25 @@ import Breadcrumb from "../BreadCrumb.vue"
             },
             //written over
 
+            //改变分隔符
+            split_change()
+            {
+                const data = {
+                    "txt_type": this.split_word,
+                };
+                return fetch("/api/settxttype",{
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then((j)=>{
+                    alert(j);
+                })
+            },
+
             //改变备注
             changing_memo()
             {
@@ -595,6 +626,8 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var up_loader_excel = document.getElementById("uploader_excel");
                 var up_loader_video = document.getElementById("uploader_video");
                 var up_loader_audio = document.getElementById("uploader_audio");
+                var split_group = document.getElementById("split_group");
+                var split_text = document.getElementById("split_text");
                 if(select_fashion.value=="local"){
                     select_local.style.visibility='visible';
                     this.local_select_change();
@@ -609,6 +642,8 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_excel.style.visibility='hidden';
                     up_loader_video.style.visibility='hidden';
                     up_loader_audio.style.visibility='hidden';
+                    split_group.style.visibility='hidden';
+                    split_text.style.visibility='hidden';
                 }
             },
             local_select_change()
@@ -622,6 +657,8 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var up_loader_excel = document.getElementById("uploader_excel");
                 var up_loader_video = document.getElementById("uploader_video");
                 var up_loader_audio = document.getElementById("uploader_audio");
+                var split_group = document.getElementById("split_group");
+                var split_text = document.getElementById("split_text");
                 if(select_local.value=="pic" && this.MessageInfo["specy"]=="pic")
                 {
                     up_loader_pic.style.visibility='hidden';
@@ -649,6 +686,10 @@ import Breadcrumb from "../BreadCrumb.vue"
                 }
                 else if(select_local.value=="zip" && this.MessageInfo["specy"]=="txt")
                 {
+                    upPic.style.top='810px';
+                    up_loader_txt.style.top='820px';
+                    split_group.style.visibility='hidden';
+                    split_text.style.visibility='hidden';
                     up_loader_pic.style.visibility='hidden';
                     up_loader_zip.style.visibility='hidden';
                     up_loader_txt.style.visibility='hidden';
@@ -662,6 +703,8 @@ import Breadcrumb from "../BreadCrumb.vue"
                 }
                 else if(select_local.value=="pic" && this.MessageInfo["specy"]=="txt")
                 {
+                    split_group.style.visibility='visible';
+                    split_text.style.visibility='visible';
                     up_loader_pic.style.visibility='hidden';
                     up_loader_zip.style.visibility='hidden';
                     up_loader_txt.style.visibility='hidden';
@@ -670,11 +713,17 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_audio.style.visibility='hidden';
                     upPic.style.visibility='visible';
                     upPic.innerText="上传TXT文本";
+                    upPic.style.top='850px';
+                    up_loader_txt.style.top='860px';
                     up_loader_txt.style.visibility='visible';
-                    submit_btn.style.top='870px';
+                    submit_btn.style.top='910px';
                 }
                 else if(select_local.value=="excel" && this.MessageInfo["specy"]=="txt")
                 {
+                    upPic.style.top='810px';
+                    up_loader_txt.style.top='820px';
+                    split_group.style.visibility='hidden';
+                    split_text.style.visibility='hidden';
                     up_loader_pic.style.visibility='hidden';
                     up_loader_zip.style.visibility='hidden';
                     up_loader_txt.style.visibility='hidden';
@@ -747,6 +796,8 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_video.style.visibility='hidden';
                     up_loader_audio.style.visibility='hidden';
                     submit_btn.style.top='830px';
+                    split_group.style.visibility='hidden';
+                    split_text.style.visibility='hidden';
                 }
             }
         }
@@ -967,5 +1018,16 @@ import Breadcrumb from "../BreadCrumb.vue"
     {
         background-color: bisque;
         color: orange;
+    }
+    #split_text
+    {
+        visibility:hidden;
+    }
+    #split_group
+    {
+        position: absolute;
+        top:817px;
+        left: 420px;
+        visibility: hidden;
     }
 </style>
