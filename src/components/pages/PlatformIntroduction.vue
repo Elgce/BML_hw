@@ -13,28 +13,28 @@
         </li>
 		<li>文本相似度（短文本匹配）
             <div>MSIML支持用户以txt格式与zip压缩包导入数据。文本文件内数据格式要求为"文本内容\n"（即每行一个未标注样本，使用回车换行），每一行表示一组数据。用户可对每组数据进行判断，打标“相似”或“不相似”，或删除本组数据。</div>
-            <img src="../../assets/fenlei.png" width="800" height="350">
+            <img src="../../assets/wenbenxiangsidu.png" width="800" height="350">
             <div class="mark">图2.文本相似度判断界面</div>
         </li>
 		<li>文本实体抽取
             <div>MSIML支持用户以txt格式与zip压缩包导入数据。用户可自定义标签，并对文本中的某些段落利用标签作标记。标签的颜色可由用户自定义。</div>
-            <img src="../../assets/fenlei.png" width="800" height="350">
+            <img src="../../assets/wenbenchouqu.png" width="800" height="350">
             <div class="mark">图3.文本实体抽取处理界面</div>
         </li>
         <li>图片标注
             <div>MSIML支持用户以png形似或zip压缩包导入图片。用户可自定义标签，并标记对应的图片</div>
-            <img src="../../assets/fenlei.png" width="800" height="350">
+            <img src="../../assets/tupianfenlei.jpg" width="800" height="350">
             <div class="mark">图4.图片标注界面</div>
         </li>
-        <li>视频分类
-            <div>MSIML支持用户以txt格式与zip压缩包导入数据。用户可自定义标签，并对文本中的某些段落利用标签作标记。标签的颜色可由用户自定义。</div>
-            <img src="../../assets/fenlei.png" width="800" height="350">
+        <li>视频分类与分段
+            <div>MSIML支持用户实现视频分类及分段功能。</div>
+            <img src="../../assets/shipinfenlei.png" width="800" height="350">
             <div class="mark">图5.视频分类界面</div>
         </li>
-        <li>视频分段
-            <div>MSIML支持用户以txt格式与zip压缩包导入数据。用户可自定义标签，并对文本中的某些段落利用标签作标记。标签的颜色可由用户自定义。</div>
-            <img src="../../assets/fenlei.png" width="800" height="350">
-            <div class="mark">图6.视频分段界面</div>
+        <li>音频分类与分段
+            <div>MSIML支持用户实现音频分类及分段功能。</div>
+            <img src="../../assets/yinpinfenlei.png" width="800" height="350">
+            <div class="mark">图6.音频分类界面</div>
         </li>
 	</ul>
 
@@ -52,11 +52,8 @@
             };
         },
         methods:{
-
         }
     }
-
-
 </script>
 
 
@@ -67,7 +64,6 @@
     color:black;
     margin-left: 220px;
 }
-
 .title{
     position:absolute;
     font-size: 28px;
@@ -82,7 +78,6 @@
     margin-top:105px;
     margin-left: 220px;
 }
-
 .intro{
     position:absolute;
     text-align: left;
@@ -93,7 +88,6 @@
     margin-top:140px;
     margin-left: 220px;
 }
-
 .chart{
     position:absolute;
     font-size: 18px;
@@ -103,12 +97,10 @@
     margin-top:240px;
     margin-left: 220px;
 }
-
 div{
     font-size:14px;
     margin: 15px;
 }
-
 .mark{
     font-size:14px;
     text-align: center;
