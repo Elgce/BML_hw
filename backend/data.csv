@@ -1,2 +1,2 @@
 group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source,direction,label_type,label_model,data_single,labels
-220822,321432432142,V1,2,230607,finished,video,0,-,"['movie1.mp4', 'movie2.mp4']",vid_ass,,,,[]
+220823,1,V1,1,134145,finished,pic,0,-,['1_1.jpeg'],,pic_cla,ss,,[]

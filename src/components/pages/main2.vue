@@ -6,8 +6,11 @@
     <div class="item_heading" id="new_info">创建信息</div>
     <p class="text_left1" style="left:240px;top:170px">数据集ID</p>
     <p class="text_left1" style="left:240px;top:210px">备注</p>
-    <button id="change_memo" @click="changing_memo"></button>
-    <input id="memo_input" type="text">
+    <el-row id="memo_row">
+        <p id="memo_info" class="text_left1">{{memo_text}}</p>
+        <button id="change_memo" @click="changing_memo"></button>
+    </el-row>
+    <input id="memo_input" type="text" v-model="memo_text">
     <div id="two_btns">
         <el-button id="memo_acknowlege" @click="acknowleging_memo">确认</el-button>
         <el-button id="memo_cancel" @click="canceling_memo">取消</el-button>
@@ -305,7 +308,7 @@
 </template>
 
 <script>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import Breadcrumb from "../BreadCrumb.vue"
     export default{
         name: "MainTwo",
@@ -324,6 +327,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 fileList: [],
                 file: {},
                 MessageInfo: reactive({}),
+                memo_text:ref('')
             };
         },
         created(){
@@ -456,6 +460,8 @@ import Breadcrumb from "../BreadCrumb.vue"
             //written by wjz
             changing_memo()
             {
+                var change_memo_text=document.getElementById("memo_info");
+                change_memo_text.style.visibility='hidden';
                 var change_memo_btn=document.getElementById("change_memo");
                 change_memo_btn.style.visibility='hidden';
                 var change_memo_input=document.getElementById("memo_input");
@@ -465,6 +471,8 @@ import Breadcrumb from "../BreadCrumb.vue"
             },
             acknowleging_memo()
             {
+                var change_memo_text=document.getElementById("memo_info");
+                change_memo_text.style.visibility='visible';
                 var change_memo_btn=document.getElementById("change_memo");
                 change_memo_btn.style.visibility='visible';
                 var change_memo_input=document.getElementById("memo_input");
@@ -474,6 +482,8 @@ import Breadcrumb from "../BreadCrumb.vue"
             },
             canceling_memo()
             {
+                var change_memo_text=document.getElementById("memo_info");
+                change_memo_text.style.visibility='visible';
                 var change_memo_btn=document.getElementById("change_memo");
                 change_memo_btn.style.visibility='visible';
                 var change_memo_input=document.getElementById("memo_input");
@@ -763,14 +773,27 @@ import Breadcrumb from "../BreadCrumb.vue"
         left:420px;
         top:830px;
     }
-    #change_memo
+    #memo_row
     {
         position:absolute;
+        /* background:url(../../assets/chage_memo.jpg); */
+        /* height:15px;
+        width:15px; */
+        left:370px;
+        top:213px;
+        border-style:none;
+    }
+    #change_memo
+    {
+        float: left;
+        /* position:absolute; */
         background:url(../../assets/chage_memo.jpg);
         height:15px;
         width:15px;
-        left:350px;
-        top:230px;
+        margin-left:-20px;
+        margin-top: 16px;
+        /* left:350px;
+        top:230px; */
         border-style:none;
     }
     #memo_input
