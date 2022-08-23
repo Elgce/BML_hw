@@ -1,5 +1,5 @@
 <template>
-
+<el-main>
 <p class="index">帮助文档 > MSI ML数据标注平台</p>
 <p class="title">什么是MSI ML</p>
 <p class="update-time">更新时间：2022-08-24</p>
@@ -37,7 +37,7 @@
             <div class="mark">图6.视频分段界面</div>
         </li>
 	</ul>
-
+</el-main>
 </template>
 
 

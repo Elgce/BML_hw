@@ -40,9 +40,9 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-button text id="previous" @click="previous_txt">上一个视频</el-button>
+                                    <el-button text id="previous" @click="previous_txt">上一个音频</el-button>
                                 </template>
-                                <p>上一个视频（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
+                                <p>上一个音频（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
                             </el-popover>
                             &nbsp;&nbsp;&nbsp;
                             <el-popover
@@ -51,9 +51,9 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-button text id="latter" @click="latter_txt">下一个视频</el-button>
+                                    <el-button text id="latter" @click="latter_txt">下一个音频</el-button>
                                 </template>
-                                <p>下一个视频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
+                                <p>下一个音频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
                             <audio width="1000" height="450" controls
@@ -96,7 +96,7 @@
                                 <el-icon class="el-input__icon"><search /></el-icon>
                             </template>
                         </el-input>
-                        <span id="tag_search_text">根据视频内容，选择唯一标签</span>
+                        <span id="tag_search_text">根据音频内容，选择唯一标签</span>
                     </el-header>
                     <el-footer id="middle_footer">
                         <el-scrollbar height="400px">

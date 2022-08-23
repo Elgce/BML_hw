@@ -84,11 +84,10 @@
         <el-sub-menu index="4">
           <template #title>
             <el-icon color="#409EFC"><CollectionTag /></el-icon>
-            <span class="submenu">数据处理</span>
+            <span class="submenu">平台说明</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="4-1">清洗任务管理</el-menu-item>
-            <el-menu-item index="4-2">增强任务管理</el-menu-item>
+            <el-menu-item index="/index/manage/4-2">说明文档</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
       </el-menu>
@@ -117,7 +116,6 @@ export default {
     //跳转至说明文档
     jump_to_introduction()
     {
-      
     }
   }
 }
