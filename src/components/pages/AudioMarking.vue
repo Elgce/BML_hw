@@ -33,16 +33,16 @@
                         <el-row id="text_top">
                             <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标签：</p>
                             <p id="_mark_strong">请在右侧选择标签</p>
-                            <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除视频</el-button>
+                            <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除音频</el-button>
                             <el-popover
                                 placement="bottom"
                                 :width="200"
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-link id="previous">上一个视频</el-link>
+                                    <el-link id="previous">上一个音频</el-link>
                                 </template>
-                                <p>上一个视频（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
+                                <p>上一个音频（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
                             </el-popover>
                             &nbsp;&nbsp;&nbsp;
                             <el-popover
@@ -51,12 +51,14 @@
                                 trigger="hover"
                             >
                                 <template #reference>
-                                    <el-link>下一个视频</el-link>
+                                    <el-link>下一个音频</el-link>
                                 </template>
-                                <p>下一个视频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
+                                <p>下一个音频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
                             </el-popover>
                         </el-row>
-                        
+                            <audio width="1000" height="450" controls
+                                :src="url">
+                            </audio>
 
                     </el-main>
                 </el-aside>
@@ -167,6 +169,7 @@ import { reactive, ref } from "vue"
                 new_labelname: ref(''),
                 Label_info:reactive([]),
                 src_list:reactive([]),
+                src: ref(''),
                 sources: reactive([]),
                 show_btn: false,
                 dialogVisible:false,
