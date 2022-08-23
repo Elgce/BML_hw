@@ -1,11 +1,17 @@
 <template>
     <el-container>
+
+        <!-- 头部部分 -->
         <el-header>
             <Breadcrumb></Breadcrumb>
             <el-link id="submit" type="primary">提交工单</el-link>
         </el-header>
         <el-divider id="top_divider"/>
+
+        <!-- 主体部分 -->
         <el-main>
+
+            <!-- 按钮与搜索框 -->
             <el-row>
                 <el-button type="primary" @click="newVisible = true">添加标签</el-button>
                 <el-button disabled>批量添加</el-button>
@@ -20,6 +26,8 @@
                 </div>
             </el-row>
             <el-divider/>
+
+            <!-- 数据展示部分 -->
             <el-table :data="labelsData" style="width: 100%">
                 <el-table-column prop="name" label="标签名称" />
                 <el-table-column prop="description" label="操作">
@@ -27,6 +35,8 @@
                     <el-button type="primary" link key="delete" @click="delete_">删除</el-button>
                 </el-table-column>
             </el-table>
+
+            <!-- 分页部分 -->
             <div id="pages">
                 <el-row>
                     <p id="fotter_text">每页显示&nbsp;&nbsp;&nbsp;</p>
@@ -162,6 +172,7 @@ import { ref } from "vue"
             };
         },
         methods:{
+            //按钮管理
             if_diableBtn()
             {
                 if(this.newTagName!="")
@@ -358,7 +369,6 @@ import { ref } from "vue"
                         for(var i=0;i<j.names.length;i++)
                         {
                             this.labelsData.push({"name":j.names[i],});
-                            //this.$router.push("/index/manage/dataset/pic/taggroupblank");
                         }
                     })
                 }
@@ -426,17 +436,9 @@ import { ref } from "vue"
         color: #409EFF;
         display: inline-block;
     }
-    /* #mark_color
-    {
-        margin-left:20px;
-    } */
     #id_box
     {
         display: inline-block;
-    }
-    #input_id
-    {
-        /* width:100px; */
     }
     #row_of_input
     {
