@@ -1,11 +1,16 @@
 <template>
     <el-container>
+        <!-- 上部元素 -->
         <el-header>
             <Breadcrumb></Breadcrumb>
             <el-link id="submit" type="primary">提交工单</el-link>
         </el-header>
         <el-divider id="top_divider"/>
+
+        <!-- 主体部分 -->
         <el-main>
+
+            <!-- 介绍部分 -->
             <el-collapse v-model="activeNames" @change="handleChange">
                 <el-collapse-item title="标签组管理">
                     <div>
@@ -32,6 +37,8 @@
                 </el-collapse-item>
             </el-collapse>
             <br>
+
+            <!-- 创建及查找部分 -->
             <el-row>
                 <el-button type="primary" @click="dialogVisible = true">创建标签组</el-button>
                 <div id="search_tag_div">
@@ -43,6 +50,8 @@
                 </div>
             </el-row>
             <el-divider/>
+
+            <!-- 标签组数据部分 -->
             <el-table :data="groupData" style="width: 100%" row-key="name">
                 <el-table-column prop="name" label="标签组名称" />
                 <el-table-column prop="description" label="标签组描述" />
@@ -52,6 +61,8 @@
                     <el-button type="primary" link key="delete" @click="delete_">删除</el-button>
                 </el-table-column>
             </el-table>
+
+            <!-- 分页部分 -->
             <div id="pages">
                 <el-row>
                     <p id="fotter_text">每页显示&nbsp;&nbsp;&nbsp;</p>
@@ -238,6 +249,7 @@ import { ref } from "vue"
             this.calldata();
         },
         methods:{
+            //管理对话框中按钮
             if_diableBtn()
             {
                 if(this.newTagName!="")
