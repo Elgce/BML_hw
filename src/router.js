@@ -35,12 +35,6 @@ const routes = [
                 meta: {title:'跳转空白页'}
             },
             {
-                path: '/index/manage/test',
-                component: () => import('./components/pages/main4.vue'),
-                name: '测试页面',
-                meta: {title:'测试页面'}
-            },
-            {
                 path: '/index/manage/dataset/pic/addtag',
                 component: () => import('./components/pages/AddTagGroup.vue'),
                 name: '标签组管理',

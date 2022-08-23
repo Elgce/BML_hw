@@ -200,23 +200,24 @@ def test():
             with open(path,"a+",encoding="utf-8") as file_to:
                 file_to.write(f.filename+"\n")
     
+    print(MessageInfo[name])
     if MessageInfo[name]["specy"]=="txt":
         if MessageInfo[name]["txt_type"]=="dh":
             upload_path = basepath + topath + "\\" + f.filename
             inside = []
-            with open(path,'r',encoding="utf-8") as f_file:
+            with open(upload_path,'r',encoding="utf-8") as f_file:
                 line = f_file.readline()
-                inside = line.strip(',')
-            with open(path,'w',encoding="utf-8") as f_file:
+                inside = line.split(',')
+            with open(upload_path,'w',encoding="utf-8") as f_file:
                 for item in inside:
                     f_file.write(item+"\n")
         elif MessageInfo[name]["txt_type"]=="kg":
             upload_path = basepath + topath + "\\" + f.filename
             inside = []
-            with open(path,'r',encoding="utf-8") as f_file:
+            with open(upload_path,'r',encoding="utf-8") as f_file:
                 line = f_file.readline()
-                inside = line.strip()
-            with open(path,'w',encoding="utf-8") as f_file:
+                inside = line.split()
+            with open(upload_path,'w',encoding="utf-8") as f_file:
                 for item in inside:
                     f_file.write(item+"\n")
     return ""
@@ -578,7 +579,7 @@ def reset_csv():
     writecsvtitle()
     for item in MessageInfo.values():
         with open('./backend/data.csv', 'a+', newline='') as csvfile:
-            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source", 'direction', 'label_type', 'label_model', 'data_single', 'labels', 'txt-type']
+            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source", 'direction', 'label_type', 'label_model', 'data_single', 'labels', 'txt_type']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(item)
 
