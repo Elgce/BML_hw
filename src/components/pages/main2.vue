@@ -69,6 +69,7 @@
     <el-button id="uploader_txt" type="primary" @click="call_diagram_txt"><el-icon><Upload /></el-icon>上传TXT文本</el-button>
     <el-button id="uploader_excel" type="primary" @click="call_diagram_excel"><el-icon><Upload /></el-icon>上传Excel文件</el-button>
     <el-button id="uploader_video" type="primary" @click="call_diagram_video"><el-icon><Upload /></el-icon>上传视频文件</el-button>
+    <el-button id="uploader_audio" type="primary" @click="call_diagram_audio"><el-icon><Upload /></el-icon>上传音频文件</el-button>
     <el-dialog
         title="上传图片"
         v-model="picUpVisible"
@@ -302,6 +303,64 @@
             </span>
         </template>
     </el-dialog>
+    <el-dialog
+        title="上传音频文件"
+        v-model="audioUpVisible"
+    >
+        <el-divider id="divider_dialog"/>
+        <el-upload
+            class="upload-demo"
+            drag
+            action="/api/call"
+            multiple
+        >
+         
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+            Drop file here or <em>click to upload</em>
+            </div>
+            <template #tip>
+            <div class="el-upload__tip">
+                files with a size less than 500kb
+            </div>
+            </template>
+        </el-upload>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="audioUpVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="audioUpVisible=false">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+    <el-dialog
+        title="上传压缩包"
+        v-model="audioUpZipVisible"
+    >
+        <el-divider id="divider_dialog"/>
+        <el-upload
+            class="upload-demo"
+            drag
+            action="/api/call"
+            multiple
+        >
+         
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+            Drop file here or <em>click to upload</em>
+            </div>
+            <template #tip>
+            <div class="el-upload__tip">
+                files with a size less than 500kb
+            </div>
+            </template>
+        </el-upload>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="audioUpZipVisible=false">取消</el-button>
+                <el-button id="push_file" type="primary" @click="audioUpZipVisible=false">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
     <!-- written over -->
 
     <el-button id="submit_button" @click="back_index">确认并返回</el-button>
@@ -324,6 +383,8 @@ import Breadcrumb from "../BreadCrumb.vue"
                 textUpExcelVisible:false,
                 videoUpVisible:false,
                 videoUpZipVisible:false,
+                audioUpVisible:false,
+                audioUpZipVisible:false,
                 fileList: [],
                 file: {},
                 MessageInfo: reactive({}),
@@ -368,6 +429,10 @@ import Breadcrumb from "../BreadCrumb.vue"
                     else if(that.MessageInfo["specy"]==="video"){
                         label_type.innerHTML = "视频分类"
                         txt.innerHTML = "上传视频文件";
+                    }
+                    else if(that.MessageInfo["specy"]==="audio"){
+                        label_type.innerHTML = "音频分类"
+                        txt.innerHTML = "上传音频文件";
                     }
                     let label_module = document.getElementById("label_module");
                     if(that.MessageInfo["label_model"]==="ss"){
@@ -418,6 +483,13 @@ import Breadcrumb from "../BreadCrumb.vue"
                     else if(that.MessageInfo["direction"]==="vid_spl"){
                         label_module.innerHTML = "视频分割";
                     }
+                    else if(that.MessageInfo["direction"]==="aud_ass"){
+                        label_module.innerHTML = "音频分类";
+                    }
+                    else if(that.MessageInfo["direction"]==="aud_spl"){
+                        label_module.innerHTML = "音频分割";
+                    }
+                    
                 })
             },
             back_index(){
@@ -442,6 +514,10 @@ import Breadcrumb from "../BreadCrumb.vue"
                 {
                     this.videoUpZipVisible=true;
                 }
+                else if(this.MessageInfo["specy"]=="audio")
+                {
+                    this.audioUpZipVisible=true;
+                }
             },
             call_diagram_txt()
             {
@@ -454,6 +530,10 @@ import Breadcrumb from "../BreadCrumb.vue"
             call_diagram_video()
             {
                 this.videoUpVisible=true;
+            },
+            call_diagram_audio()
+            {
+                this.audioUpVisible=true;
             },
             //written over
 
@@ -502,6 +582,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var up_loader_txt = document.getElementById("uploader_txt");
                 var up_loader_excel = document.getElementById("uploader_excel");
                 var up_loader_video = document.getElementById("uploader_video");
+                var up_loader_audio = document.getElementById("uploader_audio");
                 if(select_fashion.value=="local"){
                     select_local.style.visibility='visible';
                     this.local_select_change();
@@ -515,6 +596,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_txt.style.visibility='hidden';
                     up_loader_excel.style.visibility='hidden';
                     up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
                 }
             },
             local_select_change()
@@ -527,6 +609,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 var up_loader_txt = document.getElementById("uploader_txt");
                 var up_loader_excel = document.getElementById("uploader_excel");
                 var up_loader_video = document.getElementById("uploader_video");
+                var up_loader_audio = document.getElementById("uploader_audio");
                 // var upload_txt = document.getElementById("txt");
                 // if(this.MessageInfo["specy"]=="video"){
                 //     upload_txt.style.visibility = "hidden";
@@ -538,6 +621,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_txt.style.visibility='hidden';
                     up_loader_excel.style.visibility='hidden';
                     up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
                     upPic.style.visibility='visible';
                     up_loader_pic.style.visibility='visible';
                     submit_btn.style.top='870px';
@@ -549,6 +633,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_txt.style.visibility='hidden';
                     up_loader_excel.style.visibility='hidden';
                     up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
                     upPic.style.visibility='visible';
                     upPic.innerText="上传压缩包";
                     up_loader_zip.style.visibility='visible';
@@ -561,6 +646,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_txt.style.visibility='hidden';
                     up_loader_excel.style.visibility='hidden';
                     up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
                     upPic.style.visibility='visible';
                     upPic.innerText="上传压缩包";
                     up_loader_zip.style.visibility='visible';
@@ -573,6 +659,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_txt.style.visibility='hidden';
                     up_loader_excel.style.visibility='hidden';
                     up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
                     upPic.style.visibility='visible';
                     upPic.innerText="上传TXT文本";
                     up_loader_txt.style.visibility='visible';
@@ -597,6 +684,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_txt.style.visibility='hidden';
                     up_loader_excel.style.visibility='hidden';
                     up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
                     upPic.style.visibility='visible';
                     upPic.innerText="上传视频文件";
                     up_loader_video.style.visibility='visible';
@@ -609,6 +697,33 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_txt.style.visibility='hidden';
                     up_loader_excel.style.visibility='hidden';
                     up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
+                    upPic.style.visibility='visible';
+                    upPic.innerText="上传压缩包";
+                    up_loader_zip.style.visibility='visible';
+                    submit_btn.style.top='870px';
+                }
+                else if(select_local.value=="pic" && this.MessageInfo["specy"]=="audio")
+                {
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
+                    upPic.style.visibility='visible';
+                    upPic.innerText="上传音频文件";
+                    up_loader_audio.style.visibility='visible';
+                    submit_btn.style.top='870px';
+                }
+                else if(select_local.value=="zip" && this.MessageInfo["specy"]=="audio")
+                {
+                    up_loader_pic.style.visibility='hidden';
+                    up_loader_zip.style.visibility='hidden';
+                    up_loader_txt.style.visibility='hidden';
+                    up_loader_excel.style.visibility='hidden';
+                    up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
                     upPic.style.visibility='visible';
                     upPic.innerText="上传压缩包";
                     up_loader_zip.style.visibility='visible';
@@ -628,6 +743,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                     up_loader_txt.style.visibility='hidden';
                     up_loader_excel.style.visibility='hidden';
                     up_loader_video.style.visibility='hidden';
+                    up_loader_audio.style.visibility='hidden';
                     submit_btn.style.top='830px';
                 }
             }
@@ -759,6 +875,14 @@ import Breadcrumb from "../BreadCrumb.vue"
         visibility: hidden;
     }
     #uploader_video
+    {
+        position: absolute;
+        left: 409px;
+        font-size: 15px;
+        top:820px;
+        visibility: hidden;
+    }
+    #uploader_audio
     {
         position: absolute;
         left: 409px;
