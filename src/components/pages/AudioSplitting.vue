@@ -108,8 +108,8 @@
                                         <!-- <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button> -->
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p :class="'card_name label'+index" :style="getcolor(item)">{{item}}</p>
-                                        <!-- <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input> -->
-                                        <el-button type="defult" text @click="videoLabel(item)">选择</el-button>
+                                        <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input> 
+                                        <el-button type="defult" text @click="AudioLabel(item)">选择</el-button>
                                     </div>
                                 </el-card>
                             </div>
@@ -359,7 +359,7 @@ import { reactive, ref } from "vue"
                 };
             },
 
-            videoLabel(item){
+            AudioLabel(item){
                 this.$refs.audio.mark(item);
             }
         }

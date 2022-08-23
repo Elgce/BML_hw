@@ -64,32 +64,32 @@ export default{
     },
     methods:{
         changeCurrentTime(){
-            this.$refs.video.currentTime =  this.$refs.video.duration/100 * this.sliderTime
+            this.$refs.audio.currentTime =  this.$refs.audio.duration/100 * this.sliderTime
         },
         timeupdate(){
-            this.sliderTime = this.$refs.video.currentTime/this.$refs.video.duration * 100
+            this.sliderTime = this.$refs.audio.currentTime/this.$refs.audio.duration * 100
         },
-        setVideoTime(t){
-            var video = document.getElementById("myVideo")
-            video.currentTime = t
-            this.sliderTime = t/video.duration * 100
+        setAudioTime(t){
+            var audio = document.getElementById("myaudio")
+            audio.currentTime = t
+            this.sliderTime = t/audio.duration * 100
         },
         convertXtoT(x){
-            var video = document.getElementById("myVideo")
+            var audio = document.getElementById("myaudio")
             var progress = document.getElementById("progress")
             var w_str = progress.style.width
             var w = parseInt(w_str.substring(0,w_str.length-2))
             var l = progress.getBoundingClientRect().left
-            return (x-l)/w * video.duration
+            return (x-l)/w * audio.duration
         },
         convertTtoX(t){
-            var video = document.getElementById("myVideo")
+            var audio = document.getElementById("myaudio")
             var progress = document.getElementById("progress")
             var w_str = progress.style.width
             var w = parseInt(w_str.substring(0,w_str.length-2))
             var l = progress.getBoundingClientRect().left
-            var x = l + t * w / video.duration
-            console.log("ready:"+video.duration)
+            var x = l + t * w / audio.duration
+            console.log("ready:"+audio.duration)
             return x
         },
         nearEdge(index,x){
@@ -128,7 +128,7 @@ export default{
                 this.state = 1 // 表示进入选择状态
             }
             var t = this.convertXtoT(e.x)
-            this.setVideoTime(t)
+            this.setAudioTime(t)
         },
         leave(e){
             if(this.state == 1){
@@ -224,7 +224,7 @@ export default{
                     this.chooseEnd(e)
                 }
                 var t = this.convertXtoT(e.x)
-                this.setVideoTime(t)
+                this.setAudioTime(t)
             }
             
             if(this.state == 4 || this.state == 5){
@@ -240,14 +240,14 @@ export default{
                     if(e.x <= this.slices[this.chosenIndex].te - 30){
                         this.slices[this.chosenIndex].ts = e.x
                         t = this.convertXtoT(e.x)
-                        this.setVideoTime(t)
+                        this.setAudioTime(t)
                     }
                 }
                 if(this.state == 5){
                     if(e.x >= this.slices[this.chosenIndex].ts + 30){
                         this.slices[this.chosenIndex].te = e.x
                         t = this.convertXtoT(e.x)
-                        this.setVideoTime(t)
+                        this.setAudioTime(t)
                     }
                 }
             }
@@ -292,7 +292,7 @@ export default{
                 e.stopPropagation()
                 e.preventDefault()
                 var t = this.convertXtoT(e.x)
-                this.setVideoTime(t)
+                this.setAudioTime(t)
                 // 切换片段
                 if(index != this.chosenIndex){
                     var chosenSl = document.getElementById('sl'+this.chosenIndex)
@@ -429,7 +429,7 @@ export default{
 
 
 <style scoped>
-#myVideo{
+#myaudio{
     display: block;
     object-fit:contain;
     background-color: rgb(230, 230, 230);
