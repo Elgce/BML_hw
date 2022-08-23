@@ -73,7 +73,7 @@ def readcsv():
 
 def writecsv(data):
     with open('./backend/data.csv', 'a+', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single', 'labels']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single', 'labels', 'txt_type']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow(data)
         global data_num
@@ -82,7 +82,7 @@ def writecsv(data):
 # 用于将表头重新写入用于保存数据的csv文件
 def writecsvtitle():
     with open('./backend/data.csv', 'w', newline='') as csvfile:
-        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single', 'labels']
+        fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state', 'source', 'direction', 'label_type', 'label_model', 'data_single', 'labels', 'txt_type']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -199,6 +199,26 @@ def test():
         if os.path.exists(path):
             with open(path,"a+",encoding="utf-8") as file_to:
                 file_to.write(f.filename+"\n")
+    
+    if MessageInfo[name]["specy"]=="txt":
+        if MessageInfo[name]["txt_type"]=="dh":
+            upload_path = basepath + topath + "\\" + f.filename
+            inside = []
+            with open(path,'r',encoding="utf-8") as f_file:
+                line = f_file.readline()
+                inside = line.strip(',')
+            with open(path,'w',encoding="utf-8") as f_file:
+                for item in inside:
+                    f_file.write(item+"\n")
+        elif MessageInfo[name]["txt_type"]=="kg":
+            upload_path = basepath + topath + "\\" + f.filename
+            inside = []
+            with open(path,'r',encoding="utf-8") as f_file:
+                line = f_file.readline()
+                inside = line.strip()
+            with open(path,'w',encoding="utf-8") as f_file:
+                for item in inside:
+                    f_file.write(item+"\n")
     return ""
 
 # 用于上传图像识别图片
@@ -297,6 +317,7 @@ def add_data():
             "label_model": label_model,
             "data_single": data_single,
             "labels": [],
+            "txt_type":"",
         }
         MessageInfo.update({name:sing_one})
         writecsv(sing_one)
@@ -557,7 +578,7 @@ def reset_csv():
     writecsvtitle()
     for item in MessageInfo.values():
         with open('./backend/data.csv', 'a+', newline='') as csvfile:
-            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source", 'direction', 'label_type', 'label_model', 'data_single', 'labels']
+            fieldnames = ['group_id', 'name', 'version', 'num', 'data_id', 'in_state', 'specy', 'mark_state', 'clear_state',"source", 'direction', 'label_type', 'label_model', 'data_single', 'labels', 'txt-type']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(item)
 
@@ -1148,6 +1169,15 @@ def get_picsources():
                         context_tag.append(datas[1])
                         context.append(datas[0])
     return {"t_type":t_type,"sources":context,"context_tag":context_tag,"all_num":all_num,"to_num":to_num,"ed_num":ed_num}
+
+# 用于前端设定输入文本的分隔符方式   gn：换行符   dh：半角逗号   zbf：制表符   kg：空格   file：无
+@app.route("/api/settxttype",methods=["GET","POST"])
+def set_txttype():
+    data = request.get_json()
+    txt_type = data.get("txt_type")
+    name = session["name"]
+    MessageInfo[name]["txt_type"] = txt_type
+    return {"txt_type":txt_type}
 
 if __name__=="__main__":
     renew()
