@@ -1,10 +1,1 @@
 group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source,direction,label_type,label_model,data_single,labels,txt_type
-220823,1234,V1,1,224650,finished,txt,0,-,['txtlabel.txt'],,txt_cla,txt_slabel,dir_auto,"['wqerqew', '12']",gn
-220823,132412312,V1,1,224832,finished,txt,0,-,['txtlabel.txt'],,txt_cla,txt_slabel,dir_auto,[],gn
-220823,12312,V1,1,224907,finished,txt,0,-,['txtmatch.txt'],,txt_sim,txt_sim,dir_auto,[],gn
-220823,21312,V1,1,224945,finished,txt,0,-,['txtextract.txt'],,txt_extr,txt_extr,dir_auto,['12312'],gn
-220823,2131,V1,2,225030,finished,video,0,-,"['movie1.mp4', 'movie2.mp4']",vid_ass,,,,['1232'],
-220823,12421,V1,1,225103,finished,video,0,-,['movie1.mp4'],vid_spl,,,,"['12312', '234534']",
-220823,13234335467,V1,2,225144,finished,audio,0,-,"['1.mp3', '2.mp3']",aud_ass,,,,['123124'],
-220823,3214,V1,2,225215,finished,audio,0,-,"['1.mp3', '2.mp3']",aud_spl,,,,['122341'],
-220823,132432,V1,2,225246,finished,pic,0,-,"['none.png', 'msi.jpg']",,pic_cla,ss,,['123123'],
