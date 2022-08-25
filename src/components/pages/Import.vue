@@ -83,6 +83,7 @@
         <el-radio label="zbf" size="large">制表符</el-radio>
         <el-radio label="kg" size="large">空格</el-radio>
         <el-radio label="file" size="large">无</el-radio>
+        <el-radio label="file" size="large">自定义</el-radio>
     </el-radio-group>
     
 
@@ -270,6 +271,12 @@
         v-model="videoUpVisible"
     >
         <el-divider id="divider_dialog"/>
+        <el-alert 
+            id="explanation_p" 
+            title="请上传有效的视频文件。" 
+            type="warning" 
+            :closable="false">
+        </el-alert>
         <el-upload
             class="upload-demo"
             drag
@@ -298,6 +305,12 @@
         v-model="videoUpZipVisible"
     >
         <el-divider id="divider_dialog"/>
+        <el-alert 
+            id="explanation_p" 
+            title="请上传包含视频文件的压缩包。" 
+            type="warning" 
+            :closable="false">
+        </el-alert>
         <el-upload
             class="upload-demo"
             drag
@@ -328,6 +341,12 @@
         v-model="audioUpVisible"
     >
         <el-divider id="divider_dialog"/>
+        <el-alert 
+            id="explanation_p" 
+            title="请上传有效的音频文件。" 
+            type="warning" 
+            :closable="false">
+        </el-alert>
         <el-upload
             class="upload-demo"
             drag
@@ -356,6 +375,12 @@
         v-model="audioUpZipVisible"
     >
         <el-divider id="divider_dialog"/>
+        <el-alert 
+            id="explanation_p" 
+            title="请上传包含音频文件的压缩包。" 
+            type="warning" 
+            :closable="false">
+        </el-alert>
         <el-upload
             class="upload-demo"
             drag
@@ -380,7 +405,7 @@
         </template>
     </el-dialog>
 
-    <el-button id="submit_button" @click="back_index">确认并返回</el-button>
+    <el-button id="submit_button" @click="back_index" type="primary">确认并返回</el-button>
 </template>
 
 <script>
@@ -406,6 +431,7 @@ import Breadcrumb from "../BreadCrumb.vue"
                 file: {},
                 MessageInfo: reactive({}),
                 memo_text:ref(''),
+                pre_memo:ref(''),
                 split_word:ref('')
             };
         },
@@ -575,6 +601,7 @@ import Breadcrumb from "../BreadCrumb.vue"
             //改变备注
             changing_memo()
             {
+                this.pre_memo=this.memo_text;
                 var change_memo_text=document.getElementById("memo_info");
                 change_memo_text.style.visibility='hidden';
                 var change_memo_btn=document.getElementById("change_memo");
@@ -601,6 +628,7 @@ import Breadcrumb from "../BreadCrumb.vue"
             //取消修改备注
             canceling_memo()
             {
+                this.memo_text=this.pre_memo;
                 var change_memo_text=document.getElementById("memo_info");
                 change_memo_text.style.visibility='visible';
                 var change_memo_btn=document.getElementById("change_memo");
