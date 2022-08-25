@@ -27,3 +27,7 @@
 * 后端框架Flask
 * UI框架Element-plus
 * 跨域工具nginx(1.22.0)
+
+# 安装或运行问题
+* 联系邮箱：bqw20@mails.tsinghua.edu.cn
+* 有微信可以直接通过微信联系
