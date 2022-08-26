@@ -8,7 +8,7 @@
 * 输入yarn run serve
 * 当前尚未进行封装，无需build
 
-# 关于python环境(国内用户建议pip切换清华源)
+# 关于python环境(国内用户建议pip切换清华源或其他源)
 * pip install opencv-python
 * pip install tensorflow
 * pip install sklearn
@@ -29,5 +29,5 @@
 * 跨域工具nginx(1.22.0)
 
 # 安装或运行问题
-* 联系邮箱：bqw20@mails.tsinghua.edu.cn
+* 联系邮箱：bqw20@mails.tsinghua.edu.cn     jz-wang20@mails.tsinghua.edu.cn
 * 有微信可以直接通过微信联系
