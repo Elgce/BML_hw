@@ -1,1 +1,2 @@
 group_id,name,version,num,data_id,in_state,specy,mark_state,clear_state,source,direction,label_type,label_model,data_single,labels,txt_type
+220826,1,V1,1,210958,finished,txt,0,-,['douhao.txt'],,txt_cla,txt_slabel,dir_auto,['1'],gn
