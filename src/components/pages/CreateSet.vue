@@ -1,10 +1,16 @@
+<!-- 创建数据集页面 -->
 <template>
     <el-container>
+        <!-- 头部元素 -->
         <el-header>
             <Breadcrumb></Breadcrumb>
         </el-header>
         <el-divider />
+
+        <!-- 主体部分 -->
         <el-main>
+
+            <!-- 创建数据集的表单 -->
             <el-form :model="form" label-width="120px" style="max-width: 650px">
                 <el-form-item label="数据集名称">
                     <el-input id="input_name" v-model="form.name" placeholder="限制50个字符以内(支持汉字、英文大小写、数字及下划线，下划线不能作为开头)"/>
@@ -195,6 +201,7 @@ export default{
         }
     },
     methods: {
+        //表单校验
         isfull(){
             let inputName=document.getElementById("input_name");
             let dataType=document.getElementsByName("data_type");
@@ -221,6 +228,8 @@ export default{
                 (dataType[4].checked && inputName.value!=""&&(markingTypeAudio[0].checked||markingTypeAudio[1].checked))
                 )
         },
+
+        //创建数据集
         createdata() {
             let inputName=document.getElementById("input_name");
             if (this.isfull()){
@@ -300,7 +309,6 @@ export default{
     .mb-4 .el-button{
         width: 110px;
     }
-    /* written by wjz */
     #placeholderChange::-webkit-input-placeholder
     {
         color: red;
@@ -408,5 +416,4 @@ export default{
         height:160px;
         background-position-x:100px;
     }
-    /* written over */
 </style>

@@ -6,7 +6,7 @@ const routes = [
         children:[
             {
                 path: '/index/manage/dataset',
-                component: () => import('./components/pages/main1-1.vue'),
+                component: () => import('./components/pages/Main.vue'),
                 mata: {title: '我的数据总览'},
                 name: '我的数据总览',
             },

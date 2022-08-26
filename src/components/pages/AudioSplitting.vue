@@ -1,5 +1,7 @@
+<!-- 音频分割页面 -->
 <template>
     <el-container>
+        <!-- 头部元素 -->
         <el-header>
             <Breadcrumb></Breadcrumb>
             <el-row id="top_btns">
@@ -15,48 +17,18 @@
             </el-row>
         </el-header>
         <el-divider id="top_divider"/>
+
+        <!-- 主体部分 -->
         <el-main style="overflow:hidden;">
-            <!-- <el-row id="middle_btns">
-                <el-radio-group v-model="radio1" size="large">
-                    <el-radio-button label="全部(0)" />
-                    <el-radio-button label="有标注信息(0)" />
-                    <el-radio-button label="无标注信息(0)" />
-                </el-radio-group>
-                <div id="link">
-                    <el-link type="primary" @click="dialogVisible = true">批注示例</el-link>
-                </div>
-            </el-row>
-            <el-divider/> -->
             <el-container id="middle_data">
+
+                <!-- 音频展示部分 -->
                 <el-aside id="middle_asider">
                     <el-main height="500px" style="padding:0px;">
                         <el-row id="text_top">
                             <p id="_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;音频：</p>
                             <p id="_mark_strong">{{sources[0]}}</p>
-                            <!-- <el-button id="delete_btn"><el-icon><Delete/></el-icon>&nbsp;删除视频</el-button>
-                            <el-popover
-                                placement="bottom"
-                                :width="200"
-                                trigger="hover"
-                            >
-                                <template #reference>
-                                    <el-link id="previous">上一个视频</el-link>
-                                </template>
-                                <p>上一个视频（翻页即保存）<el-icon><ArrowLeftBold /></el-icon></p>
-                            </el-popover>
-                            &nbsp;&nbsp;&nbsp;
-                            <el-popover
-                                placement="bottom"
-                                :width="200"
-                                trigger="hover"
-                            >
-                                <template #reference>
-                                    <el-link>下一个视频</el-link>
-                                </template>
-                                <p>下一个视频（翻页即保存）<el-icon><ArrowRightBold /></el-icon></p>
-                            </el-popover> -->
                         </el-row>
-                        
                         <Audiotag ref="audio"
                             :url = "url"
                             :colorlist = "colorlist"></Audiotag>
@@ -66,6 +38,7 @@
                     </el-main>
                 </el-aside>
 
+                <!-- 标签栏部分 -->
                 <el-container style="height:700px">
                     <el-header id="middle_header">
                         <b v-if="show_btn===false" id="tag_column_text">标签栏</b>
@@ -105,7 +78,6 @@
                             <div v-for="(item,index) in Label_info" :key="item" class="scrollbar-demo-item">
                                 <el-card shadow="hover" class="card">
                                     <div class="card_info">
-                                        <!-- <el-button type="primary" text class="card_edit" @click="edit_label(item)">编辑</el-button> -->
                                         <el-button type="info" text class="card_delete" @click="delete_label(item)">删除</el-button>
                                         <p :class="'card_name label'+index" :style="getcolor(item)">{{item}}</p>
                                         <el-input type="text" id="new_name_txt" style="width:120px;visibility:hidden;" class="edit_txt" v-model="new_labelname" @change="change_name(item)"></el-input> 
@@ -114,16 +86,15 @@
                                 </el-card>
                             </div>
                         </el-scrollbar>
-
-
                         <div id="empty_img_left" v-if="label_num===0"></div>
                         <span id="empty_text_left" v-if="label_num===0">暂无可用标签 ，请点击上方按钮添加</span>
                     </el-footer>
                 </el-container>
-                
             </el-container>
         </el-main>
     </el-container>
+
+    <!-- 示例对话框 -->
     <el-dialog
         v-model="dialogVisible"
         title="文本分类-单标签"
@@ -141,17 +112,15 @@
 <script>
 import Breadcrumb from "../BreadCrumb.vue"
 import Audiotag from "./AudioTag.vue"
-
 import { reactive, ref } from "vue"
-
     export default
     {
         name: "MainThree",
         components: 
         {
-    Breadcrumb,
-    Audiotag,
-},
+            Breadcrumb,
+            Audiotag,
+        },
         data()
         {
             return{
@@ -183,7 +152,7 @@ import { reactive, ref } from "vue"
             console.log(this.url)
         },
         methods:{
-        //  written by bqw
+            //查找标签
             searchlabel(){
                 let data = {"tagname":this.input_tagName};
                 let that = this;
@@ -196,7 +165,6 @@ import { reactive, ref } from "vue"
                 })
                 .then(res => res.json())
                 .then((j)=>{
-                    // that.Label_info = j.labels;
                     that.Label_info = reactive([]);
                     console.log("!!");
                     console.log(j.labels);
@@ -212,6 +180,8 @@ import { reactive, ref } from "vue"
                     that.label_num = j.label_num;
                 })
             },
+
+            //改变名称
             change_name(name){
                 let new_name= this.new_labelname;
                 this.delete_label(name);
@@ -228,6 +198,8 @@ import { reactive, ref } from "vue"
                     console.log(j);
                 })
             },
+
+            //编辑标签
             edit_label(name){
                 console.log(name);
                 let std = document.getElementById("new_name_txt");
@@ -240,6 +212,7 @@ import { reactive, ref } from "vue"
                 }
             },
 
+            //删除标签
             delete_label(name){
                 let that = this
                 const data = {"label_name": name};
@@ -256,6 +229,7 @@ import { reactive, ref } from "vue"
                 }))
             },
 
+            //获取图片
             get_pics(){
                 let that = this;
                 return fetch("/api/getresources").then((res)=>res.json().then((j)=>{
@@ -263,6 +237,7 @@ import { reactive, ref } from "vue"
                 }))
             },
 
+            //展示图片
             show_pics(){
                 for(let item=0; item<this.sources.length;item++){
                     console.log(this.sources[item]);
@@ -302,6 +277,8 @@ import { reactive, ref } from "vue"
                     that.cancel_label();
                 })
             },
+
+            //添加标签
             add_label(){
                 let that = this;
                 const data = {"name": this.labelname};
@@ -335,16 +312,12 @@ import { reactive, ref } from "vue"
                     this.gethas_labels();
                 }))
             },
-
             create_label(){
                 this.show_btn = true;
             },
             cancel_label(){
                 this.show_btn = false;
             },
-
-            //written over
-
             
             //添加标签组
             addMarkGroup()
@@ -352,13 +325,14 @@ import { reactive, ref } from "vue"
                 this.$router.push("/index/manage/dataset/pic/addtag");
             },
 
-            //written by syz
+            //获取颜色
             getcolor(item){
                 return {
                     color: this.colorlist[item]
                 };
             },
 
+            //音频标签
             AudioLabel(item){
                 this.$refs.audio.mark(item);
             }

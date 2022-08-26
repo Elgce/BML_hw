@@ -1,5 +1,8 @@
+<!-- 文本分类页面 -->
 <template>
     <el-container>
+
+        <!-- 头部元素 -->
         <el-header>
             <Breadcrumb></Breadcrumb>
             <el-row id="top_btns">
@@ -15,6 +18,8 @@
             </el-row>
         </el-header>
         <el-divider id="top_divider"/>
+
+        <!-- 主体部分 -->
         <el-main>
             <el-row id="middle_btns">
                 <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
@@ -28,6 +33,7 @@
             </el-row>
             <el-divider/>
             
+            <!-- 标签部分与展示部分 -->
             <el-container id="middle_data">
                 <el-aside id="middle_asider">
                     <el-scrollbar height="500px">
@@ -112,16 +118,15 @@
                                 </el-card>
                             </div>
                         </el-scrollbar>
-
-
                         <div id="empty_img_left" v-if="label_num===0"></div>
                         <span id="empty_text_left" v-if="label_num===0">暂无可用标签 ，请点击上方按钮添加</span>
                     </el-footer>
                 </el-container>
-                
             </el-container>
         </el-main>
     </el-container>
+
+    <!-- 示例对话框 -->
     <el-dialog
         v-model="dialogVisible"
         title="文本分类-单标签"
@@ -180,7 +185,6 @@ import { reactive, ref } from "vue"
                 page : -1,
                 show_context: ref(''),
                 this_tag: ref('请在右侧选择标签'),
-
                 labelname: ref(''),
                 new_labelname: ref(''),
                 Label_info:reactive([]),
@@ -216,7 +220,6 @@ import { reactive, ref } from "vue"
             
         },
         methods:{
-        //  written by bqw
             handleradiochange(){
                 console.log(this.t_type);
                 const data = {"t_type": this.t_type};
@@ -259,6 +262,8 @@ import { reactive, ref } from "vue"
                     }
                 }))
             },
+
+            //下一篇
             latter_txt(){
                 return fetch("/api/nextpage").then((res)=>res.json().then((j)=>{
                     let passa = j.page;
@@ -270,6 +275,8 @@ import { reactive, ref } from "vue"
                     }
                 }))
             },
+
+            //上一篇
             previous_txt(){
                 return fetch("/api/prepage").then((res)=>res.json().then((j)=>{
                     let passa = j.page;
@@ -300,6 +307,8 @@ import { reactive, ref } from "vue"
                     that.t_type = j.t_type;
                 }))
             },
+
+            //搜索标签
             searchlabel(){
                 let data = {"tagname":this.input_tagName};
                 let that = this;
@@ -312,7 +321,6 @@ import { reactive, ref } from "vue"
                 })
                 .then(res => res.json())
                 .then((j)=>{
-                    // that.Label_info = j.labels;
                     that.Label_info = reactive([]);
                     if(j.label_num!=0){
                         for(let item in j.labels){
@@ -326,6 +334,8 @@ import { reactive, ref } from "vue"
                     that.label_num = j.label_num;
                 })
             },
+
+            //改变名称
             change_name(){
                 let new_name= this.editName;
                 this.delete_label(this.to_be_delete);
@@ -343,11 +353,15 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/txt/blank");
                 })
             },
+
+            //编辑标签
             edit_label(name){
                 console.log(name);
                 this.editVisible=true;
                 this.to_be_delete=name;
             },
+
+            //是否禁用按钮
             if_diableBtn()
             {
                 if(this.editName!="")
@@ -359,6 +373,8 @@ import { reactive, ref } from "vue"
                     this.disabled=true;
                 }
             },
+
+            //删除标签
             delete_label(name){
                 const data = {"label_name": name};
                 return fetch("/api/deletelabel",{
@@ -388,7 +404,8 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/txt/blank");
                 })
             },
-           
+
+            //添加标签
             add_label(){
                 const data = {"name": this.labelname};
                 return fetch("/api/addlabel",{
@@ -425,8 +442,8 @@ import { reactive, ref } from "vue"
             cancel_label(){
                 this.show_btn = false;
             },
-            //written over
 
+            //与筛选框有关的内容
             cleanSource()
             {
                 if(this.unlimited1==true)

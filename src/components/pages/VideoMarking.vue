@@ -1,5 +1,8 @@
+<!-- 视频标注页面 -->
 <template>
     <el-container>
+
+        <!-- 头部元素 -->
         <el-header>
             <Breadcrumb></Breadcrumb>
             <el-row id="top_btns">
@@ -15,20 +18,23 @@
             </el-row>
         </el-header>
         <el-divider id="top_divider"/>
+
+        <!-- 主体部分 -->
         <el-main>
             <el-row id="middle_btns">
                 <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
-                                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
-                                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
-                                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
+                    <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                    <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                    <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                 </el-radio-group>
                 <div id="link">
                     <el-link type="primary" @click="dialogVisible = true">辅助设置</el-link>
                 </div>
             </el-row>
             <el-divider/>
-            
             <el-container id="middle_data">
+
+                <!-- 内容展示部分 -->
                 <el-aside id="middle_asider">
                     <el-scrollbar height="500px">
                         <el-row id="text_top">
@@ -64,6 +70,8 @@
                         </div>
                     </el-scrollbar>
                 </el-aside>
+
+                <!-- 标签部分 -->
                 <el-container>
                     <el-header id="middle_header">
                         <b v-if="show_btn===false" id="tag_column_text">标签栏</b>
@@ -112,16 +120,15 @@
                                 </el-card>
                             </div>
                         </el-scrollbar>
-
-
                         <div id="empty_img_left" v-if="label_num===0"></div>
                         <span id="empty_text_left" v-if="label_num===0">暂无可用标签 ，请点击上方按钮添加</span>
                     </el-footer>
                 </el-container>
-                
             </el-container>
         </el-main>
     </el-container>
+
+    <!-- 辅助设置对话框 -->
     <el-dialog
         v-model="dialogVisible"
         title="辅助设置"
@@ -210,7 +217,6 @@ import { reactive, ref } from "vue"
             
         },
         methods:{
-        //  written by bqw
             handleradiochange(){
                 console.log(this.t_type);
                 const data = {"t_type": this.t_type};
@@ -223,7 +229,6 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json())
                 .then(()=>{
-                    // this.$router.push("/index/manage/dataset/blank/piced");
                     this.calltxt().then(this.get_labels()).then(this.calltag())
                 })
             },
@@ -254,6 +259,8 @@ import { reactive, ref } from "vue"
                     }
                 }))
             },
+
+            //后一个
             latter_txt(){
                 return fetch("/api/nextpage").then((res)=>res.json().then((j)=>{
                     let passa = j.page;
@@ -261,11 +268,12 @@ import { reactive, ref } from "vue"
                         alert("已是最后一页!");
                     }
                     else{
-                        // this.$router.push("/index/manage/dataset/blank/piced");
                         this.calltxt().then(this.get_labels()).then(this.calltag())
                     }
                 }))
             },
+
+            //前一个
             previous_txt(){
                 return fetch("/api/prepage").then((res)=>res.json().then((j)=>{
                     let passa = j.page;
@@ -273,11 +281,11 @@ import { reactive, ref } from "vue"
                         alert("已是第一页!");
                     }
                     else{
-                        // this.$router.push("/index/manage/dataset/blank/piced");
                         this.calltxt().then(this.get_labels()).then(this.calltag())
                     }
                 }))
             },
+
             show_pics(){
                 console.log("??");
                 console.log(this.sources);
@@ -367,11 +375,15 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/video/split");
                 })
             },
+
+            //编辑标签
             edit_label(name){
                 console.log(name);
                 this.editVisible=true;
                 this.to_be_delete=name;
             },
+
+            //检测是否禁用按钮
             if_diableBtn()
             {
                 if(this.editName!="")
@@ -383,6 +395,8 @@ import { reactive, ref } from "vue"
                     this.disabled=true;
                 }
             },
+
+            //删除标签
             delete_label(name){
                 const data = {"label_name": name};
                 return fetch("/api/deletelabel",{
@@ -394,12 +408,11 @@ import { reactive, ref } from "vue"
                 })
                 .then((res)=>res.json()
                 .then(()=>{
-                    // this.$router.push("/index/manage/dataset/blank/piced");
                     this.calltxt().then(this.get_labels()).then(this.calltag())
                 }))
             },
 
-           
+            //添加标签
             add_label(){
                 const data = {"name": this.labelname};
                 return fetch("/api/addlabel",{
@@ -430,7 +443,6 @@ import { reactive, ref } from "vue"
                     this.calltxt().then(this.get_labels()).then(this.calltag())
                 })
             },
-            
             gethas_labels(){
                 let that = this;
                 return fetch("/api/callGroup").then((res)=>res.json().then((j)=>{
@@ -453,8 +465,8 @@ import { reactive, ref } from "vue"
             cancel_label(){
                 this.show_btn = false;
             },
-            //written over
 
+            //与筛选框有关的内容
             cleanSource()
             {
                 if(this.unlimited1==true)

@@ -6,10 +6,10 @@
             <el-divider />
             <el-main>
                 <el-radio-group v-model="t_type" @change="handleradiochange" size="large" class="mytest3">
-                                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
-                                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
-                                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
-                            </el-radio-group>
+                    <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                    <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                    <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
+                </el-radio-group>
 
                 <el-button class="txt_in" @click="insert_txt">导入文本</el-button>
                 <el-button class="txt_label" type="primary" @click="label_txt">标注文本</el-button>

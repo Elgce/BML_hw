@@ -1,5 +1,7 @@
+<!-- 文本实体抽取页面 -->
 <template>
     <el-container @click="checkClean">
+        <!-- 头部部分 -->
         <el-header>
             <Breadcrumb></Breadcrumb>
             <el-row id="top_btns">
@@ -15,6 +17,8 @@
             </el-row>
         </el-header>
         <el-divider id="top_divider"/>
+
+        <!-- 主体部分 -->
         <el-main>
             <el-row id="middle_btns">
                 <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
@@ -23,12 +27,13 @@
                     <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
                 </el-radio-group>
                 <div id="link">
-                    <el-link type="primary" @click="dialogVisible = true">批注示例</el-link>
+                    <el-link type="primary" @click="dialogVisible = false">批注示例</el-link>
                 </div>
             </el-row>
             <el-divider/>
-            
             <el-container id="middle_data">
+
+                <!-- 内容展示部分 -->
                 <el-aside id="middle_asider">
                     <el-scrollbar height="500px">
                         <el-row id="text_top">
@@ -70,6 +75,8 @@
                     </el-scrollbar>
                 </el-aside>
                 <el-container>
+
+                    <!-- 标签部分 -->
                     <el-header id="middle_header">
                         <b v-if="show_btn===false" id="tag_column_text">标签栏</b>
                         <el-button v-if="show_btn===false" id="add_tag" @click="create_label">添加标签</el-button>
@@ -119,8 +126,6 @@
                                 </el-card>
                             </div>
                         </el-scrollbar>
-
-
                         <div id="empty_img_left" v-if="label_num===0"></div>
                         <span id="empty_text_left" v-if="label_num===0">暂无可用标签 ，请点击上方按钮添加</span>
                     </el-footer>
@@ -129,6 +134,8 @@
             </el-container>
         </el-main>
     </el-container>
+
+    <!-- 示例对话框 -->
     <el-dialog
         v-model="dialogVisible"
         title="文本分类-单标签"
@@ -141,13 +148,13 @@
         <br>
         <img src="../../assets/text_marking_description.png" width="500" height="202">
     </el-dialog>
+
     <div 
         id="choose_label"
     >
         <p id="choose_label_text">
             请选择文本实体分类标签：
         </p>
-        <!-- <el-divider id="choose_label_divider"/> -->
         <el-color-picker v-model="markColor" id="mark_color"/>
         <div v-for="item in Label_info" :key="item" >
             <el-button class="labels_choice" @click="mark_text(item)" type="primary">
@@ -241,7 +248,6 @@ import { reactive, ref } from "vue"
             
         },
         methods:{
-        //  written by bqw
             handleradiochange(){
                 console.log(this.t_type);
                 const data = {"t_type": this.t_type};
@@ -258,6 +264,7 @@ import { reactive, ref } from "vue"
                 })
             },
             
+            //上一篇
             latter_txt(){
                 return fetch("/api/nextpage").then((res)=>res.json().then((j)=>{
                     let passa = j.page;
@@ -269,6 +276,8 @@ import { reactive, ref } from "vue"
                     }
                 }))
             },
+
+            //下一篇
             previous_txt(){
                 return fetch("/api/prepage").then((res)=>res.json().then((j)=>{
                     let passa = j.page;
@@ -308,6 +317,8 @@ import { reactive, ref } from "vue"
                     that.t_type = j.t_type;
                 }))
             },
+
+            //搜索标签
             searchlabel(){
                 let data = {"tagname":this.input_tagName};
                 let that = this;
@@ -320,7 +331,6 @@ import { reactive, ref } from "vue"
                 })
                 .then(res => res.json())
                 .then((j)=>{
-                    // that.Label_info = j.labels;
                     that.Label_info = reactive([]);
                     if(j.label_num!=0){
                         for(let item in j.labels){
@@ -334,6 +344,8 @@ import { reactive, ref } from "vue"
                     that.label_num = j.label_num;
                 })
             },
+
+            //改变标签名称
             change_name(){
                 let new_name= this.editName;
                 this.delete_label(this.to_be_delete);
@@ -351,19 +363,15 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/txt/extracted/blank");
                 })
             },
+
+            //编辑标签
             edit_label(name){
                 console.log(name);
                 this.editVisible=true;
                 this.to_be_delete=name;
-                // let std = document.getElementById("new_name_txt");
-                // if(std.style.visibility==='hidden'){
-                //     std.style.visibility='visible';
-                //     std.style.backgroundColor="rgb(221, 218, 218)";
-                // }
-                // else{
-                //     std.style.visibility='hidden';
-                // }
             },
+
+            //是否禁用按钮
             if_diableBtn()
             {
                 if(this.editName!="")
@@ -375,6 +383,8 @@ import { reactive, ref } from "vue"
                     this.disabled=true;
                 }
             },
+
+            //删除标签
             delete_label(name){
                 const data = {"label_name": name};
                 return fetch("/api/deletelabel",{
@@ -390,7 +400,7 @@ import { reactive, ref } from "vue"
                 }))
             },
 
-           
+            //添加标签
             add_label(){
                 const data = {"name": this.labelname};
                 return fetch("/api/addlabel",{
@@ -442,13 +452,10 @@ import { reactive, ref } from "vue"
             cancel_label(){
                 this.show_btn = false;
             },
-            //written over
 
-
-
+            //搜索关键字
             search_words()
             {
-                // location.reload();
                 var text=document.getElementById("written").innerHTML;
                 var reg = new RegExp("(" + this.input_text + ")", "g");
                 var reg2 = new RegExp("(<font color=\"#FF6633\">)", "g");
@@ -460,6 +467,8 @@ import { reactive, ref } from "vue"
                 
                 
             },
+
+            //与筛选有关的函数
             checkChoice()
             {
                 var selection=window.getSelection();
@@ -554,7 +563,8 @@ import { reactive, ref } from "vue"
                     this.marking_date=null
                 }
             },
-            //written by bqw
+            
+            //标注文本
             mark_text(item)
             {
                 console.log(item)
@@ -571,9 +581,7 @@ import { reactive, ref } from "vue"
                 tag.style.color = "black";
                 tag.innerHTML = item;
                 span.appendChild(tag); 
-
                 range.insertNode(span);
-
                 let written = document.getElementById("written");
                 var choose_label=document.getElementById("choose_label");
                 choose_label.style.visibility='hidden';
@@ -593,8 +601,6 @@ import { reactive, ref } from "vue"
                 })
 
             },
-
-            //written over
             
             //添加标签组
             addMarkGroup()

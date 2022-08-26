@@ -1,27 +1,29 @@
+<!-- 文本相似度页面 -->
 <template>
         <el-container>
+
+            <!-- 头部元素 -->
             <el-header>
                 <Breadcrumb></Breadcrumb>
             </el-header>
             <el-divider />
+
+            <!-- 主体部分 -->
             <el-main>
                 <el-radio-group v-model="t_type" @change="handleradiochange" size="large" class="mytest3">
-                                <el-radio-button label="all">全部({{all_num}})</el-radio-button>
-                                <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
-                                <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
-                            </el-radio-group>
-
+                    <el-radio-button label="all">全部({{all_num}})</el-radio-button>
+                    <el-radio-button label="ed" >有标注信息({{ed_num}})</el-radio-button>
+                    <el-radio-button label="to" >没有标注信息({{to_num}})</el-radio-button>
+                </el-radio-group>
                 <el-button class="txt_in" @click="insert_txt">导入文本</el-button>
             <div id="top_table">
                 <div class="txt_list">{{name}}V1版本的文本列表</div>
-
                 <el-popover
                     :visible="visible"
                     placement="bottom-start"
                     :width="750"
 
                 >
-         
                 <div>
                     <b>导入日期&nbsp;&nbsp;&nbsp;</b>
                     <el-checkbox v-model="unlimited1" label="不限" size="large" />
@@ -44,12 +46,13 @@
                         end-placeholder="结束日期"
                     />
                 </div>
-             
                     <template #reference>
                         <el-button type="primary" @click="visible = !visible"   class="choose_btn">筛选&nbsp;<el-icon><ArrowDownBold /></el-icon></el-button>
                     </template>
                 </el-popover>
             </div>
+
+                <!-- 标注表格 -->
                 <el-table
                         :data="tableData"
                         :span-method="objectSpanMethod"
@@ -76,9 +79,7 @@
                             <el-button @click="btn_delete(scope)">删除</el-button>
                         </template>
                     </el-table-column>
-
                 </el-table>
-            
                 <div class="txt_num">当前数据集标注模板：短文本单标签，共有文本：{{all_num}}个</div>
             </el-main>
 </el-container>

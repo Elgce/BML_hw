@@ -1,12 +1,15 @@
 <!-- 图片展示页 -->
 <template>
     <el-container>
+        <!-- 头部元素 -->
         <el-header>
             <Breadcrumb></Breadcrumb>
             <el-link id="example" type="primary" @click="dialogVisible = true">批量标注示例</el-link>
             <el-link id="submit" type="primary">提交工单</el-link>
         </el-header>
         <el-divider id="top_divider"/>
+
+        <!-- 主体部分 -->
         <el-main>
             <el-row id="middle_btns">
                 <el-radio-group v-model="t_type" size="large" @change="handleradiochange">
@@ -79,6 +82,8 @@
                     <el-button id="delete_btn" disabled><el-icon><Delete/></el-icon>&nbsp;删除</el-button>
                 </div>
             </el-row>
+
+            <!-- 标签部分 -->
             <el-container id="middle_data">
                 <el-container>
                     <el-header id="middle_header">
@@ -129,12 +134,12 @@
                                 </el-card>
                             </div>
                         </el-scrollbar>
-
-
                         <div id="empty_img_left" v-if="label_num===0"></div>
                         <span id="empty_text_left" v-if="label_num===0">暂无可用标签 ，请点击上方按钮添加</span>
                     </el-footer>
                 </el-container>
+
+                <!-- 图片展示部分 -->
                 <el-aside id="middle_asider">
                     <el-scrollbar height="390px">
                     <div id="empty_right" v-if="src_list.length===0">
@@ -160,6 +165,8 @@
                 </el-aside>
             </el-container>
         </el-main>
+
+        <!-- 分页部分 -->
         <el-footer>
             <div id="pages">
                 <el-row>
@@ -178,6 +185,8 @@
             </div>
         </el-footer>
     </el-container>
+
+    <!-- 提示对话框 -->
     <el-dialog
         v-model="dialogVisible"
         title="EasyData图像分类模板支持批量标注数据了"
@@ -277,7 +286,7 @@ import { reactive, ref } from "vue"
             this.get_pics().then(this.show_pics);
         },
         methods:{
-        //  written by bqw
+            //查找标签
             searchlabel(){
                 let data = {"tagname":this.input_tagName};
                 let that = this;
@@ -290,7 +299,6 @@ import { reactive, ref } from "vue"
                 })
                 .then(res => res.json())
                 .then((j)=>{
-                    // that.Label_info = j.labels;
                     that.Label_info = reactive([]);
                     console.log("!!");
                     console.log(j.labels);
@@ -306,6 +314,8 @@ import { reactive, ref } from "vue"
                     that.label_num = j.label_num;
                 })
             },
+
+            //改变名称
             change_name(){
                 let new_name= this.editName;
                 this.delete_label(this.to_be_delete);
@@ -323,19 +333,15 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/blank/pic");
                 })
             },
+
+            //编辑标签
             edit_label(name){
                 console.log(name);
                 this.editVisible=true;
                 this.to_be_delete=name;
-                // let std = document.getElementById("new_name_txt");
-                // if(std.style.visibility==='hidden'){
-                //     std.style.visibility='visible';
-                //     std.style.backgroundColor="rgb(221, 218, 218)";
-                // }
-                // else{
-                //     std.style.visibility='hidden';
-                // }
             },
+
+            //是否禁用按钮
             if_diableBtn()
             {
                 if(this.editName!="")
@@ -347,6 +353,8 @@ import { reactive, ref } from "vue"
                     this.disabled=true;
                 }
             },
+
+            //删除标签
             delete_label(name){
                 const data = {"label_name": name};
                 return fetch("/api/deletelabel",{
@@ -361,6 +369,8 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/pic/label/blank");
                 }))
             },
+
+            //获取图片
             get_pics(){
                 let that = this;
                 return fetch("/api/getpicsources").then((res)=>res.json().then((j)=>{
@@ -378,6 +388,8 @@ import { reactive, ref } from "vue"
                     }
                 }))
             },
+
+            //展示图片
             show_pics(){
                 for(let item=0; item<this.sources.length;item++){
                     console.log(this.sources[item]);
@@ -399,7 +411,7 @@ import { reactive, ref } from "vue"
                 }
             },
 
-           
+            //添加标签
             add_label(){
                 const data = {"name": this.labelname};
                 console.log("abd");
@@ -475,9 +487,8 @@ import { reactive, ref } from "vue"
                     this.$router.push("/index/manage/dataset/blank/pic");
                 })
             },
-            //written over
 
-
+            //开始标注
             start_marking(){
                 const data = {"page":1};
                 return fetch("/api/txtpagesession",{
@@ -493,6 +504,8 @@ import { reactive, ref } from "vue"
                 })
                 
             },
+
+            //与筛选框有关的函数
             cleanSource()
             {
                 if(this.unlimited1==true)

@@ -1,3 +1,4 @@
+# 引入库
 import datetime
 import base64
 from email.headerregistry import Group
@@ -24,11 +25,11 @@ import numpy as np
 from tensorflow import keras
 from keras.utils import to_categorical
 from keras.utils import image_utils
-# from image_utils import img_to_array
 from sklearn.model_selection import train_test_split
 
 app = Flask(__name__,static_folder="../dist/",static_url_path="/")
 
+# 一些变量
 MessageInfo = {}
 LabelInfo = {}
 

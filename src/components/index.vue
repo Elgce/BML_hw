@@ -1,3 +1,4 @@
+<!-- index页面 -->
 <template>
   <div class="weiyang_ml">
     <div id="header">
@@ -26,8 +27,6 @@
     </nav>
     </div>
     <div id="leftnav">
-      
-      <!-- <el-divider /> -->
       <el-aside :width="isCollapse ? '64px' : '200px'">
       <div id="navtop" @click="toggleCollapse">
           <el-icon color="gray" ><DArrowRight /></el-icon>

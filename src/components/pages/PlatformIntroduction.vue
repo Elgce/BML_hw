@@ -1,3 +1,4 @@
+<!-- 说明文档页面 -->
 <template>
 <el-main>
 <p class="index">帮助文档 > MSI ML数据标注平台</p>
@@ -8,32 +9,32 @@
 <ul class="chart">
 		<li>文本标注
             <div>MSIML支持用户以txt文本与zip压缩包（注意：只能对原始的文件们进行压缩，不能对一个装有文件的文件夹压缩，下同）的形式导入数据。用户可自定义标签，并对数据以标签的形式分类。</div>
-            <img src="../../assets/fenlei.png" width="800" height="350">
+            <img src="../../assets/assortment_lyh.png" width="800" height="350">
             <div class="mark">图1.文本标注创建界面</div>
         </li>
 		<li>文本相似度（短文本匹配）
             <div>MSIML支持用户以txt格式与zip压缩包导入数据。文本文件内数据格式要求为"文本内容\n"（即每行一个未标注样本，使用回车换行），每一行表示一组数据。用户可对每组数据进行判断，打标“相似”或“不相似”，或删除本组数据。</div>
-            <img src="../../assets/wenbenxiangsidu.png" width="800" height="350">
+            <img src="../../assets/similarity_lyh.png" width="800" height="350">
             <div class="mark">图2.文本相似度判断界面</div>
         </li>
 		<li>文本实体抽取
             <div>MSIML支持用户以txt格式与zip压缩包导入数据。用户可自定义标签，并对文本中的某些段落利用标签作标记。标签的颜色可由用户自定义。</div>
-            <img src="../../assets/wenbenchouqu.png" width="800" height="350">
+            <img src="../../assets/extract_lyh.png" width="800" height="350">
             <div class="mark">图3.文本实体抽取处理界面</div>
         </li>
         <li>图片标注
             <div>MSIML支持用户以png形似或zip压缩包导入图片。用户可自定义标签，并标记对应的图片</div>
-            <img src="../../assets/tupianfenlei.jpg" width="800" height="350">
+            <img src="../../assets/picmarking_lyh.jpg" width="800" height="350">
             <div class="mark">图4.图片标注界面</div>
         </li>
         <li>视频分类与分段
             <div>MSIML支持用户实现视频分类及分段功能。</div>
-            <img src="../../assets/shipinfenlei.png" width="800" height="350">
+            <img src="../../assets/video_lyh.png" width="800" height="350">
             <div class="mark">图5.视频分类界面</div>
         </li>
         <li>音频分类与分段
             <div>MSIML支持用户实现音频分类及分段功能。</div>
-            <img src="../../assets/yinpinfenlei.png" width="800" height="350">
+            <img src="../../assets/audio_lyh.png" width="800" height="350">
             <div class="mark">图6.音频分类界面</div>
         </li>
 	</ul>

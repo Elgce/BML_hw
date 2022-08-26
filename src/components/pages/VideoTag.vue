@@ -1,8 +1,6 @@
+<!-- 视频标签 -->
 <template>
     <el-col align="middle" style="overflow:hidden;">
-        
-
-
         <video ref="video" id="myVideo" width="800" height="450" controls
             controlslist="nodownload noplaybackrate"
             disablePictureInPicture="true"
@@ -10,7 +8,6 @@
             :src = "url"
             >
         </video>
-
         <div id="progress" style="width:800px; height:74px;"
             @mousedown="down($event)"
             @mouseup="up($event)"
@@ -21,7 +18,6 @@
                 class="sl"
                 :id="'sl'+index"
                 :style="{position:fixed,left:slice.ts - 2+'px',width:slice.te-slice.ts -2 +'px',backgroundColor:getcolor(slice.type)}"
-
                 @mousedown="chooseSlice(index,$event)"
                 @mousemove="resize(index,$event)"
                 @mouseenter="addConf(index,$event)">
@@ -29,12 +25,9 @@
             <div v-if="state==1 || state==2" id="chosen" 
                 :style="{left:Math.min(start,end) + 'px',width:Math.abs(end - start) + 'px'}">
             </div>
-
         </div>
     </el-col>
-    
 </template>
-
 
 <script>
 export default{

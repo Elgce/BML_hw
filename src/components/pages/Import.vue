@@ -1,3 +1,4 @@
+<!-- 导入页面 -->
 <template>
     <!-- 头部元素 -->
     <el-header>
@@ -439,7 +440,7 @@ import Breadcrumb from "../BreadCrumb.vue"
             this.get_data();
         },
         methods:{
-            //written by bqw
+            //获取数据
             get_data(){
                 let that = this;
                 return fetch("/api/getone").then((res) => res.json())
@@ -577,7 +578,6 @@ import Breadcrumb from "../BreadCrumb.vue"
             {
                 this.audioUpVisible=true;
             },
-            //written over
 
             //改变分隔符
             split_change()

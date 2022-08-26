@@ -1,9 +1,13 @@
+<!-- 机器学习页面 -->
 <template>
     <el-container>
+        <!-- 头部元素 -->
         <el-header>
             <Breadcrumb></Breadcrumb>
         </el-header>
         <el-divider id="top_divider"/>
+
+        <!-- 参数值选取部分 -->
         <p id='welcome'>请选择参数值：</p>
         <el-divider/>
         <el-row v-loading="loading" element-loading-text="训练中...">
@@ -135,6 +139,7 @@ import { ref } from "vue"
             };
         },
         methods:{
+            //开始训练
             start_training()
             {
                 this.loading=true;
@@ -160,6 +165,7 @@ import { ref } from "vue"
                 })
             },
 
+            //进行预测
             predict()
             {
                 this.upPicVisible=false
